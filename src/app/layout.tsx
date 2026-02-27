@@ -23,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${syne.variable} ${dmSans.variable} m-0 bg-white font-sans`}>{children}</body>
+    <html lang="en" className="overflow-x-hidden">
+      <body className={`${syne.variable} ${dmSans.variable} m-0 overflow-x-hidden bg-white font-sans`}>{children}</body>
     </html>
   );
 }
