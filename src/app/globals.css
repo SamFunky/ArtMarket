@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-dm-sans), sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-syne), sans-serif;
+}
