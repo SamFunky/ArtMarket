@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import HeroHeader from "./HeroHeader";
 
-const PARALLAX_FACTOR = 0.4;
+const PARALLAX_FACTOR = 0.2;
 
 export default function HeroSection() {
   const [scrollY, setScrollY] = useState(0);
@@ -16,6 +17,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative flex min-h-screen w-screen shrink-0 items-center overflow-hidden pl-8 sm:pl-12 lg:pl-16">
+      <HeroHeader />
       <div
         className="absolute inset-x-0 top-0 h-[150vh] min-h-[150vh]"
         style={{
