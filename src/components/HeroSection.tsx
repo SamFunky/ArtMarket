@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import HeroHeader from "./HeroHeader";
 
@@ -16,7 +17,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative flex min-h-screen w-screen shrink-0 items-center overflow-hidden pl-8 sm:pl-12 lg:pl-16">
+    <section className="relative flex min-h-[60vh] w-screen shrink-0 items-center justify-center overflow-hidden px-8 sm:px-12 lg:px-16">
       <HeroHeader />
       <div
         className="absolute inset-x-0 top-0 h-[150vh] min-h-[150vh]"
@@ -28,30 +29,46 @@ export default function HeroSection() {
           src="/artwork/Maecenas Presenting the Liberal Arts to the Emperor Augustus.jpg"
           alt=""
           fill
-          className="-scale-x-100 object-cover object-center"
+          className="object-cover"
+          style={{ objectPosition: "center 600%" }}
           priority
         />
       </div>
       <div
-        className="absolute inset-0 bg-black/20"
+        className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/60 to-transparent"
         aria-hidden
       />
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/30 to-transparent"
-        aria-hidden
-      />
-      <div className="relative z-10 inline-flex w-fit flex-col -space-y-8">
-        <div className="relative">
-          <span className="absolute left-10 -top-5 font-display text-2xl text-[#f5e6dc] sm:text-4xl lg:text-5xl scale-y-65">
-            THE
-          </span>
-          <h1 className="font-display text-8xl font-bold tracking-tight text-[#f5e6dc] sm:text-9xl lg:text-[12rem]">
-            CURATOR
-          </h1>
+      <div className="relative z-10 flex w-full flex-col items-start gap-20">
+        <div className="flex w-full justify-center">
+          <div className="inline-flex flex-col items-center -space-y-8">
+          <div className="relative">
+            <span className="absolute left-1/2 -top-5 -translate-x-1/2 font-display text-2xl text-[#f5e6dc] sm:text-4xl lg:text-5xl scale-y-65">
+              THE
+            </span>
+            <h1 className="font-display text-8xl font-bold tracking-tight text-[#f5e6dc] sm:text-9xl lg:text-[12rem]">
+              CURATOR
+            </h1>
+          </div>
+          <p className="text-center text-3xl text-[#ecd5cc] sm:text-4xl lg:text-5xl scale-y-65">
+            Fine Art Marketplace
+          </p>
+          </div>
         </div>
-        <p className="-translate-x-10 text-right text-3xl text-[#ecd5cc] sm:text-4xl lg:text-5xl scale-y-65">
-          Fine Art Marketplace
-        </p>
+        <div className="flex flex-col gap-4 -mb-50">
+          <span className="text-sm font-medium uppercase tracking-widest text-white/70">
+            Featured Highlight
+          </span>
+          <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+            Live Auction Now
+          </h2>
+          <Link
+            href="/explore"
+            className="inline-flex w-fit items-center gap-2 rounded-full bg-[#f5e6dc] px-6 py-3 font-medium text-zinc-900 transition-colors hover:bg-[#ecd5cc]"
+          >
+            View All Auctions
+            <span className="text-lg">→</span>
+          </Link>
+        </div>
       </div>
     </section>
   );
