@@ -1,10 +1,11 @@
 import {
-  collection,
-  doc,
   addDoc,
-  Timestamp,
-  query,
+  collection,
+  deleteDoc,
+  doc,
   orderBy,
+  query,
+  Timestamp,
   onSnapshot,
   type Unsubscribe,
 } from "firebase/firestore";
@@ -108,4 +109,15 @@ export function subscribeToComments(
     });
     onComments(comments);
   });
+}
+
+export async function deleteComment(
+  listingId: string,
+  commentId: string
+): Promise<void> {
+  const db = getDb();
+  if (!db) throw new Error("Firebase is not configured.");
+
+  const ref = doc(db, "listings", listingId, COMMENTS_SUBCOLLECTION, commentId);
+  await deleteDoc(ref);
 }
