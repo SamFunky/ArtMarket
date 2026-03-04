@@ -10,25 +10,21 @@ type ModelViewerProps = {
   scale?: number;
   baseRotation?: [number, number, number];
   modelPosition?: [number, number, number];
+  spin?: boolean;
 };
 
-function SpinningModel({
-  src,
-  scale = 1,
-  baseRotation = [0, 0, 0],
-  modelPosition = [0, 0, 0],
-}: ModelViewerProps) {
-  const spinRef = useRef<Group>(null);
+function Model({ src, scale, baseRotation, modelPosition, spin }: ModelViewerProps) {
+  const groupRef = useRef<Group>(null);
   const { scene } = useGLTF(src);
 
   useFrame((_, delta) => {
-    if (spinRef.current) {
-      spinRef.current.rotation.y += delta * 0.3;
+    if (spin && groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.3;
     }
   });
 
   return (
-    <group ref={spinRef}>
+    <group ref={groupRef}>
       <group rotation={baseRotation}>
         <primitive object={scene} scale={scale} position={modelPosition} />
       </group>
@@ -44,6 +40,7 @@ export default function ModelViewer({
   scale = 1,
   baseRotation = [0, 0, 0],
   modelPosition = [0, 0, 0],
+  spin = true,
 }: ModelViewerProps) {
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden">
@@ -55,11 +52,12 @@ export default function ModelViewer({
         <directionalLight position={[5, 5, 5]} intensity={1} />
         <directionalLight position={[-5, 5, -5]} intensity={0.5} />
         <Environment preset="studio" />
-        <SpinningModel
+        <Model
           src={src}
           scale={scale}
           baseRotation={baseRotation}
           modelPosition={modelPosition}
+          spin={spin}
         />
       </Canvas>
     </div>
