@@ -1,0 +1,285 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { useComments } from "@/hooks/useComments";
+import { addComment, addReply, type Comment } from "@/lib/comments";
+import { isFirebaseConfigured } from "@/lib/firebase";
+
+function formatDate(d: Date) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(d);
+}
+
+function CommentItem({
+  comment,
+  replies,
+  listingId,
+  currentUserId,
+  currentUserEmail,
+  depth = 0,
+}: {
+  comment: Comment;
+  replies: Comment[];
+  listingId: string;
+  currentUserId: string | null;
+  currentUserEmail: string | null;
+  depth?: number;
+}) {
+  const [replyText, setReplyText] = useState("");
+  const [showReplyInput, setShowReplyInput] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [repliesExpanded, setRepliesExpanded] = useState(true);
+
+  async function handleSubmitReply(e: React.FormEvent) {
+    e.preventDefault();
+    if (!replyText.trim() || !currentUserId) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await addReply(
+        listingId,
+        comment.id,
+        replyText,
+        currentUserId,
+        currentUserEmail
+      );
+      setReplyText("");
+      setShowReplyInput(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to post reply");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const isReply = depth > 0;
+
+  return (
+    <div
+      className={isReply ? "ml-6 border-l-2 border-zinc-200 pl-4" : ""}
+    >
+      <div className="px-1 py-3">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="text-sm font-medium text-[rgb(30,36,44)]">
+            {comment.authorEmail ?? "Anonymous"}
+          </span>
+          <span className="text-xs text-zinc-500">
+            {formatDate(comment.createdAt)}
+          </span>
+        </div>
+        <p className="mt-1 text-sm text-zinc-700">{comment.text}</p>
+        {!isReply && depth === 0 && (
+          <div className="mt-2 flex items-center gap-2">
+            {currentUserId && (
+              <button
+                type="button"
+                onClick={() => setShowReplyInput((v) => !v)}
+                className="text-xs font-medium text-zinc-500 hover:text-[rgb(30,36,44)]"
+              >
+                {showReplyInput ? "Cancel" : "Reply"}
+              </button>
+            )}
+            {replies.length > 0 && (
+              <>
+                <span className="text-xs tabular-nums text-zinc-500">
+                  ({replies.length})
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setRepliesExpanded((v) => !v)}
+                  className="flex items-center text-zinc-500 hover:text-[rgb(30,36,44)]"
+                  aria-expanded={repliesExpanded}
+                  aria-label={repliesExpanded ? "Collapse replies" : "Expand replies"}
+                >
+                  <svg
+                    className={`h-4 w-4 transition-transform ${repliesExpanded ? "" : "-rotate-90"}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {showReplyInput && depth === 0 && (
+        <form
+          onSubmit={handleSubmitReply}
+          className="mt-3"
+        >
+          <input
+            type="text"
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            placeholder="Write a reply..."
+            className="w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+          />
+          {error && (
+            <p className="mt-2 text-sm text-red-600">{error}</p>
+          )}
+          <div className="mt-2 flex gap-2">
+            <button
+              type="submit"
+              disabled={submitting || !replyText.trim()}
+              className="rounded bg-[rgb(30,36,44)] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70"
+            >
+              {submitting ? "Posting…" : "Post reply"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowReplyInput(false);
+                setReplyText("");
+              }}
+              className="rounded border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
+      {replies.length > 0 && repliesExpanded && (
+        <div className="mt-3 space-y-3">
+          {replies.map((r) => (
+            <CommentItem
+              key={r.id}
+              comment={r}
+              replies={[]}
+              listingId={listingId}
+              currentUserId={currentUserId}
+              currentUserEmail={currentUserEmail}
+              depth={depth + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+type ItemCommentsProps = {
+  listingId: string;
+};
+
+export default function ItemComments({ listingId }: ItemCommentsProps) {
+  const { user } = useAuth();
+  const comments = useComments(listingId);
+  const [newComment, setNewComment] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const topLevel = comments.filter((c) => !c.parentId);
+  const getReplies = (parentId: string) =>
+    comments.filter((c) => c.parentId === parentId);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+    if (!user) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await addComment(
+        listingId,
+        newComment,
+        user.uid,
+        user.email ?? null
+      );
+      setNewComment("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to post comment");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const hasFirebase = isFirebaseConfigured();
+
+  return (
+    <section className="rounded border border-zinc-200 bg-white/80 p-6">
+      <h2 className="font-display text-lg font-semibold text-[rgb(30,36,44)]">
+        Questions &amp; comments
+      </h2>
+      <p className="mt-2 text-sm text-zinc-600">
+        Bidders can ask questions about condition, provenance, or shipping
+        here.
+      </p>
+
+      {!hasFirebase ? (
+        <div className="mt-4 rounded border border-dashed border-zinc-300 bg-zinc-50/50 py-8 text-center">
+          <p className="text-sm text-zinc-500">
+            Comments require Firebase. Configure it to enable this feature.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="mt-8 rounded border border-zinc-200 bg-white px-5 shadow-sm">
+            {topLevel.length === 0 ? (
+              <div className="py-8 text-center">
+                <p className="text-sm text-zinc-500">No comments yet</p>
+              </div>
+            ) : (
+              <div className="pt-3 pb-6">
+              {topLevel.map((c) => (
+                <CommentItem
+                  key={c.id}
+                  comment={c}
+                  replies={getReplies(c.id)}
+                  listingId={listingId}
+                  currentUserId={user?.uid ?? null}
+                  currentUserEmail={user?.email ?? null}
+                />
+              ))}
+              </div>
+            )}
+          </div>
+
+          {user ? (
+            <form onSubmit={handleSubmit} className="mt-6">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Ask a question or add a comment..."
+                className="w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+              />
+              {error && (
+                <p className="mt-2 text-sm text-red-600">{error}</p>
+              )}
+              <button
+                type="submit"
+                disabled={submitting || !newComment.trim()}
+                className="mt-2 rounded bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70"
+              >
+                {submitting ? "Posting…" : "Post comment"}
+              </button>
+            </form>
+          ) : (
+            <p className="mt-6 text-sm text-zinc-500">
+              <Link
+                href="/signin"
+                className="font-medium text-[rgb(30,36,44)] underline hover:no-underline"
+              >
+                Sign in
+              </Link>{" "}
+              to post a comment or question.
+            </p>
+          )}
+        </>
+      )}
+    </section>
+  );
+}

@@ -52,6 +52,8 @@ export async function POST(request: Request) {
       modelScale: item.modelScale,
       modelRotation: item.modelRotation,
       modelPosition: item.modelPosition,
+      description: item.description,
+      dateRange: item.dateRange,
     };
     const doc = Object.fromEntries(
       Object.entries(raw).filter(([, v]) => v !== undefined)

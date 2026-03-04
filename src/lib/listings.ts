@@ -36,6 +36,8 @@ export type ListingDoc = {
   modelScale?: number;
   modelRotation?: [number, number, number];
   modelPosition?: [number, number, number];
+  description?: string;
+  dateRange?: string;
 };
 
 function minutesBetween(earlier: Date, later: Date): number {
@@ -66,6 +68,8 @@ function docToItem(
     modelScale: data.modelScale,
     modelRotation: data.modelRotation,
     modelPosition: data.modelPosition,
+    description: data.description,
+    dateRange: data.dateRange,
   };
 }
 
