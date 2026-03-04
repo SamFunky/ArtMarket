@@ -1,5 +1,9 @@
 import HeroSection from "@/components/HeroSection";
+import HowItWorks from "@/components/HowItWorks";
 import ModelViewer from "@/components/ModelViewer";
+import TrendingEndingSoon from "@/components/TrendingEndingSoon";
+import Newsletter from "@/components/Newsletter";
+import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -38,17 +42,13 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <HeroSection />
-      <section
-        className="relative flex min-h-[60vh] w-full shrink-0 flex-col items-center justify-center border-y border-black/50 px-6 py-16"
-        style={{
-          background:
-            "radial-gradient(circle at center, transparent 40%, black 150%), #2F3E4F",
-        }}
-      >
-        <h2 className="mb-20 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-          Hot Right Now
-        </h2>
-        <div className="mx-auto flex w-full max-w-[120rem] flex-wrap justify-between gap-x-[22rem] gap-y-20 px-4 lg:flex-nowrap">
+      <HowItWorks />
+      <section className="relative flex min-h-[60vh] w-full shrink-0 flex-col items-center justify-center border-y border-zinc-200/80 bg-[#f5e6dc] px-6 py-16">
+        <div className="mx-auto flex w-full max-w-[120rem] flex-col items-center px-4">
+          <h2 className="mb-20 w-full text-center font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
+            Featured Auctions
+          </h2>
+        <div className="flex w-full flex-wrap justify-between gap-x-[22rem] gap-y-20 lg:flex-nowrap">
           {hotAuctions.map((auction) => (
             <div key={auction.id} className="flex w-full min-w-[20rem] flex-1 flex-col items-center gap-10 sm:min-w-[24rem]">
               <div className="relative w-full">
@@ -81,30 +81,30 @@ export default function Home() {
                 )}
               </div>
               <div className="flex w-full flex-col gap-6">
-                <h3 className="font-display text-lg font-semibold text-white line-clamp-2">
+                <h3 className="font-display text-lg font-semibold text-[rgb(30,36,44)] line-clamp-2">
                   {auction.title}
                 </h3>
-                <div className="flex items-baseline justify-between gap-4 border-t border-white/20 pt-4">
+                <div className="flex items-baseline justify-between gap-4 border-t border-zinc-300/80 pt-4">
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-white/60">
+                    <p className="text-xs uppercase tracking-wider text-zinc-500">
                       Current bid
                     </p>
-                    <p className="text-2xl font-bold text-[#f5e6dc]">
+                    <p className="text-2xl font-bold text-[rgb(30,36,44)]">
                       {auction.currentBid}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs uppercase tracking-wider text-white/60">
+                    <p className="text-xs uppercase tracking-wider text-zinc-500">
                       Time left
                     </p>
-                    <p className="text-lg font-medium text-white">
+                    <p className="text-lg font-medium text-[rgb(30,36,44)]">
                       {auction.timeLeft}
                     </p>
                   </div>
                 </div>
                 <Link
                   href={`/item/${auction.id}`}
-                  className="inline-flex w-full items-center justify-center rounded-lg bg-[#f5e6dc] px-6 py-3 font-medium text-zinc-900 transition-colors hover:bg-[#ecd5cc]"
+                  className="inline-flex w-full items-center justify-center rounded-lg bg-[rgb(30,36,44)] px-6 py-3 font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
                 >
                   Place Bid
                 </Link>
@@ -112,8 +112,11 @@ export default function Home() {
             </div>
           ))}
         </div>
+        </div>
       </section>
-      <section className="h-screen w-full shrink-0 bg-[#f5e6dc]" />
+      <Newsletter />
+      <TrendingEndingSoon />
+      <Footer />
     </main>
   );
 }

@@ -41,7 +41,7 @@ export default function FilterSelect<T extends string>({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 rounded-full border-0 bg-white/80 px-4 py-2 text-sm text-zinc-800 ring-1 ring-zinc-200/80 transition-shadow hover:ring-zinc-300"
+        className="flex items-center gap-1 rounded-full border-0 bg-white/80 px-4 py-2 text-sm text-[rgb(30,36,44)] ring-1 ring-zinc-200/80 transition-shadow hover:ring-zinc-300"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         aria-label={label}

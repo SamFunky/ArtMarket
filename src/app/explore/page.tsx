@@ -3,7 +3,9 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import FilterSelect from "@/components/FilterSelect";
+import LikeButton from "@/components/LikeButton";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
+import { useLiked } from "@/context/LikedContext";
 import { allItems, type Item, type ArtEra, type ArtType } from "@/data/items";
 
 type SortOption =
@@ -60,12 +62,14 @@ function formatTimeLeft(minutes: number) {
 }
 
 export default function ExplorePage() {
+  const { likedIds } = useLiked();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("price-asc");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(50000);
   const [era, setEra] = useState<ArtEra | "all">("all");
   const [artType, setArtType] = useState<ArtType | "all">("all");
+  const [showLikedOnly, setShowLikedOnly] = useState(false);
 
   const filteredAndSorted = useMemo(() => {
     let items = allItems.filter((item) => {
@@ -75,7 +79,8 @@ export default function ExplorePage() {
       const matchesPrice = item.currentBid >= minPrice && item.currentBid <= maxPrice;
       const matchesEra = era === "all" || item.era === era;
       const matchesArtType = artType === "all" || item.artType === artType;
-      return matchesSearch && matchesPrice && matchesEra && matchesArtType;
+      const matchesLiked = !showLikedOnly || likedIds.has(item.id);
+      return matchesSearch && matchesPrice && matchesEra && matchesArtType && matchesLiked;
     });
 
     const sorted = [...items].sort((a, b) => {
@@ -98,13 +103,13 @@ export default function ExplorePage() {
     });
 
     return sorted;
-  }, [search, sort, minPrice, maxPrice, era, artType]);
+  }, [search, sort, minPrice, maxPrice, era, artType, showLikedOnly, likedIds]);
 
   return (
     <main className="min-h-screen bg-[#f5e6dc] pt-32 pb-20">
       <div className="mx-auto w-full max-w-[120rem] px-4">
         <div className="mb-10 flex flex-col gap-6">
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-800 sm:text-3xl">
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
             Explore
           </h1>
 
@@ -115,7 +120,7 @@ export default function ExplorePage() {
                 placeholder="Search..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-md border-0 bg-white/80 py-2.5 pl-9 pr-4 text-sm text-zinc-800 placeholder-zinc-400 ring-1 ring-zinc-200/80 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="w-full rounded-md border-0 bg-white/80 py-2.5 pl-9 pr-4 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 ring-1 ring-zinc-200/80 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
                 aria-label="Search auctions"
               />
               <svg
@@ -130,6 +135,21 @@ export default function ExplorePage() {
 
             <div className="flex flex-wrap items-center justify-start gap-2">
               <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowLikedOnly((v) => !v)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    showLikedOnly
+                      ? "bg-red-500/15 text-red-600 ring-1 ring-red-500/30"
+                      : "bg-white/80 text-zinc-600 ring-1 ring-zinc-200/80 hover:ring-zinc-300"
+                  }`}
+                  aria-pressed={showLikedOnly}
+                >
+                  <svg className="h-4 w-4" fill={showLikedOnly ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                  Liked
+                </button>
                 <PriceRangeFilter
                   min={minPrice}
                   max={maxPrice}
@@ -151,7 +171,7 @@ export default function ExplorePage() {
                   onChange={(v) => setArtType(v as ArtType | "all")}
                 />
               </div>
-              {(search.trim() !== "" || era !== "all" || artType !== "all" || minPrice > 0 || maxPrice < 50000) && (
+              {(search.trim() !== "" || era !== "all" || artType !== "all" || minPrice > 0 || maxPrice < 50000 || showLikedOnly) && (
               <div className="flex flex-wrap items-center gap-2">
                 {search.trim() !== "" && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-blue-500 px-3 py-1 text-sm text-white">
@@ -216,6 +236,21 @@ export default function ExplorePage() {
                     </button>
                   </span>
                 )}
+                {showLikedOnly && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-red-500 px-3 py-1 text-sm text-white">
+                    Liked only
+                    <button
+                      type="button"
+                      onClick={() => setShowLikedOnly(false)}
+                      className="ml-0.5 rounded-full p-0.5 hover:bg-red-600"
+                      aria-label="Remove liked filter"
+                    >
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </span>
+                )}
               </div>
               )}
             </div>
@@ -240,15 +275,18 @@ export default function ExplorePage() {
                   <span className="absolute left-2.5 top-2.5 rounded bg-black/50 px-2 py-0.5 text-[11px] font-medium tracking-wide text-white/95 uppercase">
                     {item.artType}
                   </span>
+                  <span className="absolute right-2.5 top-2.5">
+                    <LikeButton itemId={item.id} />
+                  </span>
                 </div>
                 <div className="flex flex-1 flex-col gap-1.5 p-3.5">
-                  <h2 className="font-display text-[15px] font-medium text-zinc-800 line-clamp-2 leading-snug group-hover:text-zinc-600">
+                  <h2 className="font-display text-[15px] font-medium text-[rgb(30,36,44)] line-clamp-2 leading-snug group-hover:text-zinc-600">
                     {item.title}
                   </h2>
                   <div className="mt-auto flex items-baseline justify-between gap-2">
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-zinc-400">Bid</p>
-                      <p className="text-base font-semibold text-zinc-800">
+                      <p className="text-base font-semibold text-[rgb(30,36,44)]">
                         {formatBid(item.currentBid)}
                       </p>
                     </div>

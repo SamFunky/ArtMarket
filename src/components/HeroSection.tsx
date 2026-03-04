@@ -63,7 +63,7 @@ export default function HeroSection() {
           </h2>
           <Link
             href="/explore"
-            className="inline-flex w-fit items-center gap-2 rounded-full bg-[#f5e6dc] px-6 py-3 font-medium text-zinc-900 transition-colors hover:bg-[#ecd5cc]"
+            className="inline-flex w-fit items-center gap-2 rounded-full bg-[#f5e6dc] px-6 py-3 font-medium text-[rgb(30,36,44)] transition-colors hover:bg-[#ecd5cc]"
           >
             View All Auctions
             <span className="text-lg">→</span>

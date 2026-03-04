@@ -119,7 +119,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 rounded-full border-0 bg-white/80 px-4 py-2 text-sm text-zinc-800 ring-1 ring-zinc-200/80 transition-shadow hover:ring-zinc-300"
+        className="flex items-center gap-1 rounded-full border-0 bg-white/80 px-4 py-2 text-sm text-[rgb(30,36,44)] ring-1 ring-zinc-200/80 transition-shadow hover:ring-zinc-300"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
@@ -197,7 +197,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
                   onBlur={() => {
                     if (localMin > localMax - STEP) setLocalMin(localMax - STEP);
                   }}
-                  className="w-full rounded-full border border-zinc-300 px-4 py-2 text-sm text-zinc-800 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                  className="w-full rounded-full border border-zinc-300 px-4 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
                 />
               </div>
               <div className="flex-1">
@@ -212,7 +212,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
                   onBlur={() => {
                     if (localMax < localMin + STEP) setLocalMax(localMin + STEP);
                   }}
-                  className="w-full rounded-full border border-zinc-300 px-4 py-2 text-sm text-zinc-800 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                  className="w-full rounded-full border border-zinc-300 px-4 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
                 />
               </div>
             </div>
@@ -228,7 +228,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
               <button
                 type="button"
                 onClick={handleConfirm}
-                className="flex-1 rounded-full bg-zinc-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+                className="flex-1 rounded-full bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
               >
                 Confirm
               </button>

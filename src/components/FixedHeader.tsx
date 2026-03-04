@@ -74,38 +74,37 @@ export default function FixedHeader() {
 
   return (
     <header
-      className="fixed left-1/2 top-4 z-50 w-[calc(100%-1rem)] -translate-x-1/2"
+      className="fixed inset-x-0 top-0 z-50 w-full"
       style={{
         opacity: pathname !== "/" ? 1 : opacity,
         transition: `opacity ${FADE_DURATION_MS}ms ease`,
       }}
     >
       <nav
-        className="flex items-center justify-between rounded-full bg-white px-6 py-4 sm:px-8"
-        style={{ boxShadow: "0 4px 30px rgba(0,0,0,0.08)" }}
+        className="flex items-center justify-between border-b border-[#d4c4b8] bg-[#f5e6dc] px-6 py-4 sm:px-8"
       >
         <Link
           href="/"
-          className="font-display text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl"
+          className="font-display text-lg font-semibold tracking-tight text-[rgb(30,36,44)] sm:text-xl"
         >
           Curator
         </Link>
         <div className="flex items-center gap-6 sm:gap-8">
           <Link
             href="/explore"
-            className="text-sm text-zinc-700 transition-colors hover:text-zinc-900 sm:text-base"
+            className="text-sm text-zinc-700 transition-colors hover:text-[rgb(30,36,44)] sm:text-base"
           >
             Explore
           </Link>
           <Link
             href="/signin"
-            className="text-sm text-zinc-700 transition-colors hover:text-zinc-900 sm:text-base"
+            className="text-sm text-zinc-700 transition-colors hover:text-[rgb(30,36,44)] sm:text-base"
           >
             Sign in
           </Link>
           <Link
             href="/signup"
-            className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:bg-zinc-800 sm:px-5"
+            className="rounded-lg bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] sm:px-5"
           >
             Sign up
           </Link>
