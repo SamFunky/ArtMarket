@@ -42,14 +42,14 @@ export default function HeroSection() {
         <div className="flex w-full justify-center">
           <div className="inline-flex flex-col items-center -space-y-8">
           <div className="relative">
-            <span className="absolute left-1/2 -top-5 -translate-x-1/2 font-display text-2xl text-[#f5e6dc] sm:text-4xl lg:text-5xl scale-y-65">
+            <span className="absolute left-1/2 -top-5 -translate-x-1/2 font-display text-2xl text-[#faf5f2] sm:text-4xl lg:text-5xl scale-y-65">
               THE
             </span>
-            <h1 className="font-display text-8xl font-bold tracking-tight text-[#f5e6dc] sm:text-9xl lg:text-[12rem]">
+            <h1 className="font-display text-8xl font-bold tracking-tight text-[#faf5f2] sm:text-9xl lg:text-[12rem]">
               CURATOR
             </h1>
           </div>
-          <p className="text-center text-3xl text-[#ecd5cc] sm:text-4xl lg:text-5xl scale-y-65">
+          <p className="text-center text-3xl text-[#f0e6e0] sm:text-4xl lg:text-5xl scale-y-65">
             Fine Art Marketplace
           </p>
           </div>
@@ -63,7 +63,7 @@ export default function HeroSection() {
           </h2>
           <Link
             href="/explore"
-            className="inline-flex w-fit items-center gap-2 rounded-full bg-[#f5e6dc] px-6 py-3 font-medium text-[rgb(30,36,44)] transition-colors hover:bg-[#ecd5cc]"
+            className="inline-flex w-fit items-center gap-2 rounded-full bg-[#faf5f2] px-6 py-3 font-medium text-[rgb(30,36,44)] transition-colors hover:bg-[#f0e6e0]"
           >
             View All Auctions
             <span className="text-lg">→</span>

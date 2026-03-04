@@ -55,6 +55,7 @@ function docToItem(
     category: data.category,
     currentBid: data.currentBid,
     timeLeftMinutes,
+    endTimeMs: endTimeToUse.getTime(),
     era: data.era,
     artType: data.artType,
     image: data.image,

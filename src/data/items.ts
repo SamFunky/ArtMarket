@@ -7,6 +7,7 @@ export type Item = {
   category: "painting" | "sculpture" | "artifact";
   currentBid: number;
   timeLeftMinutes: number;
+  endTimeMs?: number;
   era: ArtEra;
   artType: ArtType;
   image?: string;

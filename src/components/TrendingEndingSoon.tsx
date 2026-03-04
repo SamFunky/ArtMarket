@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import LikeButton from "@/components/LikeButton";
+import TimeLeft from "@/components/TimeLeft";
 import { useListings } from "@/hooks/useListings";
 
 function formatBid(amount: number) {
@@ -13,21 +15,14 @@ function formatBid(amount: number) {
   }).format(amount);
 }
 
-function formatTimeLeft(minutes: number) {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h > 0) return `${h}h ${m}m`;
-  return `${m}m`;
-}
-
 export default function TrendingEndingSoon() {
   const { items } = useListings();
   const endingSoon = [...items]
     .sort((a, b) => a.timeLeftMinutes - b.timeLeftMinutes)
-    .slice(0, 8);
+    .slice(0, 10);
 
   return (
-    <section className="w-full bg-[#f5e6dc] px-6 py-20">
+    <section className="w-full bg-[#faf5f2] px-6 py-20">
       <div className="mx-auto max-w-[120rem]">
         <div className="relative mb-10 flex items-center justify-center">
           <h2 className="text-center font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
@@ -40,37 +35,52 @@ export default function TrendingEndingSoon() {
             View all
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {endingSoon.map((item) => (
             <Link
               key={item.id}
               href={`/item/${item.id}`}
-              className="group flex flex-col overflow-hidden rounded-lg bg-white/70 backdrop-blur-sm transition-all hover:bg-white hover:shadow-md"
+              className="group relative flex aspect-[4/3] overflow-hidden border border-white/60 bg-zinc-200/80 shadow-sm transition-all hover:-translate-y-1 hover:border-white hover:shadow-md"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-200/80">
-                <span className="absolute left-2.5 top-2.5 rounded bg-black/50 px-2 py-0.5 text-[11px] font-medium tracking-wide text-white/95 uppercase">
+              <div className="relative h-full w-full overflow-hidden">
+                {item.image ? (
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 20vw"
+                    unoptimized={item.image.startsWith("http")}
+                  />
+                ) : null}
+                <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-black/65 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/90">
                   {item.artType}
                 </span>
-                <span className="absolute right-2.5 top-2.5">
+                <span className="absolute right-2.5 top-2.5 z-10">
                   <LikeButton itemId={item.id} />
                 </span>
-              </div>
-              <div className="flex flex-1 flex-col gap-1.5 p-3.5">
-                <h3 className="font-display text-[15px] font-medium text-[rgb(30,36,44)] line-clamp-2 leading-snug group-hover:text-zinc-600">
-                  {item.title}
-                </h3>
-                <div className="mt-auto flex items-baseline justify-between gap-2">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-zinc-400">
-                      Bid
-                    </p>
-                    <p className="text-base font-semibold text-[rgb(30,36,44)]">
-                      {formatBid(item.currentBid)}
-                    </p>
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10">
+                  <h3 className="truncate text-sm font-semibold text-white">
+                    {item.title}
+                  </h3>
+                  <div className="mt-2 flex items-end justify-between gap-2 text-xs text-white/90">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-white/70">
+                        Current bid
+                      </p>
+                      <p className="text-base font-semibold">
+                        {formatBid(item.currentBid)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] uppercase tracking-wider text-white/70">
+                        Time left
+                      </p>
+                      <p className="font-medium">
+                        <TimeLeft item={item} />
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs text-zinc-500">
-                    {formatTimeLeft(item.timeLeftMinutes)} left
-                  </p>
                 </div>
               </div>
             </Link>

@@ -81,7 +81,7 @@ export default function FixedHeader() {
       }}
     >
       <nav
-        className="flex items-center justify-between border-b border-[#d4c4b8] bg-[#f5e6dc] px-6 py-4 sm:px-8"
+        className="flex items-center justify-between border-b border-[#e5ddd5] bg-[#faf5f2] px-6 py-4 sm:px-8"
       >
         <Link
           href="/"
@@ -104,7 +104,7 @@ export default function FixedHeader() {
           </Link>
           <Link
             href="/signup"
-            className="rounded-lg bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] sm:px-5"
+            className="bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] sm:px-5"
           >
             Sign up
           </Link>

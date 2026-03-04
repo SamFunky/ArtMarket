@@ -33,7 +33,8 @@ export async function POST(request: Request) {
   const colRef = db.collection(LISTINGS_COLLECTION);
 
   for (const item of allItems) {
-    const endTime = new Date(now.getTime() + item.timeLeftMinutes * 60_000);
+    const randomSeconds = Math.floor(Math.random() * 60) * 1000;
+    const endTime = new Date(now.getTime() + item.timeLeftMinutes * 60_000 + randomSeconds);
     const raw: Record<string, unknown> = {
       title: item.title,
       category: item.category,

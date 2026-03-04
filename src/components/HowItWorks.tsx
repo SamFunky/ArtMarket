@@ -27,7 +27,7 @@ export default function HowItWorks() {
           {steps.map((step) => (
             <div key={step.number} className="flex flex-col items-center gap-4 text-center">
               <span
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#f5e6dc] font-display text-lg font-bold text-[rgb(30,36,44)]"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#faf5f2] font-display text-lg font-bold text-[rgb(30,36,44)]"
                 aria-hidden
               >
                 {step.number}

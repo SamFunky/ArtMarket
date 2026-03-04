@@ -43,7 +43,7 @@ export default function Home() {
     <main className="flex flex-col">
       <HeroSection />
       <HowItWorks />
-      <section className="relative flex min-h-[60vh] w-full shrink-0 flex-col items-center justify-center border-y border-zinc-200/80 bg-[#f5e6dc] px-6 py-16">
+      <section className="relative flex min-h-[60vh] w-full shrink-0 flex-col items-center justify-center border-y border-zinc-200/80 bg-[#faf5f2] px-6 py-16">
         <div className="mx-auto flex w-full max-w-[120rem] flex-col items-center px-4">
           <h2 className="mb-20 w-full text-center font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
             Featured Auctions
@@ -104,7 +104,7 @@ export default function Home() {
                 </div>
                 <Link
                   href={`/item/${auction.id}`}
-                  className="inline-flex w-full items-center justify-center rounded-lg bg-[rgb(30,36,44)] px-6 py-3 font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+                  className="inline-flex w-full items-center justify-center bg-[rgb(30,36,44)] px-6 py-3 font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
                 >
                   Place Bid
                 </Link>

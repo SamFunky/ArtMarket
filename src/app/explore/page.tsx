@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import FilterSelect from "@/components/FilterSelect";
 import LikeButton from "@/components/LikeButton";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
+import TimeLeft from "@/components/TimeLeft";
 import { useLiked } from "@/context/LikedContext";
 import { type Item, type ArtEra, type ArtType } from "@/data/items";
 import { useListings } from "@/hooks/useListings";
@@ -55,13 +57,6 @@ function formatBid(amount: number) {
   }).format(amount);
 }
 
-function formatTimeLeft(minutes: number) {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h > 0) return `${h}h ${m}m`;
-  return `${m}m`;
-}
-
 export default function ExplorePage() {
   const { items, loading } = useListings();
   const { likedIds } = useLiked();
@@ -72,6 +67,22 @@ export default function ExplorePage() {
   const [era, setEra] = useState<ArtEra | "all">("all");
   const [artType, setArtType] = useState<ArtType | "all">("all");
   const [showLikedOnly, setShowLikedOnly] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 24;
+
+  const cycleTimeSort = () => {
+    setSort((prev) => {
+      if (prev === "ending-soon") return "most-time";
+      if (prev === "most-time") return "price-asc";
+      return "ending-soon";
+    });
+  };
+
+  const timeSortActive = sort === "ending-soon" || sort === "most-time";
+  const timeSortLabel =
+    sort === "ending-soon" ? "Least time" : sort === "most-time" ? "Most time" : "Time left";
+  const timeSortIcon =
+    sort === "ending-soon" ? "↓" : sort === "most-time" ? "↑" : "—";
 
   const filteredAndSorted = useMemo(() => {
     let filtered = items.filter((item) => {
@@ -107,8 +118,20 @@ export default function ExplorePage() {
     return sorted;
   }, [items, search, sort, minPrice, maxPrice, era, artType, showLikedOnly, likedIds]);
 
+  useEffect(() => {
+    const maxPage = Math.max(1, Math.ceil(filteredAndSorted.length / pageSize) || 1);
+    if (page > maxPage) {
+      setPage(maxPage);
+    }
+  }, [filteredAndSorted.length, page, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredAndSorted.length / pageSize) || 1);
+  const safePage = Math.min(page, totalPages);
+  const startIndex = (safePage - 1) * pageSize;
+  const paginatedItems = filteredAndSorted.slice(startIndex, startIndex + pageSize);
+
   return (
-    <main className="min-h-screen bg-[#f5e6dc] pt-32 pb-20">
+    <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
       <div className="mx-auto w-full max-w-[120rem] px-4">
         <div className="mb-10 flex flex-col gap-6">
           <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
@@ -122,7 +145,7 @@ export default function ExplorePage() {
                 placeholder="Search..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-md border-0 bg-white/80 py-2.5 pl-9 pr-4 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 ring-1 ring-zinc-200/80 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="w-full border-0 bg-white/80 py-2.5 pl-9 pr-4 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 ring-1 ring-zinc-200/80 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
                 aria-label="Search auctions"
               />
               <svg
@@ -151,6 +174,18 @@ export default function ExplorePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                   Liked
+                </button>
+                <button
+                  type="button"
+                  onClick={cycleTimeSort}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    timeSortActive
+                      ? "bg-[rgb(30,36,44)] text-white"
+                      : "bg-white/80 text-zinc-600 ring-1 ring-zinc-200/80 hover:ring-zinc-300"
+                  }`}
+                >
+                  <span className="text-xs">{timeSortIcon}</span>
+                  <span>{timeSortLabel}</span>
                 </button>
                 <PriceRangeFilter
                   min={minPrice}
@@ -270,40 +305,131 @@ export default function ExplorePage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredAndSorted.map((item) => (
-              <Link
-                key={item.id}
-                href={`/item/${item.id}`}
-                className="group flex flex-col overflow-hidden rounded-lg bg-white/70 backdrop-blur-sm transition-all hover:bg-white hover:shadow-md"
-              >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-200/80">
-                  <span className="absolute left-2.5 top-2.5 rounded bg-black/50 px-2 py-0.5 text-[11px] font-medium tracking-wide text-white/95 uppercase">
-                    {item.artType}
-                  </span>
-                  <span className="absolute right-2.5 top-2.5">
-                    <LikeButton itemId={item.id} />
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col gap-1.5 p-3.5">
-                  <h2 className="font-display text-[15px] font-medium text-[rgb(30,36,44)] line-clamp-2 leading-snug group-hover:text-zinc-600">
-                    {item.title}
-                  </h2>
-                  <div className="mt-auto flex items-baseline justify-between gap-2">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-wider text-zinc-400">Bid</p>
-                      <p className="text-base font-semibold text-[rgb(30,36,44)]">
-                        {formatBid(item.currentBid)}
-                      </p>
+          <>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {paginatedItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/item/${item.id}`}
+                  className="group relative flex aspect-[4/3] overflow-hidden border border-white/60 bg-zinc-200/80 shadow-sm transition-all hover:-translate-y-1 hover:border-white hover:shadow-md"
+                >
+                  <div className="relative h-full w-full overflow-hidden">
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                        unoptimized={item.image.startsWith("http")}
+                      />
+                    ) : null}
+                    <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-black/65 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/90">
+                      {item.artType}
+                    </span>
+                    <span className="absolute right-2.5 top-2.5 z-10">
+                      <LikeButton itemId={item.id} />
+                    </span>
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10">
+                      <h2 className="truncate text-sm font-semibold text-white">
+                        {item.title}
+                      </h2>
+                      <div className="mt-2 flex items-end justify-between gap-2 text-xs text-white/90">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wider text-white/70">
+                            Current bid
+                          </p>
+                          <p className="text-base font-semibold">
+                            {formatBid(item.currentBid)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] uppercase tracking-wider text-white/70">
+                            Time left
+                          </p>
+                          <p className="font-medium">
+                            <TimeLeft item={item} />
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-xs text-zinc-400">
-                      {formatTimeLeft(item.timeLeftMinutes)} left
-                    </p>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={safePage === 1}
+                  className={
+                    safePage === 1
+                      ? "cursor-default text-zinc-400"
+                      : "cursor-pointer text-[rgb(30,36,44)] hover:underline"
+                  }
+                >
+                  Previous
+                </button>
+
+                {(() => {
+                  const elements: (number | "ellipsis")[] = [];
+
+                  if (totalPages <= 7) {
+                    for (let i = 1; i <= totalPages; i++) elements.push(i);
+                  } else {
+                    elements.push(1);
+                    const start = Math.max(2, safePage - 1);
+                    const end = Math.min(totalPages - 1, safePage + 1);
+
+                    if (start > 2) elements.push("ellipsis");
+
+                    for (let i = start; i <= end; i++) {
+                      elements.push(i);
+                    }
+
+                    if (end < totalPages - 1) elements.push("ellipsis");
+                    elements.push(totalPages);
+                  }
+
+                  return elements.map((value, index) =>
+                    value === "ellipsis" ? (
+                      <span key={`ellipsis-${index}`} className="text-zinc-400">
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setPage(value)}
+                        className={
+                          value === safePage
+                            ? "cursor-default font-semibold text-[rgb(30,36,44)] underline"
+                            : "cursor-pointer text-[rgb(30,36,44)] hover:underline"
+                        }
+                      >
+                        {value}
+                      </button>
+                    )
+                  );
+                })()}
+
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={safePage === totalPages}
+                  className={
+                    safePage === totalPages
+                      ? "cursor-default text-zinc-400"
+                      : "cursor-pointer text-[rgb(30,36,44)] hover:underline"
+                  }
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>
