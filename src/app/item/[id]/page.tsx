@@ -200,7 +200,7 @@ export default function ItemPage() {
               )}
             </div>
 
-            <ItemComments listingId={item.id} />
+            <ItemComments listingId={item.id} creatorId={item.creatorId} />
           </aside>
         </div>
       </div>

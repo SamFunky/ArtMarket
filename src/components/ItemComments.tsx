@@ -21,6 +21,7 @@ function CommentItem({
   comment,
   replies,
   listingId,
+  listingCreatorId,
   currentUserId,
   currentUserEmail,
   depth = 0,
@@ -28,10 +29,12 @@ function CommentItem({
   comment: Comment;
   replies: Comment[];
   listingId: string;
+  listingCreatorId: string | null;
   currentUserId: string | null;
   currentUserEmail: string | null;
   depth?: number;
 }) {
+  const isOP = Boolean(listingCreatorId && comment.authorId === listingCreatorId);
   const [replyText, setReplyText] = useState("");
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -68,8 +71,16 @@ function CommentItem({
     >
       <div className="px-1 py-3">
         <div className="flex items-baseline justify-between gap-2">
-          <span className="text-sm font-medium text-[rgb(30,36,44)]">
+          <span className="flex items-center gap-1.5 text-sm font-medium text-[rgb(30,36,44)]">
             {comment.authorEmail ?? "Anonymous"}
+            {isOP && (
+              <span
+                className="rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white"
+                title="This person owns this listing"
+              >
+                OP
+              </span>
+            )}
           </span>
           <span className="text-xs text-zinc-500">
             {formatDate(comment.createdAt)}
@@ -159,6 +170,7 @@ function CommentItem({
               comment={r}
               replies={[]}
               listingId={listingId}
+              listingCreatorId={listingCreatorId}
               currentUserId={currentUserId}
               currentUserEmail={currentUserEmail}
               depth={depth + 1}
@@ -172,9 +184,10 @@ function CommentItem({
 
 type ItemCommentsProps = {
   listingId: string;
+  creatorId?: string | null;
 };
 
-export default function ItemComments({ listingId }: ItemCommentsProps) {
+export default function ItemComments({ listingId, creatorId: listingCreatorId = null }: ItemCommentsProps) {
   const { user } = useAuth();
   const comments = useComments(listingId);
   const [newComment, setNewComment] = useState("");
@@ -233,12 +246,13 @@ export default function ItemComments({ listingId }: ItemCommentsProps) {
               </div>
             ) : (
               <div className="pt-3 pb-6">
-              {topLevel.map((c) => (
+              {              topLevel.map((c) => (
                 <CommentItem
                   key={c.id}
                   comment={c}
                   replies={getReplies(c.id)}
                   listingId={listingId}
+                  listingCreatorId={listingCreatorId}
                   currentUserId={user?.uid ?? null}
                   currentUserEmail={user?.email ?? null}
                 />
