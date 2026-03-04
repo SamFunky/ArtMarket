@@ -1,4 +1,5 @@
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
@@ -147,4 +148,48 @@ export async function fetchListingById(id: string): Promise<Item | null> {
   }
 
   return docToItem(id, data, endTimeToUse);
+}
+
+export const LISTING_DURATION_DAYS = [1, 7, 14, 40] as const;
+export type ListingDurationDays = (typeof LISTING_DURATION_DAYS)[number];
+
+export type CreateListingInput = {
+  title: string;
+  category: "painting" | "sculpture" | "artifact";
+  currentBid: number;
+  era: ListingDoc["era"];
+  artType: ListingDoc["artType"];
+  durationDays: ListingDurationDays;
+  description?: string;
+  dateRange?: string;
+  image?: string;
+};
+
+function minutesFromDays(days: number): number {
+  return days * 24 * 60;
+}
+
+export async function createListing(input: CreateListingInput): Promise<string> {
+  const db = getDb();
+  if (!db) throw new Error("Firebase is not configured.");
+
+  const durationMinutes = minutesFromDays(input.durationDays);
+  const now = new Date();
+  const endTime = new Date(now.getTime() + durationMinutes * 60_000);
+
+  const docRef = await addDoc(collection(db, LISTINGS_COLLECTION), {
+    title: input.title.trim(),
+    category: input.category,
+    currentBid: Number(input.currentBid) || 0,
+    endTime: Timestamp.fromDate(endTime),
+    era: input.era,
+    artType: input.artType,
+    isFakeListing: true,
+    fakeListingDurationMinutes: durationMinutes,
+    ...(input.description?.trim() && { description: input.description.trim() }),
+    ...(input.dateRange?.trim() && { dateRange: input.dateRange.trim() }),
+    ...(input.image?.trim() && { image: input.image.trim() }),
+  });
+
+  return docRef.id;
 }

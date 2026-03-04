@@ -110,6 +110,12 @@ export default function FixedHeader() {
           {user ? (
             <>
               <Link
+                href="/create-listing"
+                className="text-sm text-zinc-700 transition-colors hover:text-[rgb(30,36,44)] sm:text-base"
+              >
+                Create Listing
+              </Link>
+              <Link
                 href="/account"
                 className="text-sm text-zinc-700 transition-colors hover:text-[rgb(30,36,44)] sm:text-base"
               >

@@ -127,13 +127,13 @@ export default function AccountPage() {
                     Auctions you&apos;ve created or are selling. Create a new
                     listing to start selling.
                   </p>
-                  <button
-                    type="button"
+                  <Link
+                    href="/create-listing"
                     className="shrink-0 border border-zinc-400 bg-white px-5 py-2.5 text-sm font-medium text-[rgb(30,36,44)] transition-colors hover:bg-zinc-50"
                     aria-label="Create new listing"
                   >
                     Create listing
-                  </button>
+                  </Link>
                 </div>
                 <div className="mt-4 rounded border border-dashed border-zinc-300 bg-zinc-50/50 py-8 text-center">
                   <p className="text-sm text-zinc-500">No listings yet</p>
