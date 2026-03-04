@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Syne } from "next/font/google";
-import FixedHeader from "@/components/FixedHeader";
+import HeaderWrapper from "@/components/HeaderWrapper";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
@@ -28,8 +28,7 @@ export default function RootLayout({
     <html lang="en" className="overflow-x-hidden">
       <body className={`${syne.variable} ${dmSans.variable} m-0 overflow-x-hidden bg-white font-sans`}>
         <Providers>
-          <FixedHeader />
-          {children}
+          <HeaderWrapper>{children}</HeaderWrapper>
         </Providers>
       </body>
     </html>
