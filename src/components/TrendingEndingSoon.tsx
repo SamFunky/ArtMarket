@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import LikeButton from "@/components/LikeButton";
-import { allItems } from "@/data/items";
+import { useListings } from "@/hooks/useListings";
 
 function formatBid(amount: number) {
   return new Intl.NumberFormat("en-US", {
@@ -21,7 +21,8 @@ function formatTimeLeft(minutes: number) {
 }
 
 export default function TrendingEndingSoon() {
-  const endingSoon = [...allItems]
+  const { items } = useListings();
+  const endingSoon = [...items]
     .sort((a, b) => a.timeLeftMinutes - b.timeLeftMinutes)
     .slice(0, 8);
 

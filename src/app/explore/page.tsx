@@ -6,7 +6,8 @@ import FilterSelect from "@/components/FilterSelect";
 import LikeButton from "@/components/LikeButton";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
 import { useLiked } from "@/context/LikedContext";
-import { allItems, type Item, type ArtEra, type ArtType } from "@/data/items";
+import { type Item, type ArtEra, type ArtType } from "@/data/items";
+import { useListings } from "@/hooks/useListings";
 
 type SortOption =
   | "price-asc"
@@ -62,6 +63,7 @@ function formatTimeLeft(minutes: number) {
 }
 
 export default function ExplorePage() {
+  const { items, loading } = useListings();
   const { likedIds } = useLiked();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("price-asc");
@@ -72,7 +74,7 @@ export default function ExplorePage() {
   const [showLikedOnly, setShowLikedOnly] = useState(false);
 
   const filteredAndSorted = useMemo(() => {
-    let items = allItems.filter((item) => {
+    let filtered = items.filter((item) => {
       const matchesSearch = item.title
         .toLowerCase()
         .includes(search.trim().toLowerCase());
@@ -83,7 +85,7 @@ export default function ExplorePage() {
       return matchesSearch && matchesPrice && matchesEra && matchesArtType && matchesLiked;
     });
 
-    const sorted = [...items].sort((a, b) => {
+    const sorted = [...filtered].sort((a, b) => {
       switch (sort) {
         case "price-asc":
           return a.currentBid - b.currentBid;
@@ -103,7 +105,7 @@ export default function ExplorePage() {
     });
 
     return sorted;
-  }, [search, sort, minPrice, maxPrice, era, artType, showLikedOnly, likedIds]);
+  }, [items, search, sort, minPrice, maxPrice, era, artType, showLikedOnly, likedIds]);
 
   return (
     <main className="min-h-screen bg-[#f5e6dc] pt-32 pb-20">
@@ -257,7 +259,11 @@ export default function ExplorePage() {
           </div>
         </div>
 
-        {filteredAndSorted.length === 0 ? (
+        {loading ? (
+          <div className="rounded-lg bg-white/50 py-20 text-center">
+            <p className="text-sm text-zinc-500">Loading listings…</p>
+          </div>
+        ) : filteredAndSorted.length === 0 ? (
           <div className="rounded-lg bg-white/50 py-20 text-center">
             <p className="text-sm text-zinc-500">
               No items match your filters. Try adjusting your search.
