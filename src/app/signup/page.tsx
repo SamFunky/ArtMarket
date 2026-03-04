@@ -1,8 +1,42 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import HeroHeader from "@/components/HeroHeader";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SignUp() {
+  const { signUp } = useAuth();
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email || !password || !confirmPassword) return;
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    try {
+      setSubmitting(true);
+      setError(null);
+      await signUp(email, password);
+      router.push("/explore");
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : "Failed to create account. Please try again.";
+      setError(msg);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <main className="flex min-h-screen w-screen items-center justify-center overflow-hidden bg-black">
       <section className="relative flex min-h-screen w-screen shrink-0 items-center justify-center overflow-hidden px-8 sm:px-12 lg:px-16">
@@ -31,7 +65,7 @@ export default function SignUp() {
             Create an account to save favorites and place bids.
           </p>
 
-          <form className="mt-8 flex flex-col gap-5" noValidate>
+          <form className="mt-8 flex flex-col gap-5" noValidate onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
               <label htmlFor="signup-email" className="text-sm font-medium text-[rgb(30,36,44)]">
                 Email
@@ -42,6 +76,8 @@ export default function SignUp() {
                 name="email"
                 placeholder="you@example.com"
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full border border-zinc-300 bg-white px-4 py-3 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
                 aria-label="Email address"
               />
@@ -56,6 +92,8 @@ export default function SignUp() {
                 name="password"
                 placeholder="••••••••"
                 autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full border border-zinc-300 bg-white px-4 py-3 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
                 aria-label="Password"
               />
@@ -73,15 +111,23 @@ export default function SignUp() {
                 name="confirmPassword"
                 placeholder="••••••••"
                 autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full border border-zinc-300 bg-white px-4 py-3 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
                 aria-label="Confirm password"
               />
             </div>
+            {error && (
+              <p className="text-sm text-red-600">
+                {error}
+              </p>
+            )}
             <button
               type="submit"
-              className="mt-2 w-full bg-[rgb(30,36,44)] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+              disabled={submitting}
+              className="mt-2 w-full bg-[rgb(30,36,44)] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Create account
+              {submitting ? "Creating account..." : "Create account"}
             </button>
           </form>
 

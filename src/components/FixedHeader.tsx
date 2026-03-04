@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const FADE_DURATION_MS = 300;
 
@@ -12,6 +13,8 @@ export default function FixedHeader() {
   const [fadingOut, setFadingOut] = useState(false);
   const [fadeOutOpacity, setFadeOutOpacity] = useState(1);
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, signOut } = useAuth();
 
   const showHeader = pathname !== "/" || !heroInView;
 
@@ -72,6 +75,14 @@ export default function FixedHeader() {
 
   if (!renderHeader) return null;
 
+  const handleSignOut = useCallback(async () => {
+    try {
+      await signOut();
+      router.push("/");
+    } catch {
+    }
+  }, [router, signOut]);
+
   return (
     <header
       className="fixed inset-x-0 top-0 z-50 w-full"
@@ -96,18 +107,38 @@ export default function FixedHeader() {
           >
             Explore
           </Link>
-          <Link
-            href="/signin"
-            className="text-sm text-zinc-700 transition-colors hover:text-[rgb(30,36,44)] sm:text-base"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/signup"
-            className="bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] sm:px-5"
-          >
-            Sign up
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href="/account"
+                className="text-sm text-zinc-700 transition-colors hover:text-[rgb(30,36,44)] sm:text-base"
+              >
+                Account
+              </Link>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="cursor-pointer rounded-full bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] sm:px-5"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/signin"
+                className="text-sm text-zinc-700 transition-colors hover:text-[rgb(30,36,44)] sm:text-base"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/signup"
+                className="bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] sm:px-5"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>

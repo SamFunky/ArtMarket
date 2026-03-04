@@ -1,5 +1,6 @@
 import { type FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
+import { getAuth, type Auth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -18,6 +19,7 @@ function getFirebaseApp(): FirebaseApp | null {
 }
 
 let firestore: Firestore | null = null;
+let auth: Auth | null = null;
 
 export function getDb(): Firestore | null {
   if (typeof window === "undefined") return null;
@@ -33,3 +35,12 @@ export function isFirebaseConfigured(): boolean {
       process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
   );
 }
+
+export function getAuthClient(): Auth | null {
+  if (typeof window === "undefined") return null;
+  const app = getFirebaseApp();
+  if (!app) return null;
+  if (!auth) auth = getAuth(app);
+  return auth;
+}
+
