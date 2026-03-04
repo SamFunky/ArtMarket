@@ -20,6 +20,7 @@ export type Item = {
   modelPosition?: [number, number, number];
   description?: string;
   dateRange?: string;
+  creatorId?: string;
 };
 
 export const allItems: Item[] = [

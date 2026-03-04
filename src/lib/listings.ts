@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -70,6 +71,7 @@ function docToItem(
     modelPosition: data.modelPosition,
     description: data.description,
     dateRange: data.dateRange,
+    creatorId: data.creatorId,
   };
 }
 
@@ -228,4 +230,12 @@ export async function fetchListingsByCreator(creatorId: string): Promise<Item[]>
   }
 
   return items;
+}
+
+export async function deleteListing(listingId: string): Promise<void> {
+  const db = getDb();
+  if (!db) throw new Error("Firebase is not configured.");
+
+  const ref = doc(db, LISTINGS_COLLECTION, listingId);
+  await deleteDoc(ref);
 }

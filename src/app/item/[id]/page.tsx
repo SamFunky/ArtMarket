@@ -1,9 +1,12 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { useListings } from "@/hooks/useListings";
+import { deleteListing } from "@/lib/listings";
 import TimeLeft from "@/components/TimeLeft";
 import LikeButton from "@/components/LikeButton";
 import ModelViewer from "@/components/ModelViewer";
@@ -59,10 +62,35 @@ function ItemMedia({ item }: { item: Item }) {
 
 export default function ItemPage() {
   const params = useParams();
+  const router = useRouter();
   const id = typeof params?.id === "string" ? params.id : null;
+  const { user } = useAuth();
   const { items, loading } = useListings();
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const item = id ? items.find((i) => i.id === id) : null;
+  const isOwner = Boolean(user && item?.creatorId && item.creatorId === user.uid);
+
+  function openDeleteConfirm() {
+    if (!item || !isOwner) return;
+    setShowDeleteConfirm(true);
+  }
+
+  function closeDeleteConfirm() {
+    if (!deleting) setShowDeleteConfirm(false);
+  }
+
+  async function confirmDelete() {
+    if (!item || !isOwner) return;
+    setDeleting(true);
+    try {
+      await deleteListing(item.id);
+      router.push("/account");
+    } catch {
+      setDeleting(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -98,6 +126,7 @@ export default function ItemPage() {
   }
 
   return (
+    <>
     <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
       <div className="mx-auto w-full max-w-[120rem] px-4">
         <div className="flex flex-col gap-10 lg:flex-row lg:gap-16">
@@ -109,7 +138,7 @@ export default function ItemPage() {
               </div>
             </div>
           </div>
-          
+
           <aside className="flex shrink-0 flex-col gap-6 lg:w-[32rem]">
             <div className="sticky top-24 rounded border border-zinc-200 bg-white/80 p-6">
               <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)]">
@@ -149,10 +178,26 @@ export default function ItemPage() {
 
               <button
                 type="button"
-                className="mt-6 w-full bg-[rgb(30,36,44)] px-6 py-4 text-base font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+                disabled={isOwner}
+                className={`mt-6 w-full px-6 py-4 text-base font-medium transition-colors ${
+                  isOwner
+                    ? "cursor-not-allowed bg-zinc-300 text-zinc-500"
+                    : "bg-[rgb(30,36,44)] text-white hover:bg-[rgb(40,48,58)]"
+                }`}
               >
                 Place Bid
               </button>
+
+              {isOwner && (
+                <button
+                  type="button"
+                  onClick={openDeleteConfirm}
+                  disabled={deleting}
+                  className="mt-3 w-full border border-red-300 bg-white px-6 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-70"
+                >
+                  {deleting ? "Deleting…" : "Delete listing"}
+                </button>
+              )}
             </div>
 
             <ItemComments listingId={item.id} />
@@ -160,5 +205,46 @@ export default function ItemPage() {
         </div>
       </div>
     </main>
+
+    {showDeleteConfirm && (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+        aria-modal="true"
+        aria-labelledby="delete-confirm-title"
+        onClick={closeDeleteConfirm}
+      >
+        <div
+          className="w-full max-w-md rounded border border-zinc-200 bg-white p-6 shadow-lg"
+          role="dialog"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 id="delete-confirm-title" className="font-display text-lg font-semibold text-[rgb(30,36,44)]">
+            Delete listing?
+          </h2>
+          <p className="mt-2 text-sm text-zinc-600">
+            Are you sure you want to delete this listing? This cannot be undone.
+          </p>
+          <div className="mt-6 flex gap-3">
+            <button
+              type="button"
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="flex-1 rounded bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-70"
+            >
+              {deleting ? "Deleting…" : "Delete"}
+            </button>
+            <button
+              type="button"
+              onClick={closeDeleteConfirm}
+              disabled={deleting}
+              className="flex-1 rounded border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-70"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

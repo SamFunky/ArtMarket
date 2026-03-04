@@ -5,7 +5,8 @@ service cloud.firestore {
     match /listings/{listingId} {
       allow read: if true;
       allow create: if true;
-      allow update, delete: if true;
+      allow update: if true;
+      allow delete: if request.auth != null && resource.data.creatorId == request.auth.uid;
 
       match /comments/{commentId} {
         allow read: if true;
