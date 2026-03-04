@@ -1,14 +1,28 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useMyListings } from "@/hooks/useMyListings";
+import LikeButton from "@/components/LikeButton";
+import TimeLeft from "@/components/TimeLeft";
 
 type Tab = "purchases" | "listings";
+
+function formatBid(amount: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
 
 export default function AccountPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>("purchases");
+  const { items: myListings, loading: listingsLoading } = useMyListings(user?.uid ?? null);
 
   if (!user) {
     return (
@@ -135,9 +149,67 @@ export default function AccountPage() {
                     Create listing
                   </Link>
                 </div>
-                <div className="mt-4 rounded border border-dashed border-zinc-300 bg-zinc-50/50 py-8 text-center">
-                  <p className="text-sm text-zinc-500">No listings yet</p>
-                </div>
+                {listingsLoading ? (
+                  <div className="mt-4 rounded border border-zinc-200 bg-zinc-50/50 py-8 text-center">
+                    <p className="text-sm text-zinc-500">Loading…</p>
+                  </div>
+                ) : myListings.length === 0 ? (
+                  <div className="mt-4 rounded border border-dashed border-zinc-300 bg-zinc-50/50 py-8 text-center">
+                    <p className="text-sm text-zinc-500">No listings yet</p>
+                  </div>
+                ) : (
+                  <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+                    {myListings.map((item) => (
+                      <Link
+                        key={item.id}
+                        href={`/item/${item.id}`}
+                        className="group relative flex aspect-[4/3] overflow-hidden border border-white/60 bg-zinc-200/80 shadow-sm transition-all hover:-translate-y-1 hover:border-white hover:shadow-md"
+                      >
+                        <div className="relative h-full w-full overflow-hidden">
+                          {item.image ? (
+                            <Image
+                              src={item.image}
+                              alt={item.title}
+                              fill
+                              className="object-cover transition-transform duration-300 group-hover:scale-105"
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              unoptimized={item.image.startsWith("http")}
+                            />
+                          ) : null}
+                          <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-black/65 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/90">
+                            {item.artType}
+                          </span>
+                          <span className="absolute right-2.5 top-2.5 z-10">
+                            <LikeButton itemId={item.id} />
+                          </span>
+                          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10">
+                            <h3 className="truncate text-sm font-semibold text-white">
+                              {item.title}
+                            </h3>
+                            <div className="mt-2 flex items-end justify-between gap-2 text-xs text-white/90">
+                              <div>
+                                <p className="text-[10px] uppercase tracking-wider text-white/70">
+                                  Current bid
+                                </p>
+                                <p className="text-base font-semibold">
+                                  {formatBid(item.currentBid)}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-[10px] uppercase tracking-wider text-white/70">
+                                  Time left
+                                </p>
+                                <p className="font-medium">
+                                  <TimeLeft item={item} />
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </section>

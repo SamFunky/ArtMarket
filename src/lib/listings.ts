@@ -4,7 +4,9 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   Timestamp,
+  where,
   writeBatch,
   type Timestamp as FSTimestamp,
   type WriteBatch,
@@ -14,20 +16,16 @@ import type { ArtEra, ArtType, Item } from "@/data/items";
 
 export const LISTINGS_COLLECTION = "listings";
 
-/** Default duration (minutes) to reset a fake listing when time runs out */
-export const DEFAULT_FAKE_LISTING_DURATION_MINUTES = 60 * 12; // 12 hours
+export const DEFAULT_FAKE_LISTING_DURATION_MINUTES = 60 * 12;
 
 export type ListingDoc = {
   title: string;
   category: "painting" | "sculpture" | "artifact";
   currentBid: number;
-  /** Firestore Timestamp - when the auction ends */
   endTime: FSTimestamp;
   era: ArtEra;
   artType: ArtType;
-  /** When true, endTime is reset to now + fakeListingDurationMinutes when it passes */
   isFakeListing?: boolean;
-  /** Minutes to add when resetting a fake listing (default 12h) */
   fakeListingDurationMinutes?: number;
   image?: string;
   imagePosition?: string;
@@ -39,6 +37,7 @@ export type ListingDoc = {
   modelPosition?: [number, number, number];
   description?: string;
   dateRange?: string;
+  creatorId?: string;
 };
 
 function minutesBetween(earlier: Date, later: Date): number {
@@ -74,10 +73,6 @@ function docToItem(
   };
 }
 
-/**
- * Fetch all listings. For fake listings whose endTime has passed,
- * reset endTime in the DB and use the new endTime for the returned item.
- */
 export async function fetchListings(): Promise<Item[]> {
   const db = getDb();
   if (!db) return [];
@@ -119,9 +114,6 @@ export async function fetchListings(): Promise<Item[]> {
   return items;
 }
 
-/**
- * Fetch a single listing by id. Resets endTime for fake listings if needed.
- */
 export async function fetchListingById(id: string): Promise<Item | null> {
   const db = getDb();
   if (!db) return null;
@@ -160,6 +152,7 @@ export type CreateListingInput = {
   era: ListingDoc["era"];
   artType: ListingDoc["artType"];
   durationDays: ListingDurationDays;
+  creatorId: string;
   description?: string;
   dateRange?: string;
   image?: string;
@@ -184,6 +177,7 @@ export async function createListing(input: CreateListingInput): Promise<string> 
     endTime: Timestamp.fromDate(endTime),
     era: input.era,
     artType: input.artType,
+    creatorId: input.creatorId,
     isFakeListing: true,
     fakeListingDurationMinutes: durationMinutes,
     ...(input.description?.trim() && { description: input.description.trim() }),
@@ -192,4 +186,46 @@ export async function createListing(input: CreateListingInput): Promise<string> 
   });
 
   return docRef.id;
+}
+
+export async function fetchListingsByCreator(creatorId: string): Promise<Item[]> {
+  const db = getDb();
+  if (!db) return [];
+
+  const colRef = collection(db, LISTINGS_COLLECTION);
+  const q = query(colRef, where("creatorId", "==", creatorId));
+  const snap = await getDocs(q);
+
+  const now = new Date();
+  const batch = writeBatch(db);
+  let hasWrites = false;
+
+  const items: Item[] = [];
+
+  for (const docSnap of snap.docs) {
+    const id = docSnap.id;
+    const data = docSnap.data() as ListingDoc;
+    const endTime = data.endTime?.toDate?.() ?? new Date(0);
+    const isFake = data.isFakeListing === true;
+    const duration =
+      data.fakeListingDurationMinutes ?? DEFAULT_FAKE_LISTING_DURATION_MINUTES;
+
+    let endTimeToUse = endTime;
+
+    if (isFake && endTime <= now) {
+      const newEnd = new Date(now.getTime() + duration * 60_000);
+      endTimeToUse = newEnd;
+      const docRef = doc(db, LISTINGS_COLLECTION, id);
+      batch.update(docRef, { endTime: Timestamp.fromDate(newEnd) });
+      hasWrites = true;
+    }
+
+    items.push(docToItem(id, data, endTimeToUse));
+  }
+
+  if (hasWrites) {
+    await batch.commit();
+  }
+
+  return items;
 }

@@ -41,7 +41,7 @@ export default function CreateListingPage() {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState<CreateListingInput>({
+  const [form, setForm] = useState<Omit<CreateListingInput, "creatorId">>({
     title: "",
     category: "painting",
     currentBid: 0,
@@ -77,13 +77,14 @@ export default function CreateListingPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!user) return;
     if (!form.title.trim()) {
       setError("Title is required.");
       return;
     }
     setSubmitting(true);
     try {
-      const id = await createListing(form);
+      const id = await createListing({ ...form, creatorId: user.uid });
       router.push(`/item/${id}`);
     } catch (err) {
       setError(
