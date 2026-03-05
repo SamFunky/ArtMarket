@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import { ListingImage } from "@/components/ListingImage";
 import Link from "next/link";
 import FilterSelect from "@/components/FilterSelect";
 import LikeButton from "@/components/LikeButton";
@@ -315,13 +315,11 @@ export default function ExplorePage() {
                 >
                   <div className="relative h-full w-full overflow-hidden">
                     {item.image ? (
-                      <Image
-                        src={item.image}
-                        alt={item.title}
+                      <ListingImage
+                        item={item}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                        unoptimized={item.image.startsWith("http")}
                       />
                     ) : null}
                     <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-black/65 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/90">

@@ -36,6 +36,12 @@ export default function HeroHeader() {
           {user ? (
             <>
               <Link
+                href="/create-listing"
+                className="text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:text-base"
+              >
+                Create listing
+              </Link>
+              <Link
                 href="/account"
                 className="text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:text-base"
               >

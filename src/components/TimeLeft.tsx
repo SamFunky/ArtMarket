@@ -1,18 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Item } from "@/data/items";
 
 function secondsOffset(id: string): number {
   let n = 0;
   for (let i = 0; i < id.length; i++) n = (n * 31 + id.charCodeAt(i)) % 60;
   return Math.abs(n);
-}
-
-function getEndTimeMs(item: Item): number {
-  if (item.endTimeMs != null) return item.endTimeMs;
-  const offsetMs = secondsOffset(item.id) * 1000;
-  return Date.now() + item.timeLeftMinutes * 60_000 + offsetMs;
 }
 
 function getParts(remainingMs: number): { d: number; h: number; m: number; s: number } {
@@ -32,16 +26,29 @@ function formatParts(parts: { d: number; h: number; m: number; s: number }): str
   return `${s}s`;
 }
 
+function getEndTimeMs(item: Item): number {
+  if (item.endTimeMs != null) return item.endTimeMs;
+  const offsetMs = secondsOffset(item.id) * 1000;
+  return Date.now() + item.timeLeftMinutes * 60_000 + offsetMs;
+}
+
 export default function TimeLeft({ item }: { item: Item }) {
+  if (item.auctionEnded === true) return <>ENDED</>;
   const endTimeMs = getEndTimeMs(item);
+  const endTimeMsRef = useRef(endTimeMs);
+  endTimeMsRef.current = endTimeMs;
+
   const [parts, setParts] = useState(() => getParts(endTimeMs - Date.now()));
 
   useEffect(() => {
-    const tick = () => setParts(getParts(endTimeMs - Date.now()));
+    const tick = () => setParts(getParts(endTimeMsRef.current - Date.now()));
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [endTimeMs]);
+  }, [item.id]);
+
+  const remainingMs = endTimeMsRef.current - Date.now();
+  if (remainingMs <= 0) return <>ENDED</>;
 
   return <>{formatParts(parts)}</>;
 }

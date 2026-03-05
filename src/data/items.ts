@@ -21,7 +21,31 @@ export type Item = {
   description?: string;
   dateRange?: string;
   creatorId?: string;
+  highestBidderId?: string;
+  highestBidderEmail?: string;
+  auctionEnded?: boolean;
+  isFakeListing?: boolean;
 };
+
+const FAKE_LISTING_CYCLE_MS = 12 * 60 * 60 * 1000;
+
+export function getLocalFakeListings(): Item[] {
+  const now = Date.now();
+  const cycleStart = Math.floor(now / FAKE_LISTING_CYCLE_MS) * FAKE_LISTING_CYCLE_MS;
+
+  return allItems.map((item) => {
+    const phaseMs = ((parseInt(item.id, 10) || item.id.charCodeAt(0)) % 720) * 60 * 1000;
+    let endTimeMs = cycleStart + phaseMs;
+    if (endTimeMs <= now) endTimeMs += FAKE_LISTING_CYCLE_MS;
+    const timeLeftMinutes = Math.max(0, Math.floor((endTimeMs - now) / 60_000));
+    return {
+      ...item,
+      timeLeftMinutes,
+      endTimeMs,
+      isFakeListing: true,
+    };
+  });
+}
 
 export const allItems: Item[] = [
   { id: "1", title: "The Apparition", category: "painting", currentBid: 12400, timeLeftMinutes: 154, era: "modern", artType: "oil painting", image: "/artwork/TheApparition.jpg", imageFit: "contain" },

@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
-import { Timestamp } from "firebase-admin/firestore";
-import { allItems } from "@/data/items";
 import { getAdminDb } from "@/lib/firebase-admin";
-import {
-  DEFAULT_FAKE_LISTING_DURATION_MINUTES,
-  LISTINGS_COLLECTION,
-  type ListingDoc,
-} from "@/lib/listings";
+import { LISTINGS_COLLECTION } from "@/lib/listings";
 
 export const dynamic = "force-dynamic";
 
@@ -28,44 +22,20 @@ export async function POST(request: Request) {
     );
   }
 
-  const now = new Date();
-  const batch = db.batch();
   const colRef = db.collection(LISTINGS_COLLECTION);
+  const snap = await colRef.where("isFakeListing", "==", true).get();
 
-  for (const item of allItems) {
-    const randomSeconds = Math.floor(Math.random() * 60) * 1000;
-    const endTime = new Date(now.getTime() + item.timeLeftMinutes * 60_000 + randomSeconds);
-    const raw: Record<string, unknown> = {
-      title: item.title,
-      category: item.category,
-      currentBid: item.currentBid,
-      endTime: Timestamp.fromDate(endTime),
-      era: item.era,
-      artType: item.artType,
-      isFakeListing: true,
-      fakeListingDurationMinutes: DEFAULT_FAKE_LISTING_DURATION_MINUTES,
-      image: item.image,
-      imagePosition: item.imagePosition,
-      imageFit: item.imageFit,
-      model: item.model,
-      modelSrc: item.modelSrc,
-      modelScale: item.modelScale,
-      modelRotation: item.modelRotation,
-      modelPosition: item.modelPosition,
-      description: item.description,
-      dateRange: item.dateRange,
-    };
-    const doc = Object.fromEntries(
-      Object.entries(raw).filter(([, v]) => v !== undefined)
-    ) as Omit<ListingDoc, "endTime"> & { endTime: Timestamp };
-    const ref = colRef.doc(item.id);
-    batch.set(ref, doc);
+  if (!snap.empty) {
+    const BATCH_SIZE = 400;
+    for (let i = 0; i < snap.docs.length; i += BATCH_SIZE) {
+      const batch = db.batch();
+      snap.docs.slice(i, i + BATCH_SIZE).forEach((d) => batch.delete(d.ref));
+      await batch.commit();
+    }
   }
-
-  await batch.commit();
 
   return NextResponse.json({
     ok: true,
-    message: `Seeded ${allItems.length} listings (all with isFakeListing: true, 12h reset).`,
+    message: `Fake listings are local only (no Firestore). Removed ${snap.size} old fake listing doc(s) from Firestore. Run Harvard seed to update src/data/harvard-listings.generated.json.`,
   });
 }

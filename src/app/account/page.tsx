@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useLiked } from "@/context/LikedContext";
 import { useListings } from "@/hooks/useListings";
 import { useMyListings } from "@/hooks/useMyListings";
+import { usePurchases } from "@/hooks/usePurchases";
 import LikeButton from "@/components/LikeButton";
 import TimeLeft from "@/components/TimeLeft";
 
@@ -21,12 +22,101 @@ function formatBid(amount: number) {
   }).format(amount);
 }
 
+type PurchaseRowProps = {
+  purchase: {
+    id: string;
+    listingId: string;
+    listingTitle?: string;
+    listingImage?: string;
+    amount: number;
+    status: string;
+  };
+  onPaymentComplete: () => void;
+};
+
+function PurchaseRow({ purchase }: PurchaseRowProps) {
+  const [paying, setPaying] = useState(false);
+  const isPending = purchase.status === "pending";
+
+  async function handlePayNow() {
+    setPaying(true);
+    try {
+      const res = await fetch("/api/checkout/create-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ purchaseId: purchase.id }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setPaying(false);
+      }
+    } catch {
+      setPaying(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-4 rounded border border-zinc-200 bg-white p-4">
+      {purchase.listingImage ? (
+        <Link href={`/item/${purchase.listingId}`} className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100">
+          <Image
+            src={purchase.listingImage}
+            alt={purchase.listingTitle ?? "Listing"}
+            fill
+            className="object-cover"
+            sizes="80px"
+            unoptimized={purchase.listingImage.startsWith("http")}
+          />
+        </Link>
+      ) : (
+        <div className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400">
+          —
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
+        <Link
+          href={`/item/${purchase.listingId}`}
+          className="font-medium text-[rgb(30,36,44)] hover:underline"
+        >
+          {purchase.listingTitle ?? "Untitled"}
+        </Link>
+        <p className="text-sm text-zinc-600">
+          {formatBid(purchase.amount)}
+          {isPending && (
+            <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800">
+              Pending payment
+            </span>
+          )}
+          {purchase.status === "paid" && (
+            <span className="ml-2 rounded bg-green-100 px-1.5 py-0.5 text-xs text-green-800">
+              Paid
+            </span>
+          )}
+        </p>
+      </div>
+      {isPending && (
+        <button
+          type="button"
+          onClick={handlePayNow}
+          disabled={paying}
+          className="shrink-0 bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70"
+        >
+          {paying ? "Redirecting…" : "Pay now"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function AccountPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>("purchases");
   const { likedIds } = useLiked();
   const { items: allItems } = useListings();
   const { items: myListings, loading: listingsLoading } = useMyListings(user?.uid ?? null);
+  const { purchases, loading: purchasesLoading, refetch: refetchPurchases } = usePurchases(user?.uid ?? null);
   const likedItems = allItems.filter((item) => likedIds.has(item.id));
 
   if (!user) {
@@ -133,9 +223,7 @@ export default function AccountPage() {
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-4">
                   <p className="text-sm text-zinc-600">
-                    A history of items you&apos;ve won. Purchase records and
-                    delivery status will appear here once you&apos;ve won your
-                    first auction.
+                    Items you&apos;ve won. Complete payment for pending purchases.
                   </p>
                   <Link
                     href="/explore"
@@ -144,9 +232,24 @@ export default function AccountPage() {
                     Explore
                   </Link>
                 </div>
-                <div className="mt-4 rounded border border-dashed border-zinc-300 bg-zinc-50/50 py-8 text-center">
-                  <p className="text-sm text-zinc-500">No purchases yet</p>
-                </div>
+                {purchasesLoading ? (
+                  <div className="mt-4 rounded border border-zinc-200 bg-zinc-50/50 py-8 text-center">
+                    <p className="text-sm text-zinc-500">Loading…</p>
+                  </div>
+                ) : purchases.length === 0 ? (
+                  <div className="mt-4 rounded border border-dashed border-zinc-300 bg-zinc-50/50 py-8 text-center">
+                    <p className="text-sm text-zinc-500">No purchases yet</p>
+                    <p className="mt-1 text-xs text-zinc-400">
+                      Win an auction to see it here
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mt-4 space-y-4">
+                    {purchases.map((p) => (
+                      <PurchaseRow key={p.id} purchase={p} onPaymentComplete={refetchPurchases} />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

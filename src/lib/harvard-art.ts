@@ -138,16 +138,28 @@ function randomTimeLeftMinutes(): number {
   return randInt(oneDay * 21, maxMinutes);
 }
 
+export const LISTING_DURATION_DAYS_OPTIONS = [1, 7, 14, 30] as const;
+export type ListingDurationDays = (typeof LISTING_DURATION_DAYS_OPTIONS)[number];
+
 export type MappedHarvardListing = {
   id: string;
   title: string;
   category: "painting" | "sculpture" | "artifact";
   currentBid: number;
   endTimeMinutesFromNow: number;
+  listingDurationDays?: ListingDurationDays;
+  endTimeMs?: number;
+  finalized?: boolean;
+  replacedById?: string;
   era: ArtEra;
   artType: ArtType;
   image?: string;
 };
+
+function randomListingDurationDays(): ListingDurationDays {
+  const options = LISTING_DURATION_DAYS_OPTIONS;
+  return options[Math.floor(Math.random() * options.length)];
+}
 
 export function mapHarvardRecordToListing(record: HarvardObjectRecord): MappedHarvardListing | null {
   const title = record.title?.trim() || record.objectnumber?.trim();
@@ -167,6 +179,7 @@ export function mapHarvardRecordToListing(record: HarvardObjectRecord): MappedHa
     category,
     currentBid: randomBid(),
     endTimeMinutesFromNow: randomTimeLeftMinutes(),
+    listingDurationDays: randomListingDurationDays(),
     era,
     artType,
     image: record.primaryimageurl.trim(),

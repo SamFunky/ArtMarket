@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { allItems, type Item } from "@/data/items";
-import { isFirebaseConfigured } from "@/lib/firebase";
 import { fetchListings } from "@/lib/listings";
 
 type UseListingsResult = {
@@ -10,18 +9,17 @@ type UseListingsResult = {
   loading: boolean;
   error: Error | null;
   refetch: () => Promise<void>;
+  refetchSilent: () => Promise<void>;
 };
 
 export function useListings(): UseListingsResult {
   const [items, setItems] = useState<Item[]>(allItems);
-  const [loading, setLoading] = useState(isFirebaseConfigured());
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const load = useCallback(async () => {
-    if (!isFirebaseConfigured()) {
-      setItems(allItems);
-      setLoading(false);
-      return;
+    if (typeof window !== "undefined") {
+      fetch("/api/listings/finalize-expired", { method: "POST" }).catch(() => {});
     }
     setLoading(true);
     setError(null);
@@ -36,9 +34,17 @@ export function useListings(): UseListingsResult {
     }
   }, []);
 
+  const refetchSilent = useCallback(async () => {
+    try {
+      const data = await fetchListings();
+      setItems(data.length > 0 ? data : allItems);
+    } catch {
+    }
+  }, []);
+
   useEffect(() => {
     load();
   }, [load]);
 
-  return { items, loading, error, refetch: load };
+  return { items, loading, error, refetch: load, refetchSilent };
 }

@@ -6,11 +6,10 @@ import {
   getDoc,
   getDocs,
   query,
+  runTransaction,
   Timestamp,
   where,
-  writeBatch,
   type Timestamp as FSTimestamp,
-  type WriteBatch,
 } from "firebase/firestore";
 import { getDb } from "./firebase";
 import type { ArtEra, ArtType, Item } from "@/data/items";
@@ -39,6 +38,9 @@ export type ListingDoc = {
   description?: string;
   dateRange?: string;
   creatorId?: string;
+  highestBidderId?: string;
+  highestBidderEmail?: string;
+  finalized?: boolean;
 };
 
 function minutesBetween(earlier: Date, later: Date): number {
@@ -72,76 +74,81 @@ function docToItem(
     description: data.description,
     dateRange: data.dateRange,
     creatorId: data.creatorId,
+    highestBidderId: data.highestBidderId,
+    highestBidderEmail: data.highestBidderEmail,
+    auctionEnded: data.finalized === true,
+    isFakeListing: data.isFakeListing === true,
   };
 }
 
 export async function fetchListings(): Promise<Item[]> {
+  const [firestoreItems, localFakes] = await Promise.all([
+    fetchAllFirestoreListings(),
+    fetchLocalFakes(),
+  ]);
+  const firestoreFakeById = new Map(
+    firestoreItems.filter((i) => i.isFakeListing).map((i) => [i.id, i])
+  );
+  const firestoreReal = firestoreItems.filter((i) => !i.isFakeListing);
+  const mergedFakes = localFakes.map((lf) => firestoreFakeById.get(lf.id) ?? lf);
+  const all = [...mergedFakes, ...firestoreReal];
+  return all.filter(
+    (i) => !i.auctionEnded && (i.timeLeftMinutes ?? 0) > 0
+  );
+}
+
+async function fetchLocalFakes(): Promise<Item[]> {
+  try {
+    const base = typeof window !== "undefined" ? window.location.origin : "";
+    const res = await fetch(`${base}/api/listings/local-fakes`);
+    if (!res.ok) return [];
+    return (await res.json()) as Item[];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchAllFirestoreListings(): Promise<Item[]> {
   const db = getDb();
   if (!db) return [];
 
   const colRef = collection(db, LISTINGS_COLLECTION);
   const snap = await getDocs(colRef);
 
-  const now = new Date();
-  const batch: WriteBatch = writeBatch(db);
-  let hasWrites = false;
-
   const items: Item[] = [];
-
   for (const docSnap of snap.docs) {
     const id = docSnap.id;
     const data = docSnap.data() as ListingDoc;
     const endTime = data.endTime?.toDate?.() ?? new Date(0);
-    const isFake = data.isFakeListing === true;
-    const duration =
-      data.fakeListingDurationMinutes ?? DEFAULT_FAKE_LISTING_DURATION_MINUTES;
-
-    let endTimeToUse = endTime;
-
-    if (isFake && endTime <= now) {
-      const newEnd = new Date(now.getTime() + duration * 60_000);
-      endTimeToUse = newEnd;
-      const docRef = doc(db, LISTINGS_COLLECTION, id);
-      batch.update(docRef, { endTime: Timestamp.fromDate(newEnd) });
-      hasWrites = true;
-    }
-
-    items.push(docToItem(id, data, endTimeToUse));
+    const finalized = data.finalized === true;
+    const now = new Date();
+    if (finalized || endTime <= now) continue;
+    items.push(docToItem(id, data, endTime));
   }
-
-  if (hasWrites) {
-    await batch.commit();
-  }
-
   return items;
 }
 
 export async function fetchListingById(id: string): Promise<Item | null> {
   const db = getDb();
-  if (!db) return null;
-
-  const ref = doc(db, LISTINGS_COLLECTION, id);
-  const docSnap = await getDoc(ref);
-
-  if (!docSnap.exists()) return null;
-
-  const data = docSnap.data() as ListingDoc;
-  const endTime = data.endTime?.toDate?.() ?? new Date(0);
-  const isFake = data.isFakeListing === true;
-  const duration =
-    data.fakeListingDurationMinutes ?? DEFAULT_FAKE_LISTING_DURATION_MINUTES;
-  const now = new Date();
-
-  let endTimeToUse = endTime;
-  if (isFake && endTime <= now) {
-    const newEnd = new Date(now.getTime() + duration * 60_000);
-    endTimeToUse = newEnd;
-    const batch = writeBatch(db);
-    batch.update(ref, { endTime: Timestamp.fromDate(newEnd) });
-    await batch.commit();
+  if (db) {
+    const ref = doc(db, LISTINGS_COLLECTION, id);
+    const docSnap = await getDoc(ref);
+    if (docSnap.exists()) {
+      const data = docSnap.data() as ListingDoc;
+      const endTime = data.endTime?.toDate?.() ?? new Date(0);
+      return docToItem(id, data, endTime);
+    }
   }
 
-  return docToItem(id, data, endTimeToUse);
+  try {
+    const base = typeof window !== "undefined" ? window.location.origin : "";
+    const res = await fetch(`${base}/api/listings/local-fakes?id=${encodeURIComponent(id)}`);
+    if (res.ok) {
+      return (await res.json()) as Item;
+    }
+  } catch {
+  }
+  return null;
 }
 
 export const LISTING_DURATION_DAYS = [1, 7, 14, 40] as const;
@@ -180,7 +187,7 @@ export async function createListing(input: CreateListingInput): Promise<string> 
     era: input.era,
     artType: input.artType,
     creatorId: input.creatorId,
-    isFakeListing: true,
+    isFakeListing: false,
     fakeListingDurationMinutes: durationMinutes,
     ...(input.description?.trim() && { description: input.description.trim() }),
     ...(input.dateRange?.trim() && { dateRange: input.dateRange.trim() }),
@@ -198,37 +205,13 @@ export async function fetchListingsByCreator(creatorId: string): Promise<Item[]>
   const q = query(colRef, where("creatorId", "==", creatorId));
   const snap = await getDocs(q);
 
-  const now = new Date();
-  const batch = writeBatch(db);
-  let hasWrites = false;
-
   const items: Item[] = [];
-
   for (const docSnap of snap.docs) {
     const id = docSnap.id;
     const data = docSnap.data() as ListingDoc;
     const endTime = data.endTime?.toDate?.() ?? new Date(0);
-    const isFake = data.isFakeListing === true;
-    const duration =
-      data.fakeListingDurationMinutes ?? DEFAULT_FAKE_LISTING_DURATION_MINUTES;
-
-    let endTimeToUse = endTime;
-
-    if (isFake && endTime <= now) {
-      const newEnd = new Date(now.getTime() + duration * 60_000);
-      endTimeToUse = newEnd;
-      const docRef = doc(db, LISTINGS_COLLECTION, id);
-      batch.update(docRef, { endTime: Timestamp.fromDate(newEnd) });
-      hasWrites = true;
-    }
-
-    items.push(docToItem(id, data, endTimeToUse));
+    items.push(docToItem(id, data, endTime));
   }
-
-  if (hasWrites) {
-    await batch.commit();
-  }
-
   return items;
 }
 

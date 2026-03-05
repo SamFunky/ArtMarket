@@ -3,15 +3,17 @@
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useListings } from "@/hooks/useListings";
-import { deleteListing } from "@/lib/listings";
+import { deleteListing, fetchListingById } from "@/lib/listings";
 import TimeLeft from "@/components/TimeLeft";
 import LikeButton from "@/components/LikeButton";
 import ModelViewer from "@/components/ModelViewer";
 import ItemComments from "@/components/ItemComments";
+import PlaceBidModal from "@/components/PlaceBidModal";
 import type { Item } from "@/data/items";
+import { getListingImageSrc } from "@/lib/listing-image";
 
 function formatBid(amount: number) {
   return new Intl.NumberFormat("en-US", {
@@ -23,6 +25,8 @@ function formatBid(amount: number) {
 }
 
 function ItemMedia({ item }: { item: Item }) {
+  const [externalImageError, setExternalImageError] = useState(false);
+
   if (item.model && item.modelSrc) {
     return (
       <ModelViewer
@@ -34,6 +38,32 @@ function ItemMedia({ item }: { item: Item }) {
     );
   }
   if (item.image) {
+    const isExternal = item.image.startsWith("http");
+    const className = `w-full h-auto ${item.imageFit === "contain" ? "object-contain" : "object-cover"}`;
+    const style = item.imagePosition ? { objectPosition: item.imagePosition } : undefined;
+    if (isExternal) {
+      if (externalImageError) {
+        return (
+          <div className="flex aspect-[4/3] w-full items-center justify-center bg-zinc-200/80">
+            <span className="text-sm text-zinc-500">{item.artType}</span>
+          </div>
+        );
+      }
+      return (
+        <div className="relative w-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={getListingImageSrc(item.image)}
+            alt={item.title}
+            className={className}
+            style={style}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            referrerPolicy="no-referrer"
+            onError={() => setExternalImageError(true)}
+          />
+        </div>
+      );
+    }
     return (
       <div className="relative w-full">
         <Image
@@ -41,14 +71,9 @@ function ItemMedia({ item }: { item: Item }) {
           alt={item.title}
           width={1200}
           height={900}
-          className={`w-full h-auto ${item.imageFit === "contain" ? "object-contain" : "object-cover"}`}
-          style={
-            item.imagePosition
-              ? { objectPosition: item.imagePosition }
-              : undefined
-          }
+          className={className}
+          style={style}
           sizes="(max-width: 1024px) 100vw, 50vw"
-          unoptimized={item.image.startsWith("http")}
         />
       </div>
     );
@@ -68,9 +93,46 @@ export default function ItemPage() {
   const { items, loading } = useListings();
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [optimisticBid, setOptimisticBid] = useState<number | null>(null);
 
-  const item = id ? items.find((i) => i.id === id) : null;
-  const isOwner = Boolean(user && item?.creatorId && item.creatorId === user.uid);
+  const itemFromList = id ? items.find((i) => i.id === id) : null;
+  const [itemFromFetch, setItemFromFetch] = useState<Item | null>(null);
+  const item = itemFromList ?? itemFromFetch;
+
+  useEffect(() => {
+    setItemFromFetch(null);
+  }, [id]);
+
+  useEffect(() => {
+    if (!id || itemFromList || loading) return;
+    fetchListingById(id).then((fetched) => setItemFromFetch(fetched ?? null));
+  }, [id, itemFromList, loading]);
+
+  const isOwner = Boolean(
+    user && item?.creatorId && item.creatorId === user.uid
+  );
+  const [showBidModal, setShowBidModal] = useState(false);
+  const { refetch } = useListings();
+
+  const auctionEnded = item?.auctionEnded === true;
+  const isHighestBidder = Boolean(user && item?.highestBidderId === user.uid);
+  const canBid = Boolean(!isOwner && user && !auctionEnded && !isHighestBidder);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      fetch("/api/listings/finalize-expired", { method: "POST" }).catch(() => {});
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (!id || !item) return;
+    const ended = (item.timeLeftMinutes ?? 0) <= 0;
+    if (ended && !item.auctionEnded) {
+      fetch(`/api/listings/${id}/finalize`, { method: "POST" })
+        .then((r) => { if (r.ok) refetch(); })
+        .catch(() => {});
+    }
+  }, [id, item?.timeLeftMinutes, item?.auctionEnded, refetch]);
 
   function openDeleteConfirm() {
     if (!item || !isOwner) return;
@@ -178,15 +240,32 @@ export default function ItemPage() {
 
               <button
                 type="button"
-                disabled={isOwner}
+                disabled={!canBid}
+                onClick={() => canBid && setShowBidModal(true)}
                 className={`mt-6 w-full px-6 py-4 text-base font-medium transition-colors ${
-                  isOwner
-                    ? "cursor-not-allowed bg-zinc-300 text-zinc-500"
-                    : "bg-[rgb(30,36,44)] text-white hover:bg-[rgb(40,48,58)]"
+                  canBid
+                    ? "bg-[rgb(30,36,44)] text-white hover:bg-[rgb(40,48,58)]"
+                    : "cursor-not-allowed bg-zinc-300 text-zinc-500"
                 }`}
               >
-                Place Bid
+                {auctionEnded
+                  ? "Auction ended"
+                  : isHighestBidder
+                    ? "Your bid is already highest"
+                    : "Place Bid"}
               </button>
+
+              {showBidModal && user && item && (
+                <PlaceBidModal
+                  item={item}
+                  bidderId={user.uid}
+                  bidderEmail={user.email ?? ""}
+                  onClose={() => setShowBidModal(false)}
+                  onSuccess={() => {
+                    window.location.reload();
+                  }}
+                />
+              )}
 
               {isOwner && (
                 <button
