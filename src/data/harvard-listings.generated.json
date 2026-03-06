@@ -413,7 +413,9 @@
     "artType": "drawing",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV017251_dynmc",
     "dateRange": "0 – 0",
-    "endTimeMs": 1772819915589
+    "endTimeMs": 1772819915589,
+    "finalized": true,
+    "replacedById": "harvard-248590"
   },
   {
     "id": "harvard-155558",
@@ -452,7 +454,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV176175_dynmc",
     "dateRange": "19th century",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall",
-    "endTimeMs": 1772820207589
+    "endTimeMs": 1772820207589,
+    "finalized": true,
+    "replacedById": "harvard-248591"
   },
   {
     "id": "harvard-239902",
@@ -694,7 +698,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV196929_dynmc",
     "dateRange": "18th century",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, sister of John Witt Randall, gift to Harvard University, 1892.",
-    "endTimeMs": 1772819596589
+    "endTimeMs": 1772819596589,
+    "finalized": true,
+    "replacedById": "harvard-248592"
   },
   {
     "id": "harvard-245598",
@@ -884,7 +890,9 @@
     "artType": "drawing",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:DDC102954_dynmc",
     "dateRange": "17th century",
-    "endTimeMs": 1772821279589
+    "endTimeMs": 1772821279589,
+    "finalized": true,
+    "replacedById": "harvard-248593"
   },
   {
     "id": "harvard-234640",
@@ -1881,7 +1889,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:DDC106447_dynmc",
     "dateRange": "19th century",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall",
-    "endTimeMs": 1772820093590
+    "endTimeMs": 1772820093590,
+    "finalized": true,
+    "replacedById": "harvard-248594"
   },
   {
     "id": "harvard-241459",
@@ -1958,7 +1968,9 @@
     "artType": "drawing",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV180019_dynmc",
     "dateRange": "16th century",
-    "endTimeMs": 1772818754590
+    "endTimeMs": 1772818754590,
+    "finalized": true,
+    "replacedById": "harvard-248582"
   },
   {
     "id": "harvard-226064",
@@ -2659,7 +2671,9 @@
     "image": "https://nrs.harvard.edu/urn-3:huam:DDC113595_dynmc",
     "dateRange": "before 1487",
     "description": "Stefano Bardini, Florence, sold [through his sale, Christie's, May 26-30, 1902, lot 168 (Bardini no. 205)]; to H. O. Watson, New York. Grenville Lindall Winthrop, New York, gift; to Fogg Art Museum, 1934",
-    "endTimeMs": 1772821480590
+    "endTimeMs": 1772821480590,
+    "finalized": true,
+    "replacedById": "harvard-248595"
   },
   {
     "id": "harvard-236998",
@@ -3199,7 +3213,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV108289_dynmc",
     "dateRange": "3rd-2nd century BCE",
     "description": "114\r\n\r\nLid of a Late Etruscan Urn\r\n\r\nThe stone is volcanic or alabaster, a limestone-like material. The head and body are in two parts. There are traces of paint for the flesh on the head. The surfaces are dirty.\r\n \r\nThe urn is a rectangular box undecorated except for a sunken rectangle on the front and on each end (H. 0.27m, W. 0.505m). The male figure, nude to the waist and with a rope-like garland around his neck, is reclining. The left arm rests on a cushion, and the right hand holds a phiale. The hair, represented by straight lines, is bound by a fillet, or rolled diadem of the type introduced to the Mediterranean world in the age of Alexander the Great. The left ear is hardly preserved, being mostly gouged away. The right ear is summarily treated, as is the face, with the head evidently carved to be seen from its own right side only.\r\n \r\nA complete urn in the Museo Civico at Chiusi has a similar lid and a body with the Gates of Hades in relief on the front (Giglioli, 1935, pl. CC",
-    "endTimeMs": 1772820472590
+    "endTimeMs": 1772820472590,
+    "finalized": true,
+    "replacedById": "harvard-248596"
   },
   {
     "id": "harvard-222561",
@@ -3579,7 +3595,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV183999_dynmc",
     "dateRange": "1770",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, sister of John Witt Randall, gift to Harvard University, 1892.",
-    "endTimeMs": 1772819228590
+    "endTimeMs": 1772819228590,
+    "finalized": true,
+    "replacedById": "harvard-248586"
   },
   {
     "id": "harvard-243457",
@@ -3694,7 +3712,9 @@
     "artType": "mixed media",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV009325_dynmc",
     "dateRange": "Late Momoyama to Early Edo period, circa 1615",
-    "endTimeMs": 1772819237590
+    "endTimeMs": 1772819237590,
+    "finalized": true,
+    "replacedById": "harvard-248587"
   },
   {
     "id": "harvard-171633",
@@ -3784,7 +3804,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV182354_dynmc",
     "dateRange": "17th century",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall",
-    "endTimeMs": 1772819521590
+    "endTimeMs": 1772819521590,
+    "finalized": true,
+    "replacedById": "harvard-248597"
   },
   {
     "id": "harvard-239503",
@@ -5351,7 +5373,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV168771_dynmc",
     "dateRange": "18th century",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall",
-    "endTimeMs": 1772818886590
+    "endTimeMs": 1772818886590,
+    "finalized": true,
+    "replacedById": "harvard-248583"
   },
   {
     "id": "harvard-228953",
@@ -5592,7 +5616,9 @@
     "artType": "mixed media",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:OCP19214_dynmc",
     "dateRange": "c. 1903",
-    "endTimeMs": 1772821227590
+    "endTimeMs": 1772821227590,
+    "finalized": true,
+    "replacedById": "harvard-248598"
   },
   {
     "id": "harvard-157015",
@@ -6223,7 +6249,9 @@
     "artType": "mixed media",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV047338_dynmc",
     "dateRange": "c 1875",
-    "endTimeMs": 1772819489590
+    "endTimeMs": 1772819489590,
+    "finalized": true,
+    "replacedById": "harvard-248599"
   },
   {
     "id": "harvard-159153",
@@ -6325,7 +6353,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV189409_dynmc",
     "dateRange": "16th-17th century",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall",
-    "endTimeMs": 1772821221590
+    "endTimeMs": 1772821221590,
+    "finalized": true,
+    "replacedById": "harvard-248600"
   },
   {
     "id": "harvard-241853",
@@ -7407,7 +7437,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV183464_dynmc",
     "dateRange": "1756",
     "description": "John Witt Randall, bequest; to Belinda Lull Randall, his sister, gift; to Harvard University, 1892",
-    "endTimeMs": 1772821542590
+    "endTimeMs": 1772821542590,
+    "finalized": true,
+    "replacedById": "harvard-248601"
   },
   {
     "id": "harvard-158787",
@@ -7574,7 +7606,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV160996_dynmc",
     "dateRange": "18th century",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall",
-    "endTimeMs": 1772821963590
+    "endTimeMs": 1772821963590,
+    "finalized": true,
+    "replacedById": "harvard-248602"
   },
   {
     "id": "harvard-247059",
@@ -7894,7 +7928,9 @@
     "image": "https://nrs.harvard.edu/urn-3:huam:COIN16220_dynmc",
     "dateRange": "0 – 0",
     "description": "Seventy-six Islamic bronze coins ranging from the Ghaznavid period to the early twentieth century.  Purchased in Kabul, Afghanistan in 1944.",
-    "endTimeMs": 1772819714590
+    "endTimeMs": 1772819714590,
+    "finalized": true,
+    "replacedById": "harvard-248603"
   },
   {
     "id": "harvard-238929",
@@ -8057,7 +8093,9 @@
     "artType": "drawing",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV207434_dynmc",
     "dateRange": "1852",
-    "endTimeMs": 1772819276590
+    "endTimeMs": 1772819276590,
+    "finalized": true,
+    "replacedById": "harvard-248588"
   },
   {
     "id": "harvard-148436",
@@ -8683,7 +8721,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV158059_dynmc",
     "dateRange": "19th century",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall",
-    "endTimeMs": 1772818662590
+    "endTimeMs": 1772818662590,
+    "finalized": true,
+    "replacedById": "harvard-248581"
   },
   {
     "id": "harvard-247813",
@@ -8810,7 +8850,9 @@
     "artType": "drawing",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:DDC106333_dynmc",
     "dateRange": "1599",
-    "endTimeMs": 1772819115590
+    "endTimeMs": 1772819115590,
+    "finalized": true,
+    "replacedById": "harvard-248585"
   },
   {
     "id": "harvard-239066",
@@ -9339,7 +9381,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV203102_dynmc",
     "dateRange": "1839",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, sister of John Witt Randall, gift to Harvard University, 1892.",
-    "endTimeMs": 1772819299590
+    "endTimeMs": 1772819299590,
+    "finalized": true,
+    "replacedById": "harvard-248589"
   },
   {
     "id": "harvard-147260",
@@ -9752,7 +9796,9 @@
     "artType": "mixed media",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV048623_dynmc",
     "dateRange": "1912",
-    "endTimeMs": 1772820507590
+    "endTimeMs": 1772820507590,
+    "finalized": true,
+    "replacedById": "harvard-248604"
   },
   {
     "id": "harvard-229931",
@@ -10639,7 +10685,9 @@
     "artType": "mixed media",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:SM10029_dynmc",
     "dateRange": "c. 1903",
-    "endTimeMs": 1772818819590
+    "endTimeMs": 1772818819590,
+    "finalized": true,
+    "replacedById": "harvard-248584"
   },
   {
     "id": "harvard-168632",
@@ -10854,7 +10902,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:VRS11126_dynmc",
     "dateRange": "c. 480 BCE",
     "description": "Dr. J. Robert Guy, Oxford England (?-1994) sold; to Peter Sharrar, New York (1994-1995), sold: to Harvard University Art Museums.",
-    "endTimeMs": 1772821224590
+    "endTimeMs": 1772821224590,
+    "finalized": true,
+    "replacedById": "harvard-248605"
   },
   {
     "id": "harvard-244393",
@@ -11828,7 +11878,9 @@
     "artType": "drawing",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:DDC105776_dynmc",
     "dateRange": "1611",
-    "endTimeMs": 1772819436590
+    "endTimeMs": 1772819436590,
+    "finalized": true,
+    "replacedById": "harvard-248606"
   },
   {
     "id": "harvard-241694",
@@ -12120,7 +12172,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV182419_dynmc",
     "dateRange": "1697",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, sister of John Witt Randall, gift to Harvard University, 1892.",
-    "endTimeMs": 1772820123590
+    "endTimeMs": 1772820123590,
+    "finalized": true,
+    "replacedById": "harvard-248607"
   },
   {
     "id": "harvard-223844",
@@ -12761,7 +12815,9 @@
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV193796_dynmc",
     "dateRange": "c. 1640",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall",
-    "endTimeMs": 1772819861591
+    "endTimeMs": 1772819861591,
+    "finalized": true,
+    "replacedById": "harvard-248608"
   },
   {
     "id": "harvard-157977",
@@ -14239,6 +14295,359 @@
     "artType": "drawing",
     "image": "https://nrs.harvard.edu/urn-3:HUAM:INV137970_dynmc",
     "dateRange": "18th-19th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
+  },
+  {
+    "id": "harvard-248581",
+    "title": "The Rhine at Rolandseck",
+    "category": "painting",
+    "currentBid": 2514,
+    "endTimeSecondsFromNow": 604801,
+    "listingDurationDays": 7,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV158059_dynmc",
+    "dateRange": "19th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
+  },
+  {
+    "id": "harvard-248582",
+    "title": "Letter C",
+    "category": "painting",
+    "currentBid": 1800,
+    "endTimeSecondsFromNow": 2592002,
+    "listingDurationDays": 30,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV180019_dynmc",
+    "dateRange": "16th century"
+  },
+  {
+    "id": "harvard-248583",
+    "title": "Apollo and the Sibyl",
+    "category": "painting",
+    "currentBid": 18936,
+    "endTimeSecondsFromNow": 2592003,
+    "listingDurationDays": 30,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV168771_dynmc",
+    "dateRange": "18th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
+  },
+  {
+    "id": "harvard-248584",
+    "title": "Housing, Conditions: United States. Massachusetts. Lowell. Tenements in French, Greek, and Polish Districts: Environments After Immigration. Perpetuation of European Standards in America. Housing Cond",
+    "category": "artifact",
+    "currentBid": 4107,
+    "endTimeSecondsFromNow": 86404,
+    "listingDurationDays": 1,
+    "era": "modern",
+    "artType": "mixed media",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:SM10029_dynmc",
+    "dateRange": "c. 1903"
+  },
+  {
+    "id": "harvard-248585",
+    "title": "November: Bird Hunt and Felling Trees",
+    "category": "painting",
+    "currentBid": 2862,
+    "endTimeSecondsFromNow": 1209605,
+    "listingDurationDays": 14,
+    "era": "renaissance",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:DDC106333_dynmc",
+    "dateRange": "1599"
+  },
+  {
+    "id": "harvard-248586",
+    "title": "Schoolmaster",
+    "category": "painting",
+    "currentBid": 25760,
+    "endTimeSecondsFromNow": 2592006,
+    "listingDurationDays": 30,
+    "era": "baroque",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV183999_dynmc",
+    "dateRange": "1770",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, sister of John Witt Randall, gift to Harvard University, 1892."
+  },
+  {
+    "id": "harvard-248587",
+    "title": "Printed Nō Play with Calligraphy by Hon'ami Kōetsu (Kōetsu-bon Yōkyoku), Vol. 7",
+    "category": "artifact",
+    "currentBid": 13320,
+    "endTimeSecondsFromNow": 2592007,
+    "listingDurationDays": 30,
+    "era": "baroque",
+    "artType": "mixed media",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV009325_dynmc",
+    "dateRange": "Late Momoyama to Early Edo period, circa 1615"
+  },
+  {
+    "id": "harvard-248588",
+    "title": "I hear a carriage. It's M. Chose [Thing] who comes to see his treasure. You mean his treasure-keeper, my dear., p. 107",
+    "category": "painting",
+    "currentBid": 3226,
+    "endTimeSecondsFromNow": 2592008,
+    "listingDurationDays": 30,
+    "era": "modern",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV207434_dynmc",
+    "dateRange": "1852"
+  },
+  {
+    "id": "harvard-248589",
+    "title": "Ruins of a Church in the Abruzzi",
+    "category": "painting",
+    "currentBid": 47664,
+    "endTimeSecondsFromNow": 1209609,
+    "listingDurationDays": 14,
+    "era": "modern",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV203102_dynmc",
+    "dateRange": "1839",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, sister of John Witt Randall, gift to Harvard University, 1892."
+  },
+  {
+    "id": "harvard-248590",
+    "title": "Courtesans Writing on Gaku as Offerings to the Temple Asakusa (Asakusa Kannon hōshoku-gaku no zu)",
+    "category": "painting",
+    "currentBid": 2769,
+    "endTimeSecondsFromNow": 1209610,
+    "listingDurationDays": 14,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV017251_dynmc",
+    "dateRange": "0 – 0"
+  },
+  {
+    "id": "harvard-248591",
+    "title": "The Field of Wheat",
+    "category": "painting",
+    "currentBid": 2852,
+    "endTimeSecondsFromNow": 1209611,
+    "listingDurationDays": 14,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV176175_dynmc",
+    "dateRange": "19th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
+  },
+  {
+    "id": "harvard-248592",
+    "title": "Christian Fürchtegott Gellert",
+    "category": "painting",
+    "currentBid": 607,
+    "endTimeSecondsFromNow": 2592012,
+    "listingDurationDays": 30,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV196929_dynmc",
+    "dateRange": "18th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, sister of John Witt Randall, gift to Harvard University, 1892."
+  },
+  {
+    "id": "harvard-248593",
+    "title": "Saint Isidore",
+    "category": "painting",
+    "currentBid": 15972,
+    "endTimeSecondsFromNow": 86413,
+    "listingDurationDays": 1,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:DDC102954_dynmc",
+    "dateRange": "17th century"
+  },
+  {
+    "id": "harvard-248594",
+    "title": "Nicolas Kratzer",
+    "category": "painting",
+    "currentBid": 3016,
+    "endTimeSecondsFromNow": 1209614,
+    "listingDurationDays": 14,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:DDC106447_dynmc",
+    "dateRange": "19th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
+  },
+  {
+    "id": "harvard-248595",
+    "title": "Saint Sebastian",
+    "category": "sculpture",
+    "currentBid": 4801,
+    "endTimeSecondsFromNow": 2592015,
+    "listingDurationDays": 30,
+    "era": "renaissance",
+    "artType": "sculpture",
+    "image": "https://nrs.harvard.edu/urn-3:huam:DDC113595_dynmc",
+    "dateRange": "before 1487",
+    "description": "Stefano Bardini, Florence, sold [through his sale, Christie's, May 26-30, 1902, lot 168 (Bardini no. 205)]; to H. O. Watson, New York. Grenville Lindall Winthrop, New York, gift; to Fogg Art Museum, 1934"
+  },
+  {
+    "id": "harvard-248596",
+    "title": "Head from Lid of a Late Etruscan Urn",
+    "category": "sculpture",
+    "currentBid": 579,
+    "endTimeSecondsFromNow": 2592016,
+    "listingDurationDays": 30,
+    "era": "ancient",
+    "artType": "sculpture",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV108289_dynmc",
+    "dateRange": "3rd-2nd century BCE",
+    "description": "114\r\n\r\nLid of a Late Etruscan Urn\r\n\r\nThe stone is volcanic or alabaster, a limestone-like material. The head and body are in two parts. There are traces of paint for the flesh on the head. The surfaces are dirty.\r\n \r\nThe urn is a rectangular box undecorated except for a sunken rectangle on the front and on each end (H. 0.27m, W. 0.505m). The male figure, nude to the waist and with a rope-like garland around his neck, is reclining. The left arm rests on a cushion, and the right hand holds a phiale. The hair, represented by straight lines, is bound by a fillet, or rolled diadem of the type introduced to the Mediterranean world in the age of Alexander the Great. The left ear is hardly preserved, being mostly gouged away. The right ear is summarily treated, as is the face, with the head evidently carved to be seen from its own right side only.\r\n \r\nA complete urn in the Museo Civico at Chiusi has a similar lid and a body with the Gates of Hades in relief on the front (Giglioli, 1935, pl. CC"
+  },
+  {
+    "id": "harvard-248597",
+    "title": "Plate Two",
+    "category": "painting",
+    "currentBid": 21734,
+    "endTimeSecondsFromNow": 86417,
+    "listingDurationDays": 1,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV182354_dynmc",
+    "dateRange": "17th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
+  },
+  {
+    "id": "harvard-248598",
+    "title": "Recreation, Parks and Playgrounds: United States. Missouri. St. Louis. Vacation Playgrounds: Vacation Playgrounds, St. Louis, Mo.: Glimpses of the Vacation Playgrounds",
+    "category": "artifact",
+    "currentBid": 3071,
+    "endTimeSecondsFromNow": 604818,
+    "listingDurationDays": 7,
+    "era": "modern",
+    "artType": "mixed media",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:OCP19214_dynmc",
+    "dateRange": "c. 1903"
+  },
+  {
+    "id": "harvard-248599",
+    "title": "Bannock Indians",
+    "category": "artifact",
+    "currentBid": 3239,
+    "endTimeSecondsFromNow": 604819,
+    "listingDurationDays": 7,
+    "era": "modern",
+    "artType": "mixed media",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV047338_dynmc",
+    "dateRange": "c 1875"
+  },
+  {
+    "id": "harvard-248600",
+    "title": "Christ on the Cross",
+    "category": "painting",
+    "currentBid": 1272,
+    "endTimeSecondsFromNow": 1209620,
+    "listingDurationDays": 14,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV189409_dynmc",
+    "dateRange": "16th-17th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
+  },
+  {
+    "id": "harvard-248601",
+    "title": "Music",
+    "category": "painting",
+    "currentBid": 1533,
+    "endTimeSecondsFromNow": 2592021,
+    "listingDurationDays": 30,
+    "era": "baroque",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV183464_dynmc",
+    "dateRange": "1756",
+    "description": "John Witt Randall, bequest; to Belinda Lull Randall, his sister, gift; to Harvard University, 1892"
+  },
+  {
+    "id": "harvard-248602",
+    "title": "Spinner Sitting before a Stable",
+    "category": "painting",
+    "currentBid": 14119,
+    "endTimeSecondsFromNow": 1209622,
+    "listingDurationDays": 14,
+    "era": "ancient",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV160996_dynmc",
+    "dateRange": "18th century",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
+  },
+  {
+    "id": "harvard-248603",
+    "title": "Islamic Coin",
+    "category": "artifact",
+    "currentBid": 886,
+    "endTimeSecondsFromNow": 2592023,
+    "listingDurationDays": 30,
+    "era": "ancient",
+    "artType": "mixed media",
+    "image": "https://nrs.harvard.edu/urn-3:huam:COIN16220_dynmc",
+    "dateRange": "0 – 0",
+    "description": "Seventy-six Islamic bronze coins ranging from the Ghaznavid period to the early twentieth century.  Purchased in Kabul, Afghanistan in 1944."
+  },
+  {
+    "id": "harvard-248604",
+    "title": "Scotland/ Pastimes of the upper class   1912",
+    "category": "artifact",
+    "currentBid": 1302,
+    "endTimeSecondsFromNow": 1209624,
+    "listingDurationDays": 14,
+    "era": "modern",
+    "artType": "mixed media",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV048623_dynmc",
+    "dateRange": "1912"
+  },
+  {
+    "id": "harvard-248605",
+    "title": "Red-figure cup fragment. Side A: hindparts of horse to right.",
+    "category": "artifact",
+    "currentBid": 8283,
+    "endTimeSecondsFromNow": 604825,
+    "listingDurationDays": 7,
+    "era": "ancient",
+    "artType": "mixed media",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:VRS11126_dynmc",
+    "dateRange": "c. 480 BCE",
+    "description": "Dr. J. Robert Guy, Oxford England (?-1994) sold; to Peter Sharrar, New York (1994-1995), sold: to Harvard University Art Museums."
+  },
+  {
+    "id": "harvard-248606",
+    "title": "Civilis' Troops Crossing the Maas River",
+    "category": "painting",
+    "currentBid": 14906,
+    "endTimeSecondsFromNow": 2592026,
+    "listingDurationDays": 30,
+    "era": "baroque",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:DDC105776_dynmc",
+    "dateRange": "1611"
+  },
+  {
+    "id": "harvard-248607",
+    "title": "Pierre Surirey de Saint-Remy",
+    "category": "painting",
+    "currentBid": 6248,
+    "endTimeSecondsFromNow": 604827,
+    "listingDurationDays": 7,
+    "era": "baroque",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV182419_dynmc",
+    "dateRange": "1697",
+    "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, sister of John Witt Randall, gift to Harvard University, 1892."
+  },
+  {
+    "id": "harvard-248608",
+    "title": "Flora",
+    "category": "painting",
+    "currentBid": 32093,
+    "endTimeSecondsFromNow": 604828,
+    "listingDurationDays": 7,
+    "era": "baroque",
+    "artType": "drawing",
+    "image": "https://nrs.harvard.edu/urn-3:HUAM:INV193796_dynmc",
+    "dateRange": "c. 1640",
     "description": "John Witt Randall, bequest to his sister.\r\nBelinda Lull Randall, gift to Harvard University, 1892. sister of John Witt Randall"
   }
 ]

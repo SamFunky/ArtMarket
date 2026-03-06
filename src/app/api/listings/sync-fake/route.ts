@@ -8,6 +8,9 @@ import {
 
 export const dynamic = "force-dynamic";
 
+const FAKE_LISTING_OWNER_UID =
+  process.env.FAKE_LISTING_OWNER_UID ?? "UvKA5QmnMqQlhooR0GwmuCPVjIg1";
+
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const listingId = typeof body.listingId === "string" ? body.listingId : null;
@@ -66,6 +69,7 @@ export async function POST(request: Request) {
     artType: item.artType,
     isFakeListing: true,
     fakeListingDurationMinutes: durationMinutes,
+    creatorId: FAKE_LISTING_OWNER_UID,
     ...(item.image && { image: item.image }),
     ...(item.dateRange && { dateRange: item.dateRange }),
     ...(item.description && { description: item.description }),

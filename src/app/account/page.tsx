@@ -9,6 +9,7 @@ import { useListings } from "@/hooks/useListings";
 import { useMyListings } from "@/hooks/useMyListings";
 import { usePurchases } from "@/hooks/usePurchases";
 import LikeButton from "@/components/LikeButton";
+import MessageThread from "@/components/MessageThread";
 import TimeLeft from "@/components/TimeLeft";
 
 type Tab = "purchases" | "liked" | "listings";
@@ -28,6 +29,7 @@ type PurchaseRowProps = {
     listingId: string;
     listingTitle?: string;
     listingImage?: string;
+    listingCreatorId?: string;
     amount: number;
     status: string;
   };
@@ -35,8 +37,15 @@ type PurchaseRowProps = {
 };
 
 function PurchaseRow({ purchase }: PurchaseRowProps) {
+  const { user } = useAuth();
   const [paying, setPaying] = useState(false);
+  const [chatExpanded, setChatExpanded] = useState(false);
   const isPending = purchase.status === "pending";
+  const canMessage = Boolean(
+    user &&
+    purchase.listingCreatorId &&
+    purchase.listingCreatorId !== user.uid
+  );
 
   async function handlePayNow() {
     setPaying(true);
@@ -58,53 +67,84 @@ function PurchaseRow({ purchase }: PurchaseRowProps) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded border border-zinc-200 bg-white p-4">
-      {purchase.listingImage ? (
-        <Link href={`/item/${purchase.listingId}`} className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100">
-          <Image
-            src={purchase.listingImage}
-            alt={purchase.listingTitle ?? "Listing"}
-            fill
-            className="object-cover"
-            sizes="80px"
-            unoptimized={purchase.listingImage.startsWith("http")}
-          />
-        </Link>
-      ) : (
-        <div className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400">
-          —
+    <div className="rounded border border-zinc-200 bg-white">
+      <div className="flex flex-wrap items-center gap-4 p-4">
+        {purchase.listingImage ? (
+          <Link href={`/item/${purchase.listingId}`} className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100">
+            <Image
+              src={purchase.listingImage}
+              alt={purchase.listingTitle ?? "Listing"}
+              fill
+              className="object-cover"
+              sizes="80px"
+              unoptimized={purchase.listingImage.startsWith("http")}
+            />
+          </Link>
+        ) : (
+          <div className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400">
+            —
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <Link
+            href={`/item/${purchase.listingId}`}
+            className="font-medium text-[rgb(30,36,44)] hover:underline"
+          >
+            {purchase.listingTitle ?? "Untitled"}
+          </Link>
+          <p className="text-sm text-zinc-600">
+            {formatBid(purchase.amount)}
+            {isPending && (
+              <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800">
+                Pending payment
+              </span>
+            )}
+            {purchase.status === "paid" && (
+              <span className="ml-2 rounded bg-green-100 px-1.5 py-0.5 text-xs text-green-800">
+                Paid
+              </span>
+            )}
+          </p>
         </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <Link
-          href={`/item/${purchase.listingId}`}
-          className="font-medium text-[rgb(30,36,44)] hover:underline"
-        >
-          {purchase.listingTitle ?? "Untitled"}
-        </Link>
-        <p className="text-sm text-zinc-600">
-          {formatBid(purchase.amount)}
+        <div className="flex shrink-0 items-center gap-2">
           {isPending && (
-            <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800">
-              Pending payment
-            </span>
+            <button
+              type="button"
+              onClick={handlePayNow}
+              disabled={paying}
+              className="bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70"
+            >
+              {paying ? "Redirecting…" : "Pay now"}
+            </button>
           )}
-          {purchase.status === "paid" && (
-            <span className="ml-2 rounded bg-green-100 px-1.5 py-0.5 text-xs text-green-800">
-              Paid
-            </span>
+          {canMessage && (
+            <button
+              type="button"
+              onClick={() => setChatExpanded((e) => !e)}
+              className={`ml-auto rounded p-2 transition-colors ${
+                chatExpanded
+                  ? "bg-zinc-200 text-[rgb(30,36,44)]"
+                  : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+              }`}
+              aria-label={chatExpanded ? "Close chat" : "Message seller"}
+              title={chatExpanded ? "Close chat" : "Message seller"}
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </button>
           )}
-        </p>
+        </div>
       </div>
-      {isPending && (
-        <button
-          type="button"
-          onClick={handlePayNow}
-          disabled={paying}
-          className="shrink-0 bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70"
-        >
-          {paying ? "Redirecting…" : "Pay now"}
-        </button>
+      {chatExpanded && canMessage && user && purchase.listingCreatorId && (
+        <div className="border-t border-zinc-200 bg-zinc-50/50 p-4">
+          <MessageThread
+            purchaseId={purchase.id}
+            currentUserId={user.uid}
+            otherUserId={purchase.listingCreatorId}
+            currentUserEmail={user.email ?? ""}
+          />
+        </div>
       )}
     </div>
   );

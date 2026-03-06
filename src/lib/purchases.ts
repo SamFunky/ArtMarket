@@ -26,6 +26,7 @@ export type Purchase = PurchaseDoc & {
   id: string;
   listingTitle?: string;
   listingImage?: string;
+  listingCreatorId?: string;
 };
 
 export async function getPurchasesForUser(userId: string): Promise<Purchase[]> {
@@ -46,6 +47,7 @@ export async function getPurchasesForUser(userId: string): Promise<Purchase[]> {
       ...data,
       listingTitle: listingData?.title,
       listingImage: listingData?.image,
+      listingCreatorId: listingData?.creatorId,
     });
   }
   purchases.sort((a, b) => {
