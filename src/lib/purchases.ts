@@ -49,6 +49,10 @@ export async function getPurchasesForUser(userId: string): Promise<Purchase[]> {
     });
   }
   purchases.sort((a, b) => {
+    const aPending = a.status === "pending";
+    const bPending = b.status === "pending";
+    if (aPending && !bPending) return -1;
+    if (!aPending && bPending) return 1;
     const ta = a.createdAt?.toMillis?.() ?? 0;
     const tb = b.createdAt?.toMillis?.() ?? 0;
     return tb - ta;
