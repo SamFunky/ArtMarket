@@ -2,6 +2,12 @@ import type { ArtEra, ArtType } from "@/data/items";
 
 const BASE = "https://api.harvardartmuseums.org";
 
+export type HarvardContextualText = {
+  text?: string | null;
+  type?: string | null;
+  context?: string | null;
+};
+
 export type HarvardObjectRecord = {
   objectid: number;
   title?: string | null;
@@ -17,6 +23,10 @@ export type HarvardObjectRecord = {
   medium?: string | null;
   worktype?: string | null;
   imagecount?: number;
+  description?: string | null;
+  provenance?: string | null;
+  labeltext?: string | null;
+  contextualtext?: HarvardContextualText[] | null;
 };
 
 export type HarvardObjectResponse = {
@@ -54,10 +64,11 @@ export async function fetchHarvardObjectsByIds(
 ): Promise<HarvardObjectRecord[]> {
   const allRecords: HarvardObjectRecord[] = [];
 
+  const fields = "objectid,title,objectnumber,primaryimageurl,classification,dated,datebegin,dateend,description,provenance,labeltext,contextualtext";
   for (let i = 0; i < ids.length; i += ID_CHUNK_SIZE) {
     const chunk = ids.slice(i, i + ID_CHUNK_SIZE);
     const idParam = chunk.join("|");
-    const params = new URLSearchParams({ apikey: apiKey, id: idParam });
+    const params = new URLSearchParams({ apikey: apiKey, id: idParam, fields });
     const url = `${BASE}/object?${params}`;
     const res = await fetch(url, { next: { revalidate: 0 } });
     if (!res.ok) {
@@ -146,7 +157,9 @@ export type MappedHarvardListing = {
   title: string;
   category: "painting" | "sculpture" | "artifact";
   currentBid: number;
-  endTimeMinutesFromNow: number;
+  endTimeSecondsFromNow?: number;
+  // deprecated: use endTimeSecondsFromNow instead
+  endTimeMinutesFromNow?: number;
   listingDurationDays?: ListingDurationDays;
   endTimeMs?: number;
   finalized?: boolean;
@@ -154,6 +167,8 @@ export type MappedHarvardListing = {
   era: ArtEra;
   artType: ArtType;
   image?: string;
+  dateRange?: string;
+  description?: string;
 };
 
 function randomListingDurationDays(): ListingDurationDays {
@@ -173,15 +188,44 @@ export function mapHarvardRecordToListing(record: HarvardObjectRecord): MappedHa
   const era = mapDateToEra(record.datebegin, record.dateend, record.dated);
   const category = categoryFromArtType(artType);
 
+  const dateRange = record.dated?.trim()
+    ? record.dated.trim().slice(0, 100)
+    : record.datebegin != null && record.dateend != null
+      ? `${record.datebegin} – ${record.dateend}`
+      : record.datebegin != null
+        ? String(record.datebegin)
+        : record.dateend != null
+          ? String(record.dateend)
+          : undefined;
+
+  const contextualText = record.contextualtext?.[0]?.text?.trim();
+  const labelText = record.labeltext?.trim();
+  const provenanceText = record.provenance?.trim();
+  const description = record.description?.trim()
+    ? record.description.trim().slice(0, 1000)
+    : contextualText
+      ? contextualText.slice(0, 1000)
+      : labelText
+        ? labelText.slice(0, 1000)
+        : provenanceText
+          ? provenanceText.slice(0, 1000)
+          : undefined;
+
+  const minutes = randomTimeLeftMinutes();
+  const secondsOffset = randInt(0, 59);
+  const endTimeSecondsFromNow = minutes * 60 + secondsOffset;
+
   return {
     id: `harvard-${record.objectid}`,
     title: title.slice(0, 200),
     category,
     currentBid: randomBid(),
-    endTimeMinutesFromNow: randomTimeLeftMinutes(),
+    endTimeSecondsFromNow,
     listingDurationDays: randomListingDurationDays(),
     era,
     artType,
     image: record.primaryimageurl.trim(),
+    ...(dateRange && { dateRange }),
+    ...(description && { description }),
   };
 }

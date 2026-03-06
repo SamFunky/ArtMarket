@@ -42,6 +42,8 @@ export async function POST(request: Request) {
     artType: string;
     image?: string;
     timeLeftMinutes?: number;
+    dateRange?: string;
+    description?: string;
   };
 
   const ref = db.collection(LISTINGS_COLLECTION).doc(listingId);
@@ -65,6 +67,8 @@ export async function POST(request: Request) {
     isFakeListing: true,
     fakeListingDurationMinutes: durationMinutes,
     ...(item.image && { image: item.image }),
+    ...(item.dateRange && { dateRange: item.dateRange }),
+    ...(item.description && { description: item.description }),
   });
 
   return NextResponse.json({ ok: true, created: true });

@@ -21,7 +21,8 @@ function phaseMs(id: string): number {
   let hash = 0;
   for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
   const minutes = hash % CYCLE_MINUTES;
-  return minutes * 60 * 1000;
+  const secondsOffset = ((hash * 17) >>> 0) % 60;
+  return minutes * 60 * 1000 + secondsOffset * 1000;
 }
 
 function baseId(id: string): string {
@@ -76,10 +77,12 @@ async function getHarvardItems(): Promise<Item[]> {
     for (const item of harvard) {
       const itemNow = Date.now();
       const base = baseId(item.id);
+      const totalSecondsFromNow = item.endTimeSecondsFromNow ??
+        (item.endTimeMinutesFromNow != null ? item.endTimeMinutesFromNow * 60 : null);
       const useShortTimer =
-        item.endTimeMinutesFromNow != null &&
-        item.endTimeMinutesFromNow <= 120 &&
-        item.endTimeMinutesFromNow > 0;
+        totalSecondsFromNow != null &&
+        totalSecondsFromNow <= 120 * 60 &&
+        totalSecondsFromNow > 0;
 
       let displayEndMs: number;
 
@@ -87,7 +90,7 @@ async function getHarvardItems(): Promise<Item[]> {
         if (item.endTimeMs != null) {
           displayEndMs = item.endTimeMs;
         } else {
-          displayEndMs = itemNow + item.endTimeMinutesFromNow * 60 * 1000;
+          displayEndMs = itemNow + totalSecondsFromNow * 1000;
           toUpdate.set(item.id, { ...item, endTimeMs: displayEndMs });
         }
       } else {
@@ -103,6 +106,7 @@ async function getHarvardItems(): Promise<Item[]> {
       const expired = displayTimeLeft <= 0;
       const durationDays = item.listingDurationDays ?? 30;
       const durationMinutes = durationDays * 24 * 60;
+      const durationSeconds = durationMinutes * 60 + (nextId % 60);
 
       if (expired && !item.finalized) {
         const newListing: MappedHarvardListing = {
@@ -110,11 +114,13 @@ async function getHarvardItems(): Promise<Item[]> {
           title: item.title,
           category: item.category,
           currentBid: item.currentBid,
-          endTimeMinutesFromNow: durationMinutes,
+          endTimeSecondsFromNow: durationSeconds,
           listingDurationDays: durationDays,
           era: item.era,
           artType: item.artType,
           image: item.image,
+          dateRange: item.dateRange,
+          description: item.description,
         };
         newListings.push(newListing);
         toFinalize.set(item.id, {
@@ -124,17 +130,19 @@ async function getHarvardItems(): Promise<Item[]> {
         });
         nextId++;
 
-        const newEndMs = itemNow + durationMinutes * 60 * 1000;
+        const newEndMs = itemNow + durationSeconds * 1000;
         itemsOut.push({
           id: newListing.id,
           title: newListing.title,
           category: newListing.category,
           currentBid: newListing.currentBid,
-          timeLeftMinutes: durationMinutes,
+          timeLeftMinutes: Math.floor(durationSeconds / 60),
           endTimeMs: newEndMs,
           era: newListing.era,
           artType: newListing.artType,
           image: newListing.image,
+          dateRange: newListing.dateRange,
+          description: newListing.description,
           isFakeListing: true,
         } satisfies Item);
       } else {
@@ -148,6 +156,8 @@ async function getHarvardItems(): Promise<Item[]> {
           era: item.era,
           artType: item.artType,
           image: item.image,
+          dateRange: item.dateRange,
+          description: item.description,
           isFakeListing: true,
         } satisfies Item);
       }
@@ -187,6 +197,8 @@ async function getHarvardItemById(id: string): Promise<Item | null> {
       era: item.era,
       artType: item.artType,
       image: item.image,
+      dateRange: item.dateRange,
+      description: item.description,
       isFakeListing: true,
       auctionEnded: item.finalized === true,
     } satisfies Item;

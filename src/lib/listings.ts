@@ -151,7 +151,7 @@ export async function fetchListingById(id: string): Promise<Item | null> {
   return null;
 }
 
-export const LISTING_DURATION_DAYS = [1, 7, 14, 40] as const;
+export const LISTING_DURATION_DAYS = [1, 7, 14, 30] as const;
 export type ListingDurationDays = (typeof LISTING_DURATION_DAYS)[number];
 
 export type CreateListingInput = {
