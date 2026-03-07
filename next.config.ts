@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         hostname: "nrs.harvard.edu",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+        pathname: "/**",
+      },
     ],
   },
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { STORAGE_ASSETS } from "@/lib/storage-assets";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -43,7 +44,7 @@ export default function SignUp() {
         <HeroHeader />
         <div className="absolute inset-x-0 top-0 h-[150vh] min-h-[150vh]">
           <Image
-            src="/artwork/Maecenas Presenting the Liberal Arts to the Emperor Augustus.jpg"
+            src={STORAGE_ASSETS.heroImage}
             alt=""
             fill
             className="object-cover"

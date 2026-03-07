@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
 import { allItems, type Item } from "@/data/items";
+import { readHarvardListings } from "@/lib/harvard-listings-reader";
 import type { MappedHarvardListing } from "@/lib/harvard-art";
 
 export const dynamic = "force-dynamic";
@@ -9,13 +8,6 @@ export const dynamic = "force-dynamic";
 const CYCLE_DAYS = 30;
 const FAKE_LISTING_CYCLE_MS = CYCLE_DAYS * 24 * 60 * 60 * 1000;
 const CYCLE_MINUTES = CYCLE_DAYS * 24 * 60;
-
-const HARVARD_LISTINGS_PATH = path.join(
-  process.cwd(),
-  "src",
-  "data",
-  "harvard-listings.generated.json"
-);
 
 function phaseMs(id: string): number {
   let hash = 0;
@@ -56,155 +48,82 @@ function buildLocalFakeItems(): Item[] {
   return fromBuiltIn;
 }
 
-function extractNumericId(id: string): number {
-  const m = id.match(/^harvard-(\d+)/);
-  return m ? parseInt(m[1], 10) || 0 : 0;
-}
+function harvardToItems(harvard: MappedHarvardListing[]): Item[] {
+  const now = Date.now();
+  const cycleStart = Math.floor(now / FAKE_LISTING_CYCLE_MS) * FAKE_LISTING_CYCLE_MS;
+  const itemsOut: Item[] = [];
 
-async function getHarvardItems(): Promise<Item[]> {
-  try {
-    const json = await readFile(HARVARD_LISTINGS_PATH, "utf-8");
-    const harvard = JSON.parse(json) as MappedHarvardListing[];
-    const now = Date.now();
-    const cycleStart = Math.floor(now / FAKE_LISTING_CYCLE_MS) * FAKE_LISTING_CYCLE_MS;
+  for (const item of harvard) {
+    const base = baseId(item.id);
+    const totalSecondsFromNow =
+      item.endTimeSecondsFromNow ??
+      (item.endTimeMinutesFromNow != null ? item.endTimeMinutesFromNow * 60 : null);
+    const useShortTimer =
+      totalSecondsFromNow != null &&
+      totalSecondsFromNow <= 120 * 60 &&
+      totalSecondsFromNow > 0;
 
-    const toFinalize = new Map<string, MappedHarvardListing>();
-    const newListings: MappedHarvardListing[] = [];
-    const itemsOut: Item[] = [];
-    let nextId = Math.max(0, ...harvard.map((h) => extractNumericId(h.id))) + 1;
-    const toUpdate = new Map<string, MappedHarvardListing>();
+    let displayEndMs: number;
 
-    for (const item of harvard) {
-      const itemNow = Date.now();
-      const base = baseId(item.id);
-      const totalSecondsFromNow = item.endTimeSecondsFromNow ??
-        (item.endTimeMinutesFromNow != null ? item.endTimeMinutesFromNow * 60 : null);
-      const useShortTimer =
-        totalSecondsFromNow != null &&
-        totalSecondsFromNow <= 120 * 60 &&
-        totalSecondsFromNow > 0;
-
-      let displayEndMs: number;
-
-      if (useShortTimer) {
-        if (item.endTimeMs != null) {
-          displayEndMs = item.endTimeMs;
-        } else {
-          displayEndMs = itemNow + totalSecondsFromNow * 1000;
-          toUpdate.set(item.id, { ...item, endTimeMs: displayEndMs });
-        }
-      } else {
-        const phase = phaseMs(base);
-        const rawEndMs = cycleStart + phase;
-        const cycleExpired = rawEndMs <= now;
-        displayEndMs = cycleExpired
-          ? cycleStart + FAKE_LISTING_CYCLE_MS + phase
-          : rawEndMs;
-      }
-
-      const displayTimeLeft = Math.max(0, Math.floor((displayEndMs - itemNow) / 60_000));
-      const expired = displayTimeLeft <= 0;
-      const durationDays = item.listingDurationDays ?? 30;
-      const durationMinutes = durationDays * 24 * 60;
-      const durationSeconds = durationMinutes * 60 + (nextId % 60);
-
-      if (expired && !item.finalized) {
-        const newListing: MappedHarvardListing = {
-          id: `harvard-${nextId}`,
-          title: item.title,
-          category: item.category,
-          currentBid: item.currentBid,
-          endTimeSecondsFromNow: durationSeconds,
-          listingDurationDays: durationDays,
-          era: item.era,
-          artType: item.artType,
-          image: item.image,
-          dateRange: item.dateRange,
-          description: item.description,
-        };
-        newListings.push(newListing);
-        toFinalize.set(item.id, {
-          ...item,
-          finalized: true,
-          replacedById: newListing.id,
-        });
-        nextId++;
-
-        const newEndMs = itemNow + durationSeconds * 1000;
-        itemsOut.push({
-          id: newListing.id,
-          title: newListing.title,
-          category: newListing.category,
-          currentBid: newListing.currentBid,
-          timeLeftMinutes: Math.floor(durationSeconds / 60),
-          endTimeMs: newEndMs,
-          era: newListing.era,
-          artType: newListing.artType,
-          image: newListing.image,
-          dateRange: newListing.dateRange,
-          description: newListing.description,
-          isFakeListing: true,
-        } satisfies Item);
-      } else {
-        itemsOut.push({
-          id: item.id,
-          title: item.title,
-          category: item.category,
-          currentBid: item.currentBid,
-          timeLeftMinutes: displayTimeLeft,
-          endTimeMs: displayEndMs,
-          era: item.era,
-          artType: item.artType,
-          image: item.image,
-          dateRange: item.dateRange,
-          description: item.description,
-          isFakeListing: true,
-        } satisfies Item);
-      }
+    if (useShortTimer && (item.endTimeMs != null || totalSecondsFromNow != null)) {
+      displayEndMs =
+        item.endTimeMs ?? (Date.now() + (totalSecondsFromNow ?? 0) * 1000);
+    } else {
+      const phase = phaseMs(base);
+      const rawEndMs = cycleStart + phase;
+      const cycleExpired = rawEndMs <= now;
+      displayEndMs = cycleExpired
+        ? cycleStart + FAKE_LISTING_CYCLE_MS + phase
+        : rawEndMs;
     }
 
-    const needsWrite = newListings.length > 0 || toUpdate.size > 0;
-    if (needsWrite) {
-      const updated = harvard
-        .map((h) => toFinalize.get(h.id) ?? toUpdate.get(h.id) ?? h)
-        .concat(newListings);
-      await writeFile(
-        HARVARD_LISTINGS_PATH,
-        JSON.stringify(updated, null, 2),
-        "utf-8"
-      );
-    }
+    const displayTimeLeft = Math.max(0, Math.floor((displayEndMs - now) / 60_000));
 
-    return itemsOut;
-  } catch {
-    return [];
-  }
-}
-
-async function getHarvardItemById(id: string): Promise<Item | null> {
-  try {
-    const json = await readFile(HARVARD_LISTINGS_PATH, "utf-8");
-    const harvard = JSON.parse(json) as MappedHarvardListing[];
-    const item = harvard.find((h) => h.id === id);
-    if (!item) return null;
-    return {
+    itemsOut.push({
       id: item.id,
       title: item.title,
       category: item.category,
       currentBid: item.currentBid,
-      timeLeftMinutes: 0,
-      endTimeMs: item.endTimeMs ?? 0,
+      timeLeftMinutes: displayTimeLeft,
+      endTimeMs: displayEndMs,
       era: item.era,
       artType: item.artType,
       image: item.image,
       dateRange: item.dateRange,
       description: item.description,
       isFakeListing: true,
-      auctionEnded: item.finalized === true,
-    } satisfies Item;
-  } catch {
-    return null;
+    });
   }
+
+  return itemsOut;
+}
+
+async function getHarvardItems(): Promise<Item[]> {
+  const harvard = await readHarvardListings();
+  if (!harvard || harvard.length === 0) return [];
+  return harvardToItems(harvard);
+}
+
+async function getHarvardItemById(id: string): Promise<Item | null> {
+  const harvard = await readHarvardListings();
+  if (!harvard) return null;
+  const item = harvard.find((h) => h.id === id);
+  if (!item) return null;
+  return {
+    id: item.id,
+    title: item.title,
+    category: item.category,
+    currentBid: item.currentBid,
+    timeLeftMinutes: 0,
+    endTimeMs: item.endTimeMs ?? 0,
+    era: item.era,
+    artType: item.artType,
+    image: item.image,
+    dateRange: item.dateRange,
+    description: item.description,
+    isFakeListing: true,
+    auctionEnded: item.finalized === true,
+  };
 }
 
 export async function GET(request: Request) {

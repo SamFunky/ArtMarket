@@ -33,22 +33,29 @@ function getEndTimeMs(item: Item): number {
 }
 
 export default function TimeLeft({ item }: { item: Item }) {
-  if (item.auctionEnded === true) return <>ENDED</>;
+  const [mounted, setMounted] = useState(false);
   const endTimeMs = getEndTimeMs(item);
   const endTimeMsRef = useRef(endTimeMs);
   endTimeMsRef.current = endTimeMs;
-
   const [parts, setParts] = useState(() => getParts(endTimeMs - Date.now()));
 
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
+    if (!mounted) return;
     const tick = () => setParts(getParts(endTimeMsRef.current - Date.now()));
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [item.id]);
+  }, [mounted, item.id]);
 
+  if (!mounted) {
+    return <span suppressHydrationWarning>--</span>;
+  }
+
+  if (item.auctionEnded === true) return <>ENDED</>;
   const remainingMs = endTimeMsRef.current - Date.now();
   if (remainingMs <= 0) return <>ENDED</>;
 
-  return <>{formatParts(parts)}</>;
+  return <span suppressHydrationWarning>{formatParts(parts)}</span>;
 }

@@ -2,9 +2,9 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const purchaseId = searchParams.get("purchase_id");
@@ -75,5 +75,21 @@ export default function CheckoutSuccessPage() {
         </Link>
       </div>
     </main>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
+          <div className="mx-auto flex max-w-lg flex-col items-center px-4 text-center">
+            <p className="text-sm text-zinc-600">Loading…</p>
+          </div>
+        </main>
+      }
+    >
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }

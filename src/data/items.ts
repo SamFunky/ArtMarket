@@ -1,3 +1,5 @@
+import { STORAGE_ASSETS } from "@/lib/storage-assets";
+
 export type ArtEra = "ancient" | "renaissance" | "baroque" | "modern" | "contemporary" | "classical";
 export type ArtType = "oil painting" | "sculpture" | "ceramic" | "watercolor" | "mixed media" | "drawing";
 
@@ -48,7 +50,7 @@ export function getLocalFakeListings(): Item[] {
 }
 
 export const allItems: Item[] = [
-  { id: "1", title: "The Apparition", category: "painting", currentBid: 12400, timeLeftMinutes: 154, era: "modern", artType: "oil painting", image: "/artwork/TheApparition.jpg", imageFit: "contain" },
+  { id: "1", title: "The Apparition", category: "painting", currentBid: 12400, timeLeftMinutes: 154, era: "modern", artType: "oil painting", image: STORAGE_ASSETS.theApparition, imageFit: "contain" },
   { id: "2", title: "Old Roman Coin", category: "painting", currentBid: 24100, timeLeftMinutes: 68, era: "ancient", artType: "mixed media", model: true, modelSrc: "/models/old_roman_coin_ueinbaiva_mid.glb", modelScale: 80, modelRotation: [Math.PI / 2, 0, 0] },
   { id: "3", title: "Oriental Vase", category: "painting", currentBid: 8750, timeLeftMinutes: 312, era: "classical", artType: "ceramic", model: true, modelSrc: "/models/oriental_vase.glb", modelScale: 3, modelPosition: [0, -1.3, 0] },
   { id: "4", title: "Maecenas Presenting the Liberal Arts", category: "painting", currentBid: 18750, timeLeftMinutes: 420, era: "renaissance", artType: "oil painting" },

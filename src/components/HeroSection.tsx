@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { STORAGE_ASSETS } from "@/lib/storage-assets";
 import { useEffect, useState } from "react";
 import HeroHeader from "./HeroHeader";
 
@@ -26,7 +27,7 @@ export default function HeroSection() {
         }}
       >
         <Image
-          src="/artwork/Maecenas Presenting the Liberal Arts to the Emperor Augustus.jpg"
+          src={STORAGE_ASSETS.heroImage}
           alt=""
           fill
           className="object-cover"

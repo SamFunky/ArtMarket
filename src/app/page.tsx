@@ -1,4 +1,5 @@
 import HeroSection from "@/components/HeroSection";
+import { STORAGE_ASSETS } from "@/lib/storage-assets";
 import HowItWorks from "@/components/HowItWorks";
 import ModelViewer from "@/components/ModelViewer";
 import TrendingEndingSoon from "@/components/TrendingEndingSoon";
@@ -11,7 +12,7 @@ const hotAuctions = [
   {
     id: "1",
     title: "The Apparition",
-    image: "/artwork/TheApparition.jpg",
+    image: STORAGE_ASSETS.theApparition,
     currentBid: "$12,400",
     timeLeft: "2h 34m",
     imageFit: "contain" as const,

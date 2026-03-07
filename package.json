@@ -6,7 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "upload-harvard-listings": "node --env-file=.env.local scripts/upload-harvard-listings.cjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
