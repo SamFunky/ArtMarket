@@ -4,6 +4,7 @@ import HowItWorks from "@/components/HowItWorks";
 import ModelViewer from "@/components/ModelViewer";
 import TrendingEndingSoon from "@/components/TrendingEndingSoon";
 import Newsletter from "@/components/Newsletter";
+import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -43,7 +44,7 @@ export default function Home() {
     <main className="flex flex-col">
       <HeroSection />
       <HowItWorks />
-        <section className="relative w-full border-y border-zinc-200/80 bg-[#faf5f2] px-4 py-12 sm:px-6 sm:py-16 xl:px-12 xl:py-24">
+        <section className="relative w-full border-y border-zinc-200/80 bg-[#faf5f2] px-4 py-12 sm:px-6 sm:py-16 xl:py-24">
         <div className="mx-auto w-full max-w-[120rem] px-4">
           <h2 className="mb-10 w-full text-center font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:mb-16 sm:text-3xl">
             Featured Auctions
@@ -117,6 +118,7 @@ export default function Home() {
       </section>
       <Newsletter />
       <TrendingEndingSoon />
+      <Footer />
     </main>
   );
 }

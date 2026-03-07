@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchListingsByCreator } from "@/lib/listings";
 import type { Item } from "@/data/items";
 
@@ -11,6 +11,7 @@ export function useMyListings(creatorId: string | null): {
 } {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(Boolean(creatorId));
+  const lastCreatorIdRef = useRef<string | null>(undefined as unknown as null);
 
   const load = useCallback(async () => {
     if (!creatorId) {
@@ -30,8 +31,10 @@ export function useMyListings(creatorId: string | null): {
   }, [creatorId]);
 
   useEffect(() => {
+    if (creatorId === lastCreatorIdRef.current) return;
+    lastCreatorIdRef.current = creatorId;
     load();
-  }, [load]);
+  }, [creatorId, load]);
 
   return { items, loading, refetch: load };
 }

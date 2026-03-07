@@ -17,7 +17,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative flex min-h-[60vh] w-screen shrink-0 items-center justify-center overflow-hidden px-4 sm:px-8 md:px-12 lg:px-16">
+    <section className="relative flex min-h-[65vh] w-screen shrink-0 items-center justify-center overflow-hidden px-4 md:min-h-[80vh] sm:px-8 md:px-12 lg:px-16">
       <div
         className="absolute inset-x-0 top-0 h-[100vh] bg-zinc-900 sm:h-[150vh] sm:min-h-[150vh]"
         style={{
@@ -28,7 +28,8 @@ export default function HeroSection() {
           src={STORAGE_ASSETS.heroImage}
           alt=""
           fill
-          className="object-cover object-left-top sm:object-[center_600%]"
+          unoptimized
+          className="object-cover object-left-top sm:object-center"
           priority
         />
       </div>

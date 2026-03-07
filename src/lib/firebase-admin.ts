@@ -1,25 +1,33 @@
 import admin from "firebase-admin";
 
+function resolveProjectId(): string | null {
+  return (
+    process.env.GOOGLE_CLOUD_PROJECT ??
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ??
+    process.env.FIREBASE_PROJECT_ID ??
+    null
+  );
+}
+
 function getAdminApp(): admin.app.App | null {
   if (admin.apps.length > 0) return admin.app();
+  const projectId = resolveProjectId();
   const key = process.env.FIREBASE_PRIVATE_KEY;
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
   if (key && projectId && clientEmail) {
     try {
       const privateKey = key.replace(/\\n/g, "\n");
       return admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId,
-          clientEmail,
-          privateKey,
-        }),
+        credential: admin.credential.cert({ projectId, clientEmail, privateKey }),
+        storageBucket: `${projectId}.firebasestorage.app`,
       });
     } catch {
     }
   }
   try {
-    return admin.initializeApp();
+    const appConfig: admin.AppOptions = {};
+    if (projectId) appConfig.storageBucket = `${projectId}.firebasestorage.app`;
+    return admin.initializeApp(appConfig);
   } catch {
     return null;
   }
@@ -30,14 +38,14 @@ export function getAdminDb(): admin.firestore.Firestore | null {
   return app ? app.firestore() : null;
 }
 
-export function getAdminStorageBucket() {
+export function getAdminStorageBucket(bucketSuffix: "firebasestorage.app" | "appspot.com" = "firebasestorage.app") {
   const app = getAdminApp();
   if (!app) return null;
-  const projectId =
-    process.env.GOOGLE_CLOUD_PROJECT ??
-    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ??
-    process.env.FIREBASE_PROJECT_ID;
+  const projectId = resolveProjectId();
   if (!projectId) return null;
-  const bucket = app.storage().bucket(`${projectId}.firebasestorage.app`);
-  return bucket;
+  try {
+    return app.storage().bucket(`${projectId}.${bucketSuffix}`);
+  } catch {
+    return null;
+  }
 }

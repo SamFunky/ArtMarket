@@ -14,7 +14,7 @@ export default function Newsletter() {
   }
 
   return (
-    <section className="w-full border-y border-zinc-700/50 bg-[rgb(30,36,44)] px-6 py-16">
+    <section className="w-full border-y border-zinc-700/50 bg-[rgb(30,36,44)] px-6 py-16 xl:py-24">
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
         <h2 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
           Stay in the loop

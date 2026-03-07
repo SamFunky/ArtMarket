@@ -22,7 +22,7 @@ export default function TrendingEndingSoon() {
     .slice(0, 12);
 
   return (
-    <section className="w-full bg-[#faf5f2] px-6 py-20">
+    <section className="w-full bg-[#faf5f2] px-6 py-20 xl:px-12 xl:py-28">
       <div className="mx-auto max-w-[120rem]">
         <div className="relative mb-10 flex items-center justify-center">
           <h2 className="text-center font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">

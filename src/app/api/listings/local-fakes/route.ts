@@ -127,23 +127,47 @@ async function getHarvardItemById(id: string): Promise<Item | null> {
 }
 
 export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const id = url.searchParams.get("id");
+  try {
+    const url = new URL(request.url);
+    const id = url.searchParams.get("id");
 
-  const builtIn = buildLocalFakeItems();
-  const harvard = await getHarvardItems();
-  const all = [...builtIn, ...harvard];
+    const builtIn = buildLocalFakeItems();
 
-  if (id) {
-    let one = all.find((i) => i.id === id);
-    if (!one) one = all.find((i) => baseId(i.id) === id);
-    if (!one) {
-      const finalizedItem = await getHarvardItemById(id);
-      if (finalizedItem) one = finalizedItem;
+    let harvard: Item[] = [];
+    try {
+      harvard = await getHarvardItems();
+    } catch (e) {
+      console.error("[local-fakes] getHarvardItems error:", e);
     }
-    if (!one) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return NextResponse.json(one);
-  }
 
-  return NextResponse.json(all);
+    const all = [...builtIn, ...harvard];
+
+    if (id) {
+      let one = all.find((i) => i.id === id);
+      if (!one) one = all.find((i) => baseId(i.id) === id);
+      if (!one) {
+        try {
+          const finalizedItem = await getHarvardItemById(id);
+          if (finalizedItem) one = finalizedItem;
+        } catch (e) {
+          console.error("[local-fakes] getHarvardItemById error:", e);
+        }
+      }
+      if (!one) return NextResponse.json({ error: "Not found" }, { status: 404 });
+      return NextResponse.json(one);
+    }
+
+    return NextResponse.json(all, {
+      headers: {
+        "Cache-Control": "public, max-age=60, stale-while-revalidate=30",
+      },
+    });
+  } catch (e) {
+    console.error("[local-fakes] Unhandled error:", e);
+    try {
+      return NextResponse.json(buildLocalFakeItems());
+    } catch {
+      return NextResponse.json([]);
+    }
+  }
 }

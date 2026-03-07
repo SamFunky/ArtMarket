@@ -5,6 +5,10 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "storage": {
+    "bucket": "curatorartmarket.firebasestorage.app",
+    "rules": "storage.rules"
+  },
   "hosting": {
     "source": ".",
     "ignore": [

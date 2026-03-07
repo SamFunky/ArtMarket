@@ -17,6 +17,10 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "Curator",
   description: "A marketplace for art",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({

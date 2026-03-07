@@ -18,7 +18,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="w-full bg-[rgb(30,36,44)] px-6 py-20">
+    <section className="w-full bg-[rgb(30,36,44)] px-6 py-20 xl:px-12 xl:py-28">
       <div className="mx-auto max-w-[120rem]">
         <h2 className="mb-16 text-center font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
           How it works

@@ -45,8 +45,8 @@ export default function SignUp() {
             src={STORAGE_ASSETS.heroImage}
             alt=""
             fill
-            className="object-cover"
-            style={{ objectPosition: "center 600%" }}
+            unoptimized
+            className="object-cover object-center"
             priority={false}
           />
         </div>

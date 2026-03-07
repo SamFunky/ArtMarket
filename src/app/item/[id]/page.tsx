@@ -157,7 +157,7 @@ export default function ItemPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
-        <div className="mx-auto w-full max-w-[120rem] px-4">
+        <div className="mx-auto w-full max-w-[120rem] px-4 sm:px-6 xl:px-12">
           <div className="rounded-lg bg-white/50 py-20 text-center">
             <p className="text-sm text-zinc-500">Loading…</p>
           </div>
@@ -169,7 +169,7 @@ export default function ItemPage() {
   if (!item) {
     return (
       <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
-        <div className="mx-auto flex w-full max-w-[120rem] flex-col items-center px-4 text-center">
+        <div className="mx-auto flex w-full max-w-[120rem] flex-col items-center px-4 sm:px-6 xl:px-12 text-center">
           <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
             Item not found
           </h1>
@@ -190,7 +190,7 @@ export default function ItemPage() {
   return (
     <>
     <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
-      <div className="mx-auto w-full max-w-[120rem] px-4">
+      <div className="mx-auto w-full max-w-[120rem] px-4 sm:px-6 xl:px-12">
         <div className="flex flex-col gap-10 lg:flex-row lg:gap-16">
           <div className="min-w-0 flex-1">
             <div className="relative w-full overflow-hidden rounded border border-zinc-200/80 bg-white/80">
