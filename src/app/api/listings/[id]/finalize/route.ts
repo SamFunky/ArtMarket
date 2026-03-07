@@ -52,13 +52,14 @@ export async function POST(
       .get();
     if (existing.empty) {
       await db.collection(PURCHASES_COLLECTION).add({
-      listingId,
-      buyerId: highestBidderId,
-      buyerEmail: highestBidderEmail,
-      amount: currentBid,
-      status: "pending",
-      createdAt: Timestamp.now(),
-    });
+        listingId,
+        buyerId: highestBidderId,
+        buyerEmail: highestBidderEmail,
+        amount: currentBid,
+        status: "pending",
+        listingCreatorId: data.creatorId ?? null,
+        createdAt: Timestamp.now(),
+      });
     }
   }
 

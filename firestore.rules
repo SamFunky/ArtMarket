@@ -23,7 +23,10 @@ service cloud.firestore {
     }
 
     match /purchases/{purchaseId} {
-      allow read: if request.auth != null && resource.data.buyerId == request.auth.uid;
+      allow read: if request.auth != null && (
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.listingCreatorId == request.auth.uid
+      );
       allow create, update, delete: if false;
     }
 

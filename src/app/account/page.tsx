@@ -2,15 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLiked } from "@/context/LikedContext";
 import { useListings } from "@/hooks/useListings";
 import { useMyListings } from "@/hooks/useMyListings";
 import { usePurchases } from "@/hooks/usePurchases";
+import { useSellerPurchases } from "@/hooks/useSellerPurchases";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import LikeButton from "@/components/LikeButton";
 import MessageThread from "@/components/MessageThread";
 import TimeLeft from "@/components/TimeLeft";
+import type { Item } from "@/data/items";
 
 type Tab = "purchases" | "liked" | "listings";
 
@@ -45,6 +48,12 @@ function PurchaseRow({ purchase }: PurchaseRowProps) {
     user &&
     purchase.listingCreatorId &&
     purchase.listingCreatorId !== user.uid
+  );
+  const { unreadCount } = useUnreadMessages(
+    canMessage ? purchase.id : null,
+    user?.uid ?? "",
+    purchase.listingCreatorId ?? "",
+    chatExpanded
   );
 
   async function handlePayNow() {
@@ -121,7 +130,7 @@ function PurchaseRow({ purchase }: PurchaseRowProps) {
             <button
               type="button"
               onClick={() => setChatExpanded((e) => !e)}
-              className={`ml-auto rounded p-2 transition-colors ${
+              className={`relative ml-auto rounded p-2 transition-colors ${
                 chatExpanded
                   ? "bg-zinc-200 text-[rgb(30,36,44)]"
                   : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
@@ -132,6 +141,9 @@ function PurchaseRow({ purchase }: PurchaseRowProps) {
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
+              {unreadCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
+              )}
             </button>
           )}
         </div>
@@ -150,12 +162,163 @@ function PurchaseRow({ purchase }: PurchaseRowProps) {
   );
 }
 
+type SellerPurchaseRowProps = {
+  purchase: {
+    id: string;
+    listingId: string;
+    listingTitle?: string;
+    listingImage?: string;
+    buyerId: string;
+    buyerEmail?: string;
+    amount: number;
+    status: string;
+  };
+};
+
+function SellerPurchaseRow({ purchase }: SellerPurchaseRowProps) {
+  const { user } = useAuth();
+  const [chatExpanded, setChatExpanded] = useState(false);
+  const canMessage = Boolean(user && purchase.buyerId && purchase.buyerId !== user.uid);
+  const { unreadCount } = useUnreadMessages(
+    canMessage ? purchase.id : null,
+    user?.uid ?? "",
+    purchase.buyerId ?? "",
+    chatExpanded
+  );
+
+  return (
+    <div className="rounded border border-zinc-200 bg-white">
+      <div className="flex flex-wrap items-center gap-4 p-4">
+        {purchase.listingImage ? (
+          <Link href={`/item/${purchase.listingId}`} className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100">
+            <Image
+              src={purchase.listingImage}
+              alt={purchase.listingTitle ?? "Listing"}
+              fill
+              className="object-cover"
+              sizes="80px"
+              unoptimized={purchase.listingImage.startsWith("http")}
+            />
+          </Link>
+        ) : (
+          <div className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400">
+            —
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <Link
+            href={`/item/${purchase.listingId}`}
+            className="font-medium text-[rgb(30,36,44)] hover:underline"
+          >
+            {purchase.listingTitle ?? "Untitled"}
+          </Link>
+          <p className="text-sm text-zinc-600">
+            Sold for {formatBid(purchase.amount)}
+            <span className="ml-2 rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">
+              Buyer: {purchase.buyerEmail ?? "—"}
+            </span>
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className={`rounded px-2 py-1 text-xs font-medium ${
+            purchase.status === "paid"
+              ? "bg-green-100 text-green-800"
+              : "bg-amber-100 text-amber-800"
+          }`}>
+            {purchase.status === "paid" ? "PAID" : "UNPAID"}
+          </span>
+          <span className="rounded bg-zinc-100 px-2 py-1 text-xs text-zinc-600">
+            ENDED
+          </span>
+          {canMessage && (
+            <button
+              type="button"
+              onClick={() => setChatExpanded((e) => !e)}
+              className={`relative rounded p-2 transition-colors ${
+                chatExpanded
+                  ? "bg-zinc-200 text-[rgb(30,36,44)]"
+                  : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+              }`}
+              aria-label={chatExpanded ? "Close chat" : "Message buyer"}
+              title={chatExpanded ? "Close chat" : "Message buyer"}
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              {unreadCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+      {chatExpanded && canMessage && user && (
+        <div className="border-t border-zinc-200 bg-zinc-50/50 p-4">
+          <MessageThread
+            purchaseId={purchase.id}
+            currentUserId={user.uid}
+            otherUserId={purchase.buyerId}
+            currentUserEmail={user.email ?? ""}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+type ListingCardProps = {
+  item: Item;
+};
+
+function ListingCard({ item }: ListingCardProps) {
+  return (
+    <Link
+      href={`/item/${item.id}`}
+      className="flex flex-wrap items-center gap-4 rounded border border-zinc-200 bg-white p-4 transition-colors hover:bg-zinc-50/50"
+    >
+      {item.image ? (
+        <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100">
+          <Image
+            src={item.image}
+            alt={item.title}
+            fill
+            className="object-cover"
+            sizes="80px"
+            unoptimized={item.image.startsWith("http")}
+          />
+        </div>
+      ) : (
+        <div className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400">
+          —
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
+        <span className="font-medium text-[rgb(30,36,44)]">{item.title}</span>
+        <p className="text-sm text-zinc-600">
+          Current bid {formatBid(item.currentBid)}
+          <span className="ml-2 rounded bg-zinc-200 px-1.5 py-0.5 text-[10px] text-zinc-600">
+            No buyer
+          </span>
+        </p>
+      </div>
+      <span className="shrink-0 rounded bg-zinc-100 px-2 py-1 text-xs text-zinc-600">
+        <TimeLeft item={item} />
+      </span>
+    </Link>
+  );
+}
+
 export default function AccountPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>("purchases");
   const { likedIds } = useLiked();
   const { items: allItems } = useListings();
   const { items: myListings, loading: listingsLoading } = useMyListings(user?.uid ?? null);
+  const listingIds = useMemo(() => myListings.map((l) => l.id), [myListings]);
+  const { purchases: sellerPurchases } = useSellerPurchases(
+    user?.uid ?? null,
+    listingIds
+  );
   const { purchases, loading: purchasesLoading, refetch: refetchPurchases } = usePurchases(user?.uid ?? null);
   const likedItems = allItems.filter((item) => likedIds.has(item.id));
 
@@ -402,79 +565,27 @@ export default function AccountPage() {
                     <p className="text-sm text-zinc-500">No listings yet</p>
                   </div>
                 ) : (
-                  <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-                    {myListings.map((item) => (
-                      <Link
-                        key={item.id}
-                        href={`/item/${item.id}`}
-                        className="group relative flex aspect-[4/3] overflow-hidden border border-white/60 bg-zinc-200/80 shadow-sm transition-all hover:-translate-y-1 hover:border-white hover:shadow-md"
-                      >
-                        <div className="relative h-full w-full overflow-hidden">
-                          {item.image ? (
-                            <Image
-                              src={item.image}
-                              alt={item.title}
-                              fill
-                              className="object-cover transition-transform duration-300 group-hover:scale-105"
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                              unoptimized={item.image.startsWith("http")}
-                            />
-                          ) : null}
-                          <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-black/65 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/90">
-                            {item.artType}
-                          </span>
-                          <span className="absolute right-2.5 top-2.5 z-10">
-                            <LikeButton itemId={item.id} />
-                          </span>
-                          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10">
-                            <h3 className="truncate text-sm font-semibold text-white">
-                              {item.title}
-                            </h3>
-                            <div className="mt-2 flex items-end justify-between gap-2 text-xs text-white/90">
-                              <div>
-                                <p className="text-[10px] uppercase tracking-wider text-white/70">
-                                  Current bid
-                                </p>
-                                <p className="text-base font-semibold">
-                                  {formatBid(item.currentBid)}
-                                </p>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-[10px] uppercase tracking-wider text-white/70">
-                                  Time left
-                                </p>
-                                <p className="font-medium">
-                                  <TimeLeft item={item} />
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                  <div className="mt-4 space-y-4">
+                    {myListings
+                      .filter((item) => !sellerPurchases.some((p) => p.listingId === item.id))
+                      .map((item) => (
+                        <ListingCard key={item.id} item={item} />
+                      ))}
+                    {sellerPurchases
+                      .filter((p) => p.status !== "paid")
+                      .map((p) => (
+                        <SellerPurchaseRow key={p.id} purchase={p} />
+                      ))}
+                    {sellerPurchases
+                      .filter((p) => p.status === "paid")
+                      .map((p) => (
+                        <SellerPurchaseRow key={p.id} purchase={p} />
+                      ))}
                   </div>
                 )}
               </div>
             )}
           </section>
-
-          <aside className="shrink-0 lg:w-80">
-            <section className="rounded border border-zinc-200 bg-white/80 p-5">
-              <h2 className="font-display text-base font-semibold text-[rgb(30,36,44)]">
-                Messages
-              </h2>
-              <p className="mt-2 text-xs text-zinc-600">
-                Chat with sellers you&apos;ve bought from about delivery or
-                questions.
-              </p>
-              <div className="mt-4 rounded border border-dashed border-zinc-300 bg-zinc-50/50 py-6 text-center">
-                <p className="text-sm text-zinc-500">No conversations yet</p>
-                <p className="mt-1 text-xs text-zinc-400">
-                  Start a chat from a completed purchase
-                </p>
-              </div>
-            </section>
-          </aside>
         </div>
       </div>
     </main>

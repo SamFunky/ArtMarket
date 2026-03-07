@@ -26,7 +26,7 @@ export default function MessageThread({
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const conversationId = getConversationId(purchaseId);
 
   useEffect(() => {
@@ -46,7 +46,8 @@ export default function MessageThread({
   }, [conversationId]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages]);
 
   async function handleSend(e: React.FormEvent) {
@@ -92,7 +93,10 @@ export default function MessageThread({
   return (
     <div className="bg-zinc-50/50">
       <div className="flex max-h-64 flex-col">
-        <div className="flex-1 overflow-y-auto px-4 py-3">
+        <div
+          ref={scrollContainerRef}
+          className="flex-1 overflow-y-auto px-4 py-3"
+        >
           {messages.length === 0 ? (
             <p className="py-4 text-center text-sm text-zinc-500">
               No messages yet. Start the conversation below.
@@ -127,7 +131,6 @@ export default function MessageThread({
               })}
             </div>
           )}
-          <div ref={bottomRef} />
         </div>
         {error && (
           <p className="border-t border-zinc-200 bg-red-50 px-4 py-2 text-sm text-red-600">

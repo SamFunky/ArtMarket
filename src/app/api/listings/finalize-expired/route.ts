@@ -47,6 +47,7 @@ export async function POST() {
         buyerEmail: highestBidderEmail,
         amount: currentBid,
         status: "pending",
+        listingCreatorId: data.creatorId ?? null,
         createdAt: Timestamp.now(),
       });
     }
