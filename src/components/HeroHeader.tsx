@@ -26,10 +26,10 @@ export default function HeroHeader() {
         >
           Curator
         </Link>
-        <div className="flex items-center gap-6 sm:gap-8">
+        <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
           <Link
             href="/explore"
-            className="text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:text-base"
+            className="hidden text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:block sm:text-base"
           >
             Explore
           </Link>
@@ -37,20 +37,20 @@ export default function HeroHeader() {
             <>
               <Link
                 href="/create-listing"
-                className="text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:text-base"
+                className="hidden text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:text-base md:block"
               >
                 Create listing
               </Link>
               <Link
                 href="/account"
-                className="text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:text-base"
+                className="hidden text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:block sm:text-base"
               >
                 Account
               </Link>
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="cursor-pointer rounded-full border border-[#faf5f2]/50 bg-transparent px-4 py-2 text-sm font-medium text-[#faf5f2] transition-colors hover:bg-[#faf5f2]/10 sm:px-5"
+                className="cursor-pointer rounded-full border border-[#faf5f2]/50 bg-transparent px-3 py-1.5 text-xs font-medium text-[#faf5f2] transition-colors hover:bg-[#faf5f2]/10 sm:px-4 sm:py-2 sm:text-sm sm:px-5"
               >
                 Sign out
               </button>
@@ -59,13 +59,13 @@ export default function HeroHeader() {
             <>
               <Link
                 href="/signin"
-                className="text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:text-base"
+                className="hidden text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:block sm:text-base"
               >
                 Sign in
               </Link>
               <Link
                 href="/signup"
-                className="rounded-full border border-[#faf5f2]/50 bg-transparent px-4 py-2 text-sm font-medium text-[#faf5f2] transition-colors hover:bg-[#faf5f2]/10 sm:px-5"
+                className="rounded-full border border-[#faf5f2]/50 bg-transparent px-3 py-1.5 text-xs font-medium text-[#faf5f2] transition-colors hover:bg-[#faf5f2]/10 sm:px-4 sm:py-2 sm:text-sm sm:px-5"
               >
                 Sign up
               </Link>

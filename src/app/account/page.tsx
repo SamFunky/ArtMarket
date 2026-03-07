@@ -76,10 +76,27 @@ function PurchaseRow({ purchase }: PurchaseRowProps) {
   }
 
   return (
-    <div className="rounded border border-zinc-200 bg-white">
-      <div className="flex flex-wrap items-center gap-4 p-4">
+    <div className="overflow-hidden rounded border border-zinc-200 bg-white">
+      <Link href={`/item/${purchase.listingId}`} className="block sm:hidden">
         {purchase.listingImage ? (
-          <Link href={`/item/${purchase.listingId}`} className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100">
+          <div className="relative h-40 w-full overflow-hidden bg-zinc-100">
+            <Image
+              src={purchase.listingImage}
+              alt={purchase.listingTitle ?? "Listing"}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              unoptimized={purchase.listingImage.startsWith("http")}
+            />
+          </div>
+        ) : (
+          <div className="flex h-32 w-full items-center justify-center bg-zinc-100 text-xs text-zinc-400">—</div>
+        )}
+      </Link>
+
+      <div className="flex items-start gap-4 p-4">
+        {purchase.listingImage ? (
+          <Link href={`/item/${purchase.listingId}`} className="relative hidden h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100 sm:block">
             <Image
               src={purchase.listingImage}
               alt={purchase.listingTitle ?? "Listing"}
@@ -90,38 +107,73 @@ function PurchaseRow({ purchase }: PurchaseRowProps) {
             />
           </Link>
         ) : (
-          <div className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400">
-            —
-          </div>
+          <div className="hidden h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400 sm:flex">—</div>
         )}
+
         <div className="min-w-0 flex-1">
           <Link
             href={`/item/${purchase.listingId}`}
-            className="font-medium text-[rgb(30,36,44)] hover:underline"
+            className="line-clamp-2 font-medium text-[rgb(30,36,44)] hover:underline sm:line-clamp-none"
           >
             {purchase.listingTitle ?? "Untitled"}
           </Link>
-          <p className="text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-zinc-600">
             {formatBid(purchase.amount)}
+          </p>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
             {isPending && (
-              <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800">
+              <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800">
                 Pending payment
               </span>
             )}
             {purchase.status === "paid" && (
-              <span className="ml-2 rounded bg-green-100 px-1.5 py-0.5 text-xs text-green-800">
+              <span className="rounded bg-green-100 px-1.5 py-0.5 text-xs text-green-800">
                 Paid
               </span>
             )}
-          </p>
+          </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+
+        {canMessage && (
+          <button
+            type="button"
+            onClick={() => setChatExpanded((e) => !e)}
+            className={`relative hidden shrink-0 rounded p-2 transition-colors sm:block ${
+              chatExpanded
+                ? "bg-zinc-200 text-[rgb(30,36,44)]"
+                : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+            }`}
+            aria-label={chatExpanded ? "Close chat" : "Message seller"}
+            title={chatExpanded ? "Close chat" : "Message seller"}
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            {unreadCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
+            )}
+          </button>
+        )}
+        {isPending && (
+          <button
+            type="button"
+            onClick={handlePayNow}
+            disabled={paying}
+            className="hidden shrink-0 bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70 sm:block"
+          >
+            {paying ? "Redirecting…" : "Pay now"}
+          </button>
+        )}
+      </div>
+
+      {(isPending || canMessage) && (
+        <div className="flex gap-2 border-t border-zinc-100 px-4 pb-4 pt-3 sm:hidden">
           {isPending && (
             <button
               type="button"
               onClick={handlePayNow}
               disabled={paying}
-              className="bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70"
+              className="flex-1 bg-[rgb(30,36,44)] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70"
             >
               {paying ? "Redirecting…" : "Pay now"}
             </button>
@@ -130,24 +182,25 @@ function PurchaseRow({ purchase }: PurchaseRowProps) {
             <button
               type="button"
               onClick={() => setChatExpanded((e) => !e)}
-              className={`relative ml-auto rounded p-2 transition-colors ${
+              className={`relative flex items-center gap-2 rounded border px-4 py-2.5 text-sm font-medium transition-colors ${
                 chatExpanded
-                  ? "bg-zinc-200 text-[rgb(30,36,44)]"
-                  : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+                  ? "border-zinc-300 bg-zinc-100 text-[rgb(30,36,44)]"
+                  : "border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50"
               }`}
               aria-label={chatExpanded ? "Close chat" : "Message seller"}
-              title={chatExpanded ? "Close chat" : "Message seller"}
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
+              Message
               {unreadCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
+                <span className="h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
               )}
             </button>
           )}
         </div>
-      </div>
+      )}
+
       {chatExpanded && canMessage && user && purchase.listingCreatorId && (
         <div className="border-t border-zinc-200 bg-zinc-50/50 p-4">
           <MessageThread
@@ -187,10 +240,27 @@ function SellerPurchaseRow({ purchase }: SellerPurchaseRowProps) {
   );
 
   return (
-    <div className="rounded border border-zinc-200 bg-white">
-      <div className="flex flex-wrap items-center gap-4 p-4">
+    <div className="overflow-hidden rounded border border-zinc-200 bg-white">
+      <Link href={`/item/${purchase.listingId}`} className="block sm:hidden">
         {purchase.listingImage ? (
-          <Link href={`/item/${purchase.listingId}`} className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100">
+          <div className="relative h-40 w-full overflow-hidden bg-zinc-100">
+            <Image
+              src={purchase.listingImage}
+              alt={purchase.listingTitle ?? "Listing"}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              unoptimized={purchase.listingImage.startsWith("http")}
+            />
+          </div>
+        ) : (
+          <div className="flex h-32 w-full items-center justify-center bg-zinc-100 text-xs text-zinc-400">—</div>
+        )}
+      </Link>
+
+      <div className="flex items-start gap-4 p-4">
+        {purchase.listingImage ? (
+          <Link href={`/item/${purchase.listingId}`} className="relative hidden h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100 sm:block">
             <Image
               src={purchase.listingImage}
               alt={purchase.listingTitle ?? "Listing"}
@@ -201,57 +271,81 @@ function SellerPurchaseRow({ purchase }: SellerPurchaseRowProps) {
             />
           </Link>
         ) : (
-          <div className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400">
-            —
-          </div>
+          <div className="hidden h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400 sm:flex">—</div>
         )}
+
         <div className="min-w-0 flex-1">
           <Link
             href={`/item/${purchase.listingId}`}
-            className="font-medium text-[rgb(30,36,44)] hover:underline"
+            className="line-clamp-2 font-medium text-[rgb(30,36,44)] hover:underline sm:line-clamp-none"
           >
             {purchase.listingTitle ?? "Untitled"}
           </Link>
-          <p className="text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-zinc-600">
             Sold for {formatBid(purchase.amount)}
-            <span className="ml-2 rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">
-              Buyer: {purchase.buyerEmail ?? "—"}
-            </span>
           </p>
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            <span className={`rounded px-1.5 py-0.5 text-xs font-medium ${
+              purchase.status === "paid"
+                ? "bg-green-100 text-green-800"
+                : "bg-amber-100 text-amber-800"
+            }`}>
+              {purchase.status === "paid" ? "Paid" : "Unpaid"}
+            </span>
+            <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-600">
+              Ended
+            </span>
+            <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] text-blue-700">
+              {purchase.buyerEmail ?? "—"}
+            </span>
+          </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <span className={`rounded px-2 py-1 text-xs font-medium ${
-            purchase.status === "paid"
-              ? "bg-green-100 text-green-800"
-              : "bg-amber-100 text-amber-800"
-          }`}>
-            {purchase.status === "paid" ? "PAID" : "UNPAID"}
-          </span>
-          <span className="rounded bg-zinc-100 px-2 py-1 text-xs text-zinc-600">
-            ENDED
-          </span>
-          {canMessage && (
-            <button
-              type="button"
-              onClick={() => setChatExpanded((e) => !e)}
-              className={`relative rounded p-2 transition-colors ${
-                chatExpanded
-                  ? "bg-zinc-200 text-[rgb(30,36,44)]"
-                  : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
-              }`}
-              aria-label={chatExpanded ? "Close chat" : "Message buyer"}
-              title={chatExpanded ? "Close chat" : "Message buyer"}
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              {unreadCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
-              )}
-            </button>
-          )}
-        </div>
+
+        {canMessage && (
+          <button
+            type="button"
+            onClick={() => setChatExpanded((e) => !e)}
+            className={`relative hidden shrink-0 rounded p-2 transition-colors sm:block ${
+              chatExpanded
+                ? "bg-zinc-200 text-[rgb(30,36,44)]"
+                : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+            }`}
+            aria-label={chatExpanded ? "Close chat" : "Message buyer"}
+            title={chatExpanded ? "Close chat" : "Message buyer"}
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            {unreadCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
+            )}
+          </button>
+        )}
       </div>
+
+      {canMessage && (
+        <div className="flex gap-2 border-t border-zinc-100 px-4 pb-4 pt-3 sm:hidden">
+          <button
+            type="button"
+            onClick={() => setChatExpanded((e) => !e)}
+            className={`relative flex flex-1 items-center justify-center gap-2 rounded border px-4 py-2.5 text-sm font-medium transition-colors ${
+              chatExpanded
+                ? "border-zinc-300 bg-zinc-100 text-[rgb(30,36,44)]"
+                : "border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50"
+            }`}
+            aria-label={chatExpanded ? "Close chat" : "Message buyer"}
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Message buyer
+            {unreadCount > 0 && (
+              <span className="h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
+            )}
+          </button>
+        </div>
+      )}
+
       {chatExpanded && canMessage && user && (
         <div className="border-t border-zinc-200 bg-zinc-50/50 p-4">
           <MessageThread
@@ -274,36 +368,57 @@ function ListingCard({ item }: ListingCardProps) {
   return (
     <Link
       href={`/item/${item.id}`}
-      className="flex flex-wrap items-center gap-4 rounded border border-zinc-200 bg-white p-4 transition-colors hover:bg-zinc-50/50"
+      className="block overflow-hidden rounded border border-zinc-200 bg-white transition-colors hover:bg-zinc-50/50"
     >
-      {item.image ? (
-        <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100">
-          <Image
-            src={item.image}
-            alt={item.title}
-            fill
-            className="object-cover"
-            sizes="80px"
-            unoptimized={item.image.startsWith("http")}
-          />
-        </div>
-      ) : (
-        <div className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400">
-          —
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <span className="font-medium text-[rgb(30,36,44)]">{item.title}</span>
-        <p className="text-sm text-zinc-600">
-          Current bid {formatBid(item.currentBid)}
-          <span className="ml-2 rounded bg-zinc-200 px-1.5 py-0.5 text-[10px] text-zinc-600">
-            No buyer
-          </span>
-        </p>
+      <div className="sm:hidden">
+        {item.image ? (
+          <div className="relative h-40 w-full overflow-hidden bg-zinc-100">
+            <Image
+              src={item.image}
+              alt={item.title}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              unoptimized={item.image.startsWith("http")}
+            />
+          </div>
+        ) : (
+          <div className="flex h-32 w-full items-center justify-center bg-zinc-100 text-xs text-zinc-400">—</div>
+        )}
       </div>
-      <span className="shrink-0 rounded bg-zinc-100 px-2 py-1 text-xs text-zinc-600">
-        <TimeLeft item={item} />
-      </span>
+
+      <div className="flex items-start gap-4 p-4">
+        {item.image ? (
+          <div className="relative hidden h-16 w-20 shrink-0 overflow-hidden rounded bg-zinc-100 sm:block">
+            <Image
+              src={item.image}
+              alt={item.title}
+              fill
+              className="object-cover"
+              sizes="80px"
+              unoptimized={item.image.startsWith("http")}
+            />
+          </div>
+        ) : (
+          <div className="hidden h-16 w-20 shrink-0 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-400 sm:flex">—</div>
+        )}
+
+        <div className="min-w-0 flex-1">
+          <span className="line-clamp-2 font-medium text-[rgb(30,36,44)] sm:line-clamp-none">{item.title}</span>
+          <p className="mt-1 text-sm text-zinc-600">
+            Current bid {formatBid(item.currentBid)}
+          </p>
+          <div className="mt-1.5">
+            <span className="rounded bg-zinc-200 px-1.5 py-0.5 text-[10px] text-zinc-600">
+              No buyer
+            </span>
+          </div>
+        </div>
+
+        <span className="shrink-0 rounded bg-zinc-100 px-2 py-1 text-xs text-zinc-600">
+          <TimeLeft item={item} />
+        </span>
+      </div>
     </Link>
   );
 }
@@ -482,7 +597,7 @@ export default function AccountPage() {
                     </p>
                   </div>
                 ) : (
-                  <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+                  <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {likedItems.map((item) => (
                       <Link
                         key={item.id}

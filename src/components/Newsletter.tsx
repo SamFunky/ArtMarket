@@ -22,7 +22,7 @@ export default function Newsletter() {
         <p className="text-sm text-zinc-400">
           Get alerts when new featured auctions go live.
         </p>
-        <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-2">
+        <form onSubmit={handleSubmit} className="flex w-full max-w-md flex-col gap-2 sm:flex-row">
           <input
             type="email"
             value={email}
@@ -34,7 +34,7 @@ export default function Newsletter() {
           />
           <button
             type="submit"
-            className="bg-[#faf5f2] px-6 py-3 font-medium text-[rgb(30,36,44)] transition-colors hover:bg-[#f0e6e0]"
+            className="shrink-0 bg-[#faf5f2] px-6 py-3 font-medium text-[rgb(30,36,44)] transition-colors hover:bg-[#f0e6e0]"
           >
             Subscribe
           </button>

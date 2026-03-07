@@ -44,14 +44,14 @@ export default function Home() {
     <main className="flex flex-col">
       <HeroSection />
       <HowItWorks />
-      <section className="relative flex min-h-[60vh] w-full shrink-0 flex-col items-center justify-center border-y border-zinc-200/80 bg-[#faf5f2] px-6 py-16">
-        <div className="mx-auto flex w-full max-w-[120rem] flex-col items-center px-4">
-          <h2 className="mb-20 w-full text-center font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
+      <section className="relative w-full border-y border-zinc-200/80 bg-[#faf5f2] px-4 py-12 sm:px-6 sm:py-16">
+        <div className="mx-auto w-full max-w-[120rem] px-4">
+          <h2 className="mb-10 w-full text-center font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:mb-16 sm:text-3xl">
             Featured Auctions
           </h2>
-        <div className="flex w-full flex-wrap justify-between gap-x-[22rem] gap-y-20 lg:flex-nowrap">
+          <div className="grid grid-cols-1 gap-8 sm:gap-10 md:grid-cols-3">
           {hotAuctions.map((auction) => (
-            <div key={auction.id} className="flex w-full min-w-[20rem] flex-1 flex-col items-center gap-10 sm:min-w-[24rem]">
+            <div key={auction.id} className="flex flex-col gap-8">
               <div className="relative w-full">
                 {auction.model ? (
                   <ModelViewer
@@ -81,7 +81,7 @@ export default function Home() {
                   </div>
                 )}
               </div>
-              <div className="flex w-full flex-col gap-6">
+              <div className="flex w-full flex-col gap-5">
                 <h3 className="font-display text-lg font-semibold text-[rgb(30,36,44)] line-clamp-2">
                   {auction.title}
                 </h3>
@@ -112,7 +112,7 @@ export default function Home() {
               </div>
             </div>
           ))}
-        </div>
+          </div>
         </div>
       </section>
       <Newsletter />

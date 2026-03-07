@@ -19,7 +19,7 @@ export default function TrendingEndingSoon() {
   const { items } = useListings();
   const endingSoon = [...items]
     .sort((a, b) => a.timeLeftMinutes - b.timeLeftMinutes)
-    .slice(0, 10);
+    .slice(0, 12);
 
   return (
     <section className="w-full bg-[#faf5f2] px-6 py-20">
@@ -35,7 +35,7 @@ export default function TrendingEndingSoon() {
             View all
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           {endingSoon.map((item) => (
             <Link
               key={item.id}

@@ -2,6 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import FixedHeader from "./FixedHeader";
+import Footer from "./Footer";
+
+const NO_FOOTER_PATHS = ["/signin", "/signup"];
 
 export default function HeaderWrapper({
   children,
@@ -9,13 +12,13 @@ export default function HeaderWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const hideHeader = pathname === "/signin" || pathname === "/signup";
+  const showFooter = !NO_FOOTER_PATHS.includes(pathname);
 
   return (
     <>
-      {!hideHeader && <FixedHeader />}
+      <FixedHeader />
       {children}
+      {showFooter && <Footer />}
     </>
   );
 }
-

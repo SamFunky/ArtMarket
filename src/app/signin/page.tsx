@@ -5,7 +5,6 @@ import { STORAGE_ASSETS } from "@/lib/storage-assets";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import HeroHeader from "@/components/HeroHeader";
 import { useAuth } from "@/context/AuthContext";
 
 export default function SignIn() {
@@ -35,8 +34,7 @@ export default function SignIn() {
 
   return (
     <main className="flex min-h-screen w-screen items-center justify-center overflow-hidden bg-black">
-      <section className="relative flex min-h-screen w-screen shrink-0 items-center justify-center overflow-hidden px-8 sm:px-12 lg:px-16">
-        <HeroHeader />
+      <section className="relative flex min-h-screen w-screen shrink-0 items-center justify-center overflow-hidden px-8 pt-20 sm:px-12 sm:pt-0 lg:px-16">
         <div className="absolute inset-x-0 top-0 h-[150vh] min-h-[150vh]">
           <Image
             src={STORAGE_ASSETS.heroImage}

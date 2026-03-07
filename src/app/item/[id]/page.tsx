@@ -201,7 +201,7 @@ export default function ItemPage() {
             </div>
           </div>
 
-          <aside className="flex shrink-0 flex-col gap-6 lg:w-[32rem]">
+          <aside className="flex shrink-0 flex-col gap-6 lg:w-[32rem] 2xl:w-[38rem]">
             <div className="sticky top-24 rounded border border-zinc-200 bg-white/80 p-6">
               <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)]">
                 {item.title}

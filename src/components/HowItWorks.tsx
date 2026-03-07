@@ -35,7 +35,7 @@ export default function HowItWorks() {
               <h3 className="font-display text-xl font-semibold text-white">
                 {step.title}
               </h3>
-              <p className="text-sm leading-relaxed text-zinc-400">
+              <p className="text-sm leading-relaxed text-zinc-400 sm:text-base">
                 {step.description}
               </p>
             </div>
