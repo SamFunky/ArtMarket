@@ -2,13 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLiked } from "@/context/LikedContext";
 import { useListings } from "@/hooks/useListings";
-import { useMyListings } from "@/hooks/useMyListings";
-import { usePurchases } from "@/hooks/usePurchases";
-import { useSellerPurchases } from "@/hooks/useSellerPurchases";
+import { useAccountData } from "@/context/AccountDataContext";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import LikeButton from "@/components/LikeButton";
 import MessageThread from "@/components/MessageThread";
@@ -428,13 +426,14 @@ export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<Tab>("purchases");
   const { likedIds } = useLiked();
   const { items: allItems } = useListings();
-  const { items: myListings, loading: listingsLoading } = useMyListings(user?.uid ?? null);
-  const listingIds = useMemo(() => myListings.map((l) => l.id), [myListings]);
-  const { purchases: sellerPurchases } = useSellerPurchases(
-    user?.uid ?? null,
-    listingIds
-  );
-  const { purchases, loading: purchasesLoading, refetch: refetchPurchases } = usePurchases(user?.uid ?? null);
+  const {
+    myListings,
+    listingsLoading,
+    purchases,
+    purchasesLoading,
+    sellerPurchases,
+    refetchPurchases,
+  } = useAccountData();
   const likedItems = allItems.filter((item) => likedIds.has(item.id));
 
   if (!user) {

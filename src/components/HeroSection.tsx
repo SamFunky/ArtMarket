@@ -9,6 +9,8 @@ const PARALLAX_FACTOR = 0.2;
 
 export default function HeroSection() {
   const [scrollY, setScrollY] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -16,7 +18,27 @@ export default function HeroSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  function handleImageLoad() {
+    setFadeOut(true);
+    setTimeout(() => setImageLoaded(true), 400);
+  }
+
   return (
+    <>
+      {!imageLoaded && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-zinc-900 transition-opacity duration-400"
+          style={{ opacity: fadeOut ? 0 : 1 }}
+          aria-hidden
+        >
+          <div className="flex flex-col items-center gap-5">
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+            <span className="font-display text-sm tracking-widest text-white/50 uppercase">
+              Loading
+            </span>
+          </div>
+        </div>
+      )}
     <section className="relative flex min-h-[65vh] w-screen shrink-0 items-center justify-center overflow-hidden px-4 md:min-h-[80vh] sm:px-8 md:px-12 lg:px-16">
       <div
         className="absolute inset-x-0 top-0 h-[100vh] bg-zinc-900 sm:h-[150vh] sm:min-h-[150vh]"
@@ -31,6 +53,7 @@ export default function HeroSection() {
           unoptimized
           className="object-cover object-left-top sm:object-center"
           priority
+          onLoad={handleImageLoad}
         />
       </div>
       <div
@@ -70,5 +93,6 @@ export default function HeroSection() {
         </div>
       </div>
     </section>
+    </>
   );
 }
