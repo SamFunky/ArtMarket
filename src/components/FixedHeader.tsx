@@ -31,67 +31,53 @@ export default function FixedHeader() {
   }, [router, signOut]);
 
   const isHomePage = pathname === "/";
-  const transparent = isHomePage && !scrolled;
+  const transparent = isHomePage && !scrolled && !menuOpen;
+
+  const navLink = (href: string, label: string) => (
+    <Link
+      href={href}
+      className={`link-underline label-caps transition-colors duration-300 ${
+        transparent
+          ? "text-paper/80 hover:text-paper"
+          : "text-ink-mute hover:text-ink"
+      } ${pathname === href ? "is-active" : ""}`}
+    >
+      {label}
+    </Link>
+  );
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 w-full">
       <nav
-        className={`flex items-center justify-between border-b px-6 py-4 transition-all duration-300 sm:px-8 ${
+        className={`flex items-center justify-between border-b px-5 py-4 transition-all duration-500 sm:px-8 lg:px-12 ${
           transparent
-            ? "border-[#e5ddd5] bg-[#faf5f2] md:border-white/10 md:bg-transparent"
-            : "border-[#e5ddd5] bg-[#faf5f2]"
+            ? "border-line bg-paper md:border-white/15 md:bg-transparent"
+            : "border-line bg-paper/95 backdrop-blur-sm"
         }`}
       >
         <Link
           href="/"
-          className={`font-display text-lg font-semibold tracking-tight transition-colors duration-300 sm:text-xl ${
-            transparent ? "text-[rgb(30,36,44)] md:text-white" : "text-[rgb(30,36,44)]"
+          className={`font-display text-xl tracking-tight transition-colors duration-300 sm:text-2xl ${
+            transparent ? "text-ink md:text-paper" : "text-ink"
           }`}
         >
-          Curator
+          Curator<span className="text-bronze">.</span>
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden items-center gap-6 md:flex md:gap-8">
-          <Link
-            href="/explore"
-            className={`text-sm transition-colors duration-300 sm:text-base ${
-              transparent
-                ? "text-white/90 hover:text-white"
-                : "text-zinc-700 hover:text-[rgb(30,36,44)]"
-            }`}
-          >
-            Explore
-          </Link>
+        <div className="hidden items-center gap-8 md:flex lg:gap-10">
+          {navLink("/explore", "Explore")}
           {user ? (
             <>
-              <Link
-                href="/create-listing"
-                className={`text-sm transition-colors duration-300 sm:text-base ${
-                  transparent
-                    ? "text-white/90 hover:text-white"
-                    : "text-zinc-700 hover:text-[rgb(30,36,44)]"
-                }`}
-              >
-                Create Listing
-              </Link>
-              <Link
-                href="/account"
-                className={`text-sm transition-colors duration-300 sm:text-base ${
-                  transparent
-                    ? "text-white/90 hover:text-white"
-                    : "text-zinc-700 hover:text-[rgb(30,36,44)]"
-                }`}
-              >
-                Account
-              </Link>
+              {navLink("/create-listing", "Consign")}
+              {navLink("/account", "Account")}
               <button
                 type="button"
                 onClick={handleSignOut}
-                className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 sm:px-5 ${
+                className={`label-caps cursor-pointer border px-5 py-2.5 transition-all duration-300 ${
                   transparent
-                    ? "bg-white text-[rgb(30,36,44)] hover:bg-[#f0e6e0]"
-                    : "bg-[rgb(30,36,44)] text-white hover:bg-[rgb(40,48,58)]"
+                    ? "border-paper/40 text-paper hover:bg-paper hover:text-ink"
+                    : "border-ink/25 text-ink hover:bg-ink hover:text-paper"
                 }`}
               >
                 Sign out
@@ -99,22 +85,13 @@ export default function FixedHeader() {
             </>
           ) : (
             <>
-              <Link
-                href="/signin"
-                className={`text-sm transition-colors duration-300 sm:text-base ${
-                  transparent
-                    ? "text-white/90 hover:text-white"
-                    : "text-zinc-700 hover:text-[rgb(30,36,44)]"
-                }`}
-              >
-                Sign in
-              </Link>
+              {navLink("/signin", "Sign in")}
               <Link
                 href="/signup"
-                className={`px-4 py-2 text-sm font-medium transition-colors duration-300 sm:px-5 ${
+                className={`label-caps border px-5 py-2.5 transition-all duration-300 ${
                   transparent
-                    ? "bg-white text-[rgb(30,36,44)] hover:bg-[#f0e6e0]"
-                    : "bg-[rgb(30,36,44)] text-white hover:bg-[rgb(40,48,58)]"
+                    ? "border-paper/40 text-paper hover:bg-paper hover:text-ink"
+                    : "border-ink/25 text-ink hover:bg-ink hover:text-paper"
                 }`}
               >
                 Sign up
@@ -128,68 +105,58 @@ export default function FixedHeader() {
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((o) => !o)}
-          className="flex flex-col items-center justify-center gap-[5px] rounded p-2 text-[rgb(30,36,44)] transition-colors hover:bg-zinc-100 md:hidden"
+          className={`flex flex-col items-center justify-center gap-[5px] p-2 transition-colors md:hidden ${
+            transparent ? "text-ink" : "text-ink"
+          }`}
         >
           <span
-            className={`block h-0.5 w-5 bg-current transition-transform duration-200 ${
-              menuOpen ? "translate-y-[7px] rotate-45" : ""
+            className={`block h-px w-6 bg-current transition-transform duration-300 ${
+              menuOpen ? "translate-y-[6px] rotate-45" : ""
             }`}
           />
           <span
-            className={`block h-0.5 w-5 bg-current transition-opacity duration-200 ${
+            className={`block h-px w-6 bg-current transition-opacity duration-300 ${
               menuOpen ? "opacity-0" : ""
             }`}
           />
           <span
-            className={`block h-0.5 w-5 bg-current transition-transform duration-200 ${
-              menuOpen ? "-translate-y-[7px] -rotate-45" : ""
+            className={`block h-px w-6 bg-current transition-transform duration-300 ${
+              menuOpen ? "-translate-y-[6px] -rotate-45" : ""
             }`}
           />
         </button>
       </nav>
 
       {menuOpen && (
-        <div className="border-b border-[#e5ddd5] bg-[#faf5f2] px-6 pb-6 pt-4 md:hidden">
-          <nav className="flex flex-col gap-4">
-            <Link
-              href="/explore"
-              className="text-base text-zinc-700 transition-colors hover:text-[rgb(30,36,44)]"
-            >
+        <div className="border-b border-line bg-paper px-6 pb-8 pt-5 md:hidden">
+          <nav className="flex flex-col gap-5">
+            <Link href="/explore" className="font-display text-2xl text-ink">
               Explore
             </Link>
             {user ? (
               <>
-                <Link
-                  href="/create-listing"
-                  className="text-base text-zinc-700 transition-colors hover:text-[rgb(30,36,44)]"
-                >
-                  Create Listing
+                <Link href="/create-listing" className="font-display text-2xl text-ink">
+                  Consign
                 </Link>
-                <Link
-                  href="/account"
-                  className="text-base text-zinc-700 transition-colors hover:text-[rgb(30,36,44)]"
-                >
+                <Link href="/account" className="font-display text-2xl text-ink">
                   Account
                 </Link>
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="mt-2 w-full cursor-pointer bg-[rgb(30,36,44)] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+                  className="label-caps mt-3 w-full cursor-pointer bg-ink px-4 py-4 text-paper transition-colors hover:bg-ink-soft"
                 >
                   Sign out
                 </button>
               </>
             ) : (
               <>
-                <Link
-                  href="/signin"
-                  className="text-base text-zinc-700 transition-colors hover:text-[rgb(30,36,44)]"
-                >
+                <Link href="/signin" className="font-display text-2xl text-ink">
                   Sign in
                 </Link>
                 <Link
                   href="/signup"
-                  className="mt-2 block w-full bg-[rgb(30,36,44)] px-4 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+                  className="label-caps mt-3 block w-full bg-ink px-4 py-4 text-center text-paper transition-colors hover:bg-ink-soft"
                 >
                   Sign up
                 </Link>

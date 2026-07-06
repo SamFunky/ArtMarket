@@ -1,86 +1,74 @@
 import Link from "next/link";
 
+const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] = [
+  {
+    heading: "Browse",
+    links: [{ href: "/explore", label: "Explore" }],
+  },
+  {
+    heading: "Account",
+    links: [
+      { href: "/signin", label: "Sign in" },
+      { href: "/signup", label: "Sign up" },
+    ],
+  },
+  {
+    heading: "Legal",
+    links: [
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
+    ],
+  },
+];
+
 export default function Footer() {
   return (
-    <footer className="w-full bg-[rgb(30,36,44)] px-6 py-14">
-      <div className="mx-auto flex max-w-[120rem] flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <Link
-            href="/"
-            className="font-display text-xl font-semibold tracking-tight text-white"
-          >
-            Curator
-          </Link>
-          <p className="mt-2 max-w-xs text-sm text-zinc-400">
-            A marketplace for fine art. Discover, bid, and collect.
+    <footer className="w-full border-t border-white/10 bg-ink px-6 pb-10 pt-20 sm:px-10 lg:px-14">
+      <div className="mx-auto max-w-[110rem]">
+        <div className="flex flex-col gap-14 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-md">
+            <p className="label-caps text-gilt">The auction house</p>
+            <p className="mt-5 font-display text-2xl leading-snug text-paper sm:text-3xl">
+              Every work has a next chapter. Write yours into its provenance.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 sm:gap-16">
+            {COLUMNS.map((col) => (
+              <div key={col.heading}>
+                <h3 className="label-caps text-paper/40">{col.heading}</h3>
+                <ul className="mt-5 flex flex-col gap-3">
+                  {col.links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="link-underline text-sm text-paper/80 transition-colors hover:text-paper"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Link
+          href="/"
+          aria-label="Curator home"
+          className="mt-20 block select-none overflow-hidden"
+        >
+          <span className="block text-center font-display text-[clamp(4rem,17vw,17rem)] font-medium leading-[0.95] tracking-tight text-paper/90 transition-colors duration-500 hover:text-paper">
+            Curator<span className="text-bronze">.</span>
+          </span>
+        </Link>
+
+        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 sm:flex-row">
+          <p className="label-caps text-paper/35">
+            © {new Date().getFullYear()} Curator
           </p>
+          <p className="label-caps text-paper/35">Fine art, live auctions</p>
         </div>
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-              Browse
-            </h3>
-            <ul className="mt-3 flex flex-col gap-2">
-              <li>
-                <Link
-                  href="/explore"
-                  className="text-sm text-zinc-300 transition-colors hover:text-white"
-                >
-                  Explore
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-              Account
-            </h3>
-            <ul className="mt-3 flex flex-col gap-2">
-              <li>
-                <Link
-                  href="/signin"
-                  className="text-sm text-zinc-300 transition-colors hover:text-white"
-                >
-                  Sign in
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/signup"
-                  className="text-sm text-zinc-300 transition-colors hover:text-white"
-                >
-                  Sign up
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-              Legal
-            </h3>
-            <ul className="mt-3 flex flex-col gap-2">
-              <li>
-                <Link
-                  href="/privacy"
-                  className="text-sm text-zinc-300 transition-colors hover:text-white"
-                >
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms"
-                  className="text-sm text-zinc-300 transition-colors hover:text-white"
-                >
-                  Terms
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div className="mx-auto mt-12 max-w-[120rem] border-t border-zinc-800 pt-8">
-        <p className="text-xs text-zinc-500">© {new Date().getFullYear()} Curator. All rights reserved.</p>
       </div>
     </footer>
   );
