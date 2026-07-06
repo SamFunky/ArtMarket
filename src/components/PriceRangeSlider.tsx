@@ -75,12 +75,12 @@ export default function PriceRangeSlider({ min, max, onChange }: Props) {
 
   return (
     <div className="flex flex-col gap-1.5">
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-ink-mute">
         {formatPrice(min)} – {formatPrice(max)}
       </p>
       <div
         ref={trackRef}
-        className="relative h-2 w-full rounded-full bg-zinc-200/80"
+        className="relative h-1.5 w-full rounded-full bg-paper-deep"
         onMouseDown={(e) => {
           const rect = trackRef.current?.getBoundingClientRect();
           if (!rect) return;
@@ -92,7 +92,7 @@ export default function PriceRangeSlider({ min, max, onChange }: Props) {
         }}
       >
         <div
-          className="absolute h-full rounded-full bg-zinc-400"
+          className="absolute h-full rounded-full bg-bronze"
           style={{
             left: `${minPercent}%`,
             width: `${maxPercent - minPercent}%`,
@@ -101,7 +101,7 @@ export default function PriceRangeSlider({ min, max, onChange }: Props) {
         <button
           type="button"
           aria-label="Minimum price"
-          className="absolute top-1/2 h-4 w-4 -translate-y-1/2 -translate-x-1/2 cursor-grab rounded-full border-2 border-white bg-zinc-600 shadow-sm hover:bg-zinc-500 active:cursor-grabbing"
+          className="absolute top-1/2 h-4 w-4 -translate-y-1/2 -translate-x-1/2 cursor-grab rounded-full border-2 border-cream bg-bronze shadow-sm hover:bg-ink active:cursor-grabbing"
           style={{ left: `${minPercent}%` }}
           onMouseDown={(e) => {
             e.stopPropagation();
@@ -111,7 +111,7 @@ export default function PriceRangeSlider({ min, max, onChange }: Props) {
         <button
           type="button"
           aria-label="Maximum price"
-          className="absolute top-1/2 h-4 w-4 -translate-y-1/2 -translate-x-1/2 cursor-grab rounded-full border-2 border-white bg-zinc-600 shadow-sm hover:bg-zinc-500 active:cursor-grabbing"
+          className="absolute top-1/2 h-4 w-4 -translate-y-1/2 -translate-x-1/2 cursor-grab rounded-full border-2 border-cream bg-bronze shadow-sm hover:bg-ink active:cursor-grabbing"
           style={{ left: `${maxPercent}%` }}
           onMouseDown={(e) => {
             e.stopPropagation();

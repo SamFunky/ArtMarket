@@ -119,13 +119,17 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 rounded-full border-0 bg-white/80 px-4 py-2 text-sm text-[rgb(30,36,44)] ring-1 ring-zinc-200/80 transition-shadow hover:ring-zinc-300"
+        className={`label-caps flex cursor-pointer items-center gap-2 px-4 py-2.5 transition-all ${
+          min > PRICE_MIN || max < PRICE_MAX
+            ? "bg-ink text-paper"
+            : "bg-cream text-ink ring-1 ring-line hover:ring-ink/40"
+        }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        Price Range
+        Price range
         <svg
-          className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`h-3.5 w-3.5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -135,11 +139,11 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-3xl border border-zinc-200 bg-white p-4 shadow-lg">
+        <div className="absolute left-0 top-full z-50 mt-2 w-72 border border-line bg-cream p-5 shadow-[0_18px_40px_-18px_rgba(29,26,21,0.35)]">
           <div className="flex flex-col gap-4">
             <div
               ref={trackRef}
-              className="relative h-2 w-full cursor-pointer rounded-full bg-blue-100"
+              className="relative h-1.5 w-full cursor-pointer rounded-full bg-paper-deep"
               onMouseDown={(e) => {
                 const rect = trackRef.current?.getBoundingClientRect();
                 if (!rect) return;
@@ -151,7 +155,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
               }}
             >
               <div
-                className="absolute h-full rounded-full bg-blue-500"
+                className="absolute h-full rounded-full bg-bronze"
                 style={{
                   left: `${minPercent}%`,
                   width: `${maxPercent - minPercent}%`,
@@ -160,7 +164,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
               <button
                 type="button"
                 aria-label="Minimum price"
-                className="absolute top-1/2 h-5 w-5 -translate-y-1/2 -translate-x-1/2 cursor-grab rounded-full border-2 border-white bg-blue-500 shadow-sm hover:bg-blue-600 active:cursor-grabbing"
+                className="absolute top-1/2 h-5 w-5 -translate-y-1/2 -translate-x-1/2 cursor-grab rounded-full border-2 border-cream bg-bronze shadow-sm hover:bg-ink active:cursor-grabbing"
                 style={{ left: `${minPercent}%` }}
                 onMouseDown={(e) => {
                   e.stopPropagation();
@@ -170,7 +174,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
               <button
                 type="button"
                 aria-label="Maximum price"
-                className="absolute top-1/2 h-5 w-5 -translate-y-1/2 -translate-x-1/2 cursor-grab rounded-full border-2 border-white bg-blue-500 shadow-sm hover:bg-blue-600 active:cursor-grabbing"
+                className="absolute top-1/2 h-5 w-5 -translate-y-1/2 -translate-x-1/2 cursor-grab rounded-full border-2 border-cream bg-bronze shadow-sm hover:bg-ink active:cursor-grabbing"
                 style={{ left: `${maxPercent}%` }}
                 onMouseDown={(e) => {
                   e.stopPropagation();
@@ -179,7 +183,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
               />
             </div>
 
-            <div className="flex justify-between text-xs text-zinc-500">
+            <div className="label-caps flex justify-between text-[10px] text-ink-mute">
               <span>{formatPrice(PRICE_MIN)}</span>
               <span>$50,000+</span>
             </div>
@@ -197,7 +201,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
                   onBlur={() => {
                     if (localMin > localMax - STEP) setLocalMin(localMax - STEP);
                   }}
-                  className="w-full rounded-full border border-zinc-300 px-4 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                  className="w-full border border-line bg-cream px-4 py-2 text-sm text-ink placeholder-ink-mute/60 focus:border-ink focus:outline-none"
                 />
               </div>
               <div className="flex-1">
@@ -212,7 +216,7 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
                   onBlur={() => {
                     if (localMax < localMin + STEP) setLocalMax(localMin + STEP);
                   }}
-                  className="w-full rounded-full border border-zinc-300 px-4 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                  className="w-full border border-line bg-cream px-4 py-2 text-sm text-ink placeholder-ink-mute/60 focus:border-ink focus:outline-none"
                 />
               </div>
             </div>
@@ -221,14 +225,14 @@ export default function PriceRangeFilter({ min, max, onChange }: Props) {
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex-1 rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+                className="label-caps flex-1 cursor-pointer border border-ink/25 bg-transparent px-4 py-2.5 text-ink transition-colors hover:bg-paper-deep"
               >
                 Clear
               </button>
               <button
                 type="button"
                 onClick={handleConfirm}
-                className="flex-1 rounded-full bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+                className="label-caps flex-1 cursor-pointer bg-ink px-4 py-2.5 text-paper transition-colors hover:bg-bronze"
               >
                 Confirm
               </button>

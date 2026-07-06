@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ListingImage } from "@/components/ListingImage";
-import Link from "next/link";
 import FilterSelect from "@/components/FilterSelect";
-import LikeButton from "@/components/LikeButton";
+import LotCard from "@/components/LotCard";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
-import TimeLeft from "@/components/TimeLeft";
 import { useLiked } from "@/context/LikedContext";
-import { type Item, type ArtEra, type ArtType } from "@/data/items";
+import { type ArtEra, type ArtType } from "@/data/items";
 import { useListings } from "@/hooks/useListings";
 
 type SortOption =
@@ -18,15 +15,6 @@ type SortOption =
   | "most-time"
   | "name-asc"
   | "name-desc";
-
-const SORT_LABELS: Record<SortOption, string> = {
-  "price-asc": "Price: Low to High",
-  "price-desc": "Price: High to Low",
-  "ending-soon": "Ending Soon",
-  "most-time": "Most Time Left",
-  "name-asc": "Name: A–Z",
-  "name-desc": "Name: Z–A",
-};
 
 const ART_ERAS: { value: ArtEra | "all"; label: string }[] = [
   { value: "all", label: "All eras" },
@@ -57,6 +45,24 @@ function formatBid(amount: number) {
   }).format(amount);
 }
 
+function FilterChip({ label, onRemove, ariaLabel }: { label: string; onRemove: () => void; ariaLabel: string }) {
+  return (
+    <span className="label-caps inline-flex items-center gap-2 bg-ink px-3 py-1.5 text-[10px] text-paper">
+      {label}
+      <button
+        type="button"
+        onClick={onRemove}
+        className="cursor-pointer p-0.5 transition-colors hover:text-gilt"
+        aria-label={ariaLabel}
+      >
+        <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </span>
+  );
+}
+
 export default function ExplorePage() {
   const { items, loading } = useListings();
   const { likedIds } = useLiked();
@@ -85,7 +91,7 @@ export default function ExplorePage() {
     sort === "ending-soon" ? "↓" : sort === "most-time" ? "↑" : "—";
 
   const filteredAndSorted = useMemo(() => {
-    let filtered = items.filter((item) => {
+    const filtered = items.filter((item) => {
       const matchesSearch = item.title
         .toLowerCase()
         .includes(search.trim().toLowerCase());
@@ -131,31 +137,41 @@ export default function ExplorePage() {
   const paginatedItems = filteredAndSorted.slice(startIndex, startIndex + pageSize);
 
   return (
-    <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
-      <div className="mx-auto w-full max-w-[120rem] px-4 sm:px-6 xl:px-12">
-        <div className="mb-10 flex flex-col gap-6">
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
-            Explore
-          </h1>
+    <main className="min-h-screen bg-paper pb-24 pt-32">
+      <div className="mx-auto w-full max-w-[110rem] px-5 sm:px-10 lg:px-14">
+        <div className="mb-12 flex flex-col gap-8">
+          <div className="border-b border-line pb-8">
+            <p className="label-caps text-bronze">The catalogue</p>
+            <div className="mt-3 flex flex-wrap items-baseline justify-between gap-4">
+              <h1 className="font-display text-5xl font-medium tracking-tight text-ink sm:text-6xl lg:text-7xl">
+                Explore
+              </h1>
+              {!loading && (
+                <p className="label-caps text-ink-mute">
+                  {filteredAndSorted.length} {filteredAndSorted.length === 1 ? "lot" : "lots"} on offer
+                </p>
+              )}
+            </div>
+          </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="relative w-full">
-              <input
-                type="search"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full border-0 bg-white/80 py-2.5 pl-9 pr-4 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 ring-1 ring-zinc-200/80 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
-                aria-label="Search auctions"
-              />
+          <div className="flex flex-col gap-5">
+            <div className="relative w-full max-w-2xl border-b border-ink/30 transition-colors focus-within:border-ink">
               <svg
-                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400"
+                className="absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-mute"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
+              <input
+                type="search"
+                placeholder="Search the catalogue…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-transparent py-3 pl-8 pr-4 text-base text-ink placeholder-ink-mute/60 focus:outline-none"
+                aria-label="Search auctions"
+              />
             </div>
 
             <div className="flex flex-wrap items-center justify-start gap-2">
@@ -163,14 +179,14 @@ export default function ExplorePage() {
                 <button
                   type="button"
                   onClick={() => setShowLikedOnly((v) => !v)}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`label-caps inline-flex cursor-pointer items-center gap-2 px-4 py-2.5 transition-all ${
                     showLikedOnly
-                      ? "bg-red-500/15 text-red-600 ring-1 ring-red-500/30"
-                      : "bg-white/80 text-zinc-600 ring-1 ring-zinc-200/80 hover:ring-zinc-300"
+                      ? "bg-oxblood text-paper"
+                      : "bg-cream text-ink ring-1 ring-line hover:ring-ink/40"
                   }`}
                   aria-pressed={showLikedOnly}
                 >
-                  <svg className="h-4 w-4" fill={showLikedOnly ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-3.5 w-3.5" fill={showLikedOnly ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                   Liked
@@ -178,10 +194,10 @@ export default function ExplorePage() {
                 <button
                   type="button"
                   onClick={cycleTimeSort}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`label-caps inline-flex cursor-pointer items-center gap-2 px-4 py-2.5 transition-all ${
                     timeSortActive
-                      ? "bg-[rgb(30,36,44)] text-white"
-                      : "bg-white/80 text-zinc-600 ring-1 ring-zinc-200/80 hover:ring-zinc-300"
+                      ? "bg-ink text-paper"
+                      : "bg-cream text-ink ring-1 ring-line hover:ring-ink/40"
                   }`}
                 >
                   <span className="text-xs">{timeSortIcon}</span>
@@ -209,166 +225,81 @@ export default function ExplorePage() {
                 />
               </div>
               {(search.trim() !== "" || era !== "all" || artType !== "all" || minPrice > 0 || maxPrice < 50000 || showLikedOnly) && (
-              <div className="flex flex-wrap items-center gap-2">
-                {search.trim() !== "" && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-500 px-3 py-1 text-sm text-white">
-                    {search.trim()}
-                    <button
-                      type="button"
-                      onClick={() => setSearch("")}
-                      className="ml-0.5 rounded-full p-0.5 hover:bg-blue-600"
-                      aria-label="Remove search filter"
-                    >
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </span>
-                )}
-                {era !== "all" && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-500 px-3 py-1 text-sm text-white">
-                    {ART_ERAS.find((r) => r.value === era)?.label ?? era}
-                    <button
-                      type="button"
-                      onClick={() => setEra("all")}
-                      className="ml-0.5 rounded-full p-0.5 hover:bg-blue-600"
-                      aria-label="Remove era filter"
-                    >
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </span>
-                )}
-                {artType !== "all" && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-500 px-3 py-1 text-sm text-white">
-                    {ART_TYPES.find((r) => r.value === artType)?.label ?? artType}
-                    <button
-                      type="button"
-                      onClick={() => setArtType("all")}
-                      className="ml-0.5 rounded-full p-0.5 hover:bg-blue-600"
-                      aria-label="Remove art type filter"
-                    >
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </span>
-                )}
-                {(minPrice > 0 || maxPrice < 50000) && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-500 px-3 py-1 text-sm text-white">
-                    {formatBid(minPrice)} – {formatBid(maxPrice)}
-                    <button
-                      type="button"
-                      onClick={() => {
+                <div className="flex flex-wrap items-center gap-2">
+                  {search.trim() !== "" && (
+                    <FilterChip
+                      label={search.trim()}
+                      onRemove={() => setSearch("")}
+                      ariaLabel="Remove search filter"
+                    />
+                  )}
+                  {era !== "all" && (
+                    <FilterChip
+                      label={ART_ERAS.find((r) => r.value === era)?.label ?? era}
+                      onRemove={() => setEra("all")}
+                      ariaLabel="Remove era filter"
+                    />
+                  )}
+                  {artType !== "all" && (
+                    <FilterChip
+                      label={ART_TYPES.find((r) => r.value === artType)?.label ?? artType}
+                      onRemove={() => setArtType("all")}
+                      ariaLabel="Remove art type filter"
+                    />
+                  )}
+                  {(minPrice > 0 || maxPrice < 50000) && (
+                    <FilterChip
+                      label={`${formatBid(minPrice)} – ${formatBid(maxPrice)}`}
+                      onRemove={() => {
                         setMinPrice(0);
                         setMaxPrice(50000);
                       }}
-                      className="ml-0.5 rounded-full p-0.5 hover:bg-blue-600"
-                      aria-label="Remove price filter"
-                    >
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </span>
-                )}
-                {showLikedOnly && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-red-500 px-3 py-1 text-sm text-white">
-                    Liked only
-                    <button
-                      type="button"
-                      onClick={() => setShowLikedOnly(false)}
-                      className="ml-0.5 rounded-full p-0.5 hover:bg-red-600"
-                      aria-label="Remove liked filter"
-                    >
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </span>
-                )}
-              </div>
+                      ariaLabel="Remove price filter"
+                    />
+                  )}
+                  {showLikedOnly && (
+                    <FilterChip
+                      label="Liked only"
+                      onRemove={() => setShowLikedOnly(false)}
+                      ariaLabel="Remove liked filter"
+                    />
+                  )}
+                </div>
               )}
             </div>
           </div>
         </div>
 
         {loading ? (
-          <div className="rounded-lg bg-white/50 py-20 text-center">
-            <p className="text-sm text-zinc-500">Loading listings…</p>
+          <div className="border border-dashed border-line py-24 text-center">
+            <p className="label-caps text-ink-mute">Preparing the saleroom…</p>
           </div>
         ) : filteredAndSorted.length === 0 ? (
-          <div className="rounded-lg bg-white/50 py-20 text-center">
-            <p className="text-sm text-zinc-500">
-              No items match your filters. Try adjusting your search.
-            </p>
+          <div className="border border-dashed border-line py-24 text-center">
+            <p className="font-display text-2xl italic text-ink-mute">Nothing under the hammer here.</p>
+            <p className="mt-2 text-sm text-ink-mute">Try adjusting your search or filters.</p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
               {paginatedItems.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/item/${item.id}`}
-                  className="group relative flex aspect-[4/3] overflow-hidden border border-white/60 bg-zinc-200/80 shadow-sm transition-all hover:-translate-y-1 hover:border-white hover:shadow-md"
-                >
-                  <div className="relative h-full w-full overflow-hidden">
-                    {item.image ? (
-                      <ListingImage
-                        item={item}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
-                      />
-                    ) : null}
-                    <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-black/65 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/90">
-                      {item.artType}
-                    </span>
-                    <span className="absolute right-2.5 top-2.5 z-10">
-                      <LikeButton itemId={item.id} />
-                    </span>
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10">
-                      <h2 className="truncate text-sm font-semibold text-white">
-                        {item.title}
-                      </h2>
-                      <div className="mt-2 flex items-end justify-between gap-2 text-xs text-white/90">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-wider text-white/70">
-                            Current bid
-                          </p>
-                          <p className="text-base font-semibold">
-                            {formatBid(item.currentBid)}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[10px] uppercase tracking-wider text-white/70">
-                            Time left
-                          </p>
-                          <p className="font-medium">
-                            <TimeLeft item={item} />
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                <LotCard key={item.id} item={item} />
               ))}
             </div>
 
             {totalPages > 1 && (
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm">
+              <div className="mt-14 flex flex-wrap items-center justify-center gap-4 border-t border-line pt-8 text-sm">
                 <button
                   type="button"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={safePage === 1}
-                  className={
+                  className={`label-caps ${
                     safePage === 1
-                      ? "cursor-default text-zinc-400"
-                      : "cursor-pointer text-[rgb(30,36,44)] hover:underline"
-                  }
+                      ? "cursor-default text-ink-mute/50"
+                      : "link-underline cursor-pointer text-ink"
+                  }`}
                 >
-                  Previous
+                  ← Prev
                 </button>
 
                 {(() => {
@@ -393,7 +324,7 @@ export default function ExplorePage() {
 
                   return elements.map((value, index) =>
                     value === "ellipsis" ? (
-                      <span key={`ellipsis-${index}`} className="text-zinc-400">
+                      <span key={`ellipsis-${index}`} className="text-ink-mute">
                         …
                       </span>
                     ) : (
@@ -401,11 +332,11 @@ export default function ExplorePage() {
                         key={value}
                         type="button"
                         onClick={() => setPage(value)}
-                        className={
+                        className={`flex h-9 w-9 items-center justify-center tabular-nums transition-colors ${
                           value === safePage
-                            ? "cursor-default font-semibold text-[rgb(30,36,44)] underline"
-                            : "cursor-pointer text-[rgb(30,36,44)] hover:underline"
-                        }
+                            ? "cursor-default bg-ink font-medium text-paper"
+                            : "cursor-pointer text-ink hover:bg-paper-deep"
+                        }`}
                       >
                         {value}
                       </button>
@@ -417,13 +348,13 @@ export default function ExplorePage() {
                   type="button"
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={safePage === totalPages}
-                  className={
+                  className={`label-caps ${
                     safePage === totalPages
-                      ? "cursor-default text-zinc-400"
-                      : "cursor-pointer text-[rgb(30,36,44)] hover:underline"
-                  }
+                      ? "cursor-default text-ink-mute/50"
+                      : "link-underline cursor-pointer text-ink"
+                  }`}
                 >
-                  Next
+                  Next →
                 </button>
               </div>
             )}
