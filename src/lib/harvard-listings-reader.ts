@@ -1,5 +1,3 @@
-import { readFile } from "fs/promises";
-import path from "path";
 import type { MappedHarvardListing } from "@/lib/harvard-art";
 
 const BUCKET = "curatorartmarket.firebasestorage.app";
@@ -10,46 +8,42 @@ const STORAGE_URLS = [
   `${BASE}/${encodeURIComponent("harvard-listings.json")}?alt=media`,
 ];
 
-const LOCAL_PATH = path.join(
-  process.cwd(),
-  "src",
-  "data",
-  "harvard-listings.generated.json"
-);
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
 let memCache: MappedHarvardListing[] | null = null;
 let memCacheExpiry = 0;
+let fetchInProgress: Promise<MappedHarvardListing[] | null> | null = null;
 
 export async function readHarvardListings(): Promise<MappedHarvardListing[] | null> {
   const now = Date.now();
   if (memCache && now < memCacheExpiry) return memCache;
 
-  let result: MappedHarvardListing[] | null = null;
+  // Deduplicate concurrent fetches on the same instance
+  if (fetchInProgress) return fetchInProgress;
 
-  for (const url of STORAGE_URLS) {
-    try {
-      const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
-      if (res.ok) {
-        result = (await res.json()) as MappedHarvardListing[];
-        break;
+  fetchInProgress = (async () => {
+    for (const url of STORAGE_URLS) {
+      try {
+        const res = await fetch(url, {
+          signal: AbortSignal.timeout(8_000),
+          cache: "no-store",
+        });
+        if (res.ok) {
+          const data = (await res.json()) as MappedHarvardListing[];
+          if (Array.isArray(data) && data.length > 0) {
+            memCache = data;
+            memCacheExpiry = Date.now() + CACHE_TTL_MS;
+            return data;
+          }
+        }
+      } catch {
+        continue;
       }
-    } catch {
-      continue;
     }
-  }
+    return null;
+  })().finally(() => {
+    fetchInProgress = null;
+  });
 
-  if (!result) {
-    try {
-      result = JSON.parse(
-        await readFile(LOCAL_PATH, "utf-8")
-      ) as MappedHarvardListing[];
-    } catch {
-      return null;
-    }
-  }
-
-  memCache = result;
-  memCacheExpiry = now + CACHE_TTL_MS;
-  return result;
+  return fetchInProgress;
 }
