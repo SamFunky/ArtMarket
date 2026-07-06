@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { DM_Sans, Syne } from "next/font/google";
+import { DM_Sans, Fraunces } from "next/font/google";
 import HeaderWrapper from "@/components/HeaderWrapper";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
-const syne = Syne({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-syne",
+  variable: "--font-fraunces",
+  axes: ["opsz", "SOFT", "WONK"],
 });
 
 const dmSans = DM_Sans({
@@ -15,8 +16,8 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Curator",
-  description: "A marketplace for art",
+  title: "Curator — Fine Art Auctions",
+  description: "A living auction house for fine art. Discover, bid, and collect.",
   icons: {
     icon: "/icon.png",
     apple: "/icon.png",
@@ -30,7 +31,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="overflow-x-hidden">
-      <body className={`${syne.variable} ${dmSans.variable} m-0 overflow-x-hidden bg-white font-sans`}>
+      <body
+        className={`${fraunces.variable} ${dmSans.variable} grain m-0 overflow-x-hidden bg-paper font-sans page-fade-in`}
+      >
         <Providers>
           <HeaderWrapper>{children}</HeaderWrapper>
         </Providers>
