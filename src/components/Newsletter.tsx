@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Reveal from "@/components/Reveal";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -14,38 +15,43 @@ export default function Newsletter() {
   }
 
   return (
-    <section className="w-full border-y border-zinc-700/50 bg-[rgb(30,36,44)] px-6 py-16 xl:py-24">
-      <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
-        <h2 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-          Stay in the loop
+    <section className="w-full border-y border-line bg-paper-deep px-5 py-20 sm:px-10 sm:py-24">
+      <Reveal className="mx-auto flex max-w-3xl flex-col items-center gap-8 text-center">
+        <p className="label-caps text-bronze">The dispatch</p>
+        <h2 className="font-display text-3xl font-medium leading-tight tracking-tight text-ink sm:text-5xl">
+          First word when a new lot
+          <br className="hidden sm:block" /> goes <span className="italic text-bronze">under the hammer</span>
         </h2>
-        <p className="text-sm text-zinc-400">
-          Get alerts when new featured auctions go live.
-        </p>
-        <form onSubmit={handleSubmit} className="flex w-full max-w-md flex-col gap-2 sm:flex-row">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            aria-label="Email address"
-            required
-            className="flex-1 border border-zinc-600 bg-white px-4 py-3 text-sm text-[rgb(30,36,44)] placeholder-zinc-500 ring-zinc-600 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-500"
-          />
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full max-w-lg flex-col gap-5 sm:flex-row sm:items-end"
+        >
+          <div className="flex-1 border-b border-ink/30 transition-colors focus-within:border-ink">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              aria-label="Email address"
+              required
+              suppressHydrationWarning
+              className="w-full bg-transparent px-1 py-3 text-base text-ink placeholder-ink-mute/60 focus:outline-none"
+            />
+          </div>
           <button
             type="submit"
-            className="shrink-0 bg-[#faf5f2] px-6 py-3 font-medium text-[rgb(30,36,44)] transition-colors hover:bg-[#f0e6e0]"
+            className="label-caps shrink-0 bg-ink px-8 py-4 text-paper transition-colors duration-300 hover:bg-bronze"
           >
             Subscribe
           </button>
         </form>
         {status === "success" && (
-          <p className="text-sm text-emerald-400">Thanks! Check your inbox to confirm.</p>
+          <p className="text-sm text-bronze">Noted. Check your inbox to confirm.</p>
         )}
         {status === "error" && (
-          <p className="text-sm text-red-400">Something went wrong. Please try again.</p>
+          <p className="text-sm text-oxblood">Something went wrong. Please try again.</p>
         )}
-      </div>
+      </Reveal>
     </section>
   );
 }
