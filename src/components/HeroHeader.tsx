@@ -22,14 +22,14 @@ export default function HeroHeader() {
       <nav className="flex items-center justify-between rounded-full px-6 py-4 sm:px-8">
         <Link
           href="/"
-          className="font-display text-lg font-semibold tracking-tight text-[#faf5f2] sm:text-xl"
+          className="font-display text-lg font-semibold tracking-tight text-paper sm:text-xl"
         >
           Curator
         </Link>
         <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
           <Link
             href="/explore"
-            className="hidden text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:block sm:text-base"
+            className="hidden text-sm text-paper/90 transition-colors hover:text-paper sm:block sm:text-base"
           >
             Explore
           </Link>
@@ -37,20 +37,20 @@ export default function HeroHeader() {
             <>
               <Link
                 href="/create-listing"
-                className="hidden text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:text-base md:block"
+                className="hidden text-sm text-paper/90 transition-colors hover:text-paper sm:text-base md:block"
               >
                 Create listing
               </Link>
               <Link
                 href="/account"
-                className="hidden text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:block sm:text-base"
+                className="hidden text-sm text-paper/90 transition-colors hover:text-paper sm:block sm:text-base"
               >
                 Account
               </Link>
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="cursor-pointer rounded-full border border-[#faf5f2]/50 bg-transparent px-3 py-1.5 text-xs font-medium text-[#faf5f2] transition-colors hover:bg-[#faf5f2]/10 sm:px-4 sm:py-2 sm:text-sm sm:px-5"
+                className="cursor-pointer rounded-full border border-paper/50 bg-transparent px-3 py-1.5 text-xs font-medium text-paper transition-colors hover:bg-paper/10 sm:px-4 sm:py-2 sm:text-sm sm:px-5"
               >
                 Sign out
               </button>
@@ -59,13 +59,13 @@ export default function HeroHeader() {
             <>
               <Link
                 href="/signin"
-                className="hidden text-sm text-[#faf5f2]/90 transition-colors hover:text-[#faf5f2] sm:block sm:text-base"
+                className="hidden text-sm text-paper/90 transition-colors hover:text-paper sm:block sm:text-base"
               >
                 Sign in
               </Link>
               <Link
                 href="/signup"
-                className="rounded-full border border-[#faf5f2]/50 bg-transparent px-3 py-1.5 text-xs font-medium text-[#faf5f2] transition-colors hover:bg-[#faf5f2]/10 sm:px-4 sm:py-2 sm:text-sm sm:px-5"
+                className="rounded-full border border-paper/50 bg-transparent px-3 py-1.5 text-xs font-medium text-paper transition-colors hover:bg-paper/10 sm:px-4 sm:py-2 sm:text-sm sm:px-5"
               >
                 Sign up
               </Link>

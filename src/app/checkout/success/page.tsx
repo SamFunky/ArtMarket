@@ -29,9 +29,9 @@ function CheckoutSuccessContent() {
 
   if (status === "loading") {
     return (
-      <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
+      <main className="min-h-screen bg-paper pt-32 pb-20">
         <div className="mx-auto flex max-w-lg flex-col items-center px-4 text-center">
-          <p className="text-sm text-zinc-600">Confirming your payment…</p>
+          <p className="text-sm text-ink-mute">Confirming your payment…</p>
         </div>
       </main>
     );
@@ -39,17 +39,17 @@ function CheckoutSuccessContent() {
 
   if (status === "error") {
     return (
-      <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
+      <main className="min-h-screen bg-paper pt-32 pb-20">
         <div className="mx-auto flex max-w-lg flex-col items-center px-4 text-center">
-          <h1 className="font-display text-2xl font-semibold text-[rgb(30,36,44)]">
+          <h1 className="font-display text-2xl font-semibold text-ink">
             Payment confirmation failed
           </h1>
-          <p className="mt-4 text-sm text-zinc-600">
+          <p className="mt-4 text-sm text-ink-mute">
             We couldn&apos;t verify your payment. Please check your account or contact support.
           </p>
           <Link
             href="/account"
-            className="mt-6 bg-[rgb(30,36,44)] px-5 py-3 text-sm font-medium text-white hover:bg-[rgb(40,48,58)]"
+            className="mt-6 bg-ink px-5 py-3 text-sm font-medium text-paper hover:bg-ink-soft"
           >
             Go to Account
           </Link>
@@ -59,17 +59,17 @@ function CheckoutSuccessContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
+    <main className="min-h-screen bg-paper pt-32 pb-20">
       <div className="mx-auto flex max-w-lg flex-col items-center px-4 text-center">
-        <h1 className="font-display text-2xl font-semibold text-[rgb(30,36,44)]">
+        <h1 className="font-display text-2xl font-semibold text-ink">
           Payment successful
         </h1>
-        <p className="mt-4 text-sm text-zinc-600">
+        <p className="mt-4 text-sm text-ink-mute">
           Thank you for your purchase. You can view your purchase in your account.
         </p>
         <Link
           href="/account"
-          className="mt-6 bg-[rgb(30,36,44)] px-5 py-3 text-sm font-medium text-white hover:bg-[rgb(40,48,58)]"
+          className="mt-6 bg-ink px-5 py-3 text-sm font-medium text-paper hover:bg-ink-soft"
         >
           Go to Account
         </Link>
@@ -82,9 +82,9 @@ export default function CheckoutSuccessPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
+        <main className="min-h-screen bg-paper pt-32 pb-20">
           <div className="mx-auto flex max-w-lg flex-col items-center px-4 text-center">
-            <p className="text-sm text-zinc-600">Loading…</p>
+            <p className="text-sm text-ink-mute">Loading…</p>
           </div>
         </main>
       }

@@ -46,22 +46,22 @@ export default function SignIn() {
           />
         </div>
         <div
-          className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/60 to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent"
           aria-hidden
         />
 
         <div className="relative z-10 flex w-full justify-center">
-          <div className="w-full max-w-[28rem] border border-zinc-200/80 bg-white px-8 py-10 shadow-sm">
-          <h1 className="font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
+          <div className="w-full max-w-[28rem] border border-line bg-cream px-8 py-10 shadow-[0_24px_60px_-20px_rgba(29,26,21,0.5)]">
+          <h1 className="font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
             Sign in
           </h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-ink-mute">
             Welcome back. Sign in to your account.
           </p>
 
           <form className="mt-8 flex flex-col gap-5" noValidate onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
-              <label htmlFor="signin-email" className="text-sm font-medium text-[rgb(30,36,44)]">
+              <label htmlFor="signin-email" className="text-sm font-medium text-ink">
                 Email
               </label>
               <input
@@ -72,18 +72,18 @@ export default function SignIn() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-zinc-300 bg-white px-4 py-3 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="w-full border border-line bg-cream px-4 py-3 text-sm text-ink placeholder-ink-mute/60 transition-colors focus:border-ink focus:outline-none"
                 aria-label="Email address"
               />
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <label htmlFor="signin-password" className="text-sm font-medium text-[rgb(30,36,44)]">
+                <label htmlFor="signin-password" className="text-sm font-medium text-ink">
                   Password
                 </label>
                 <button
                   type="button"
-                  className="text-xs text-zinc-500 underline decoration-zinc-400 underline-offset-2 hover:text-[rgb(30,36,44)]"
+                  className="text-xs text-ink-mute underline decoration-bronze underline-offset-2 hover:text-ink"
                 >
                   Forgot password?
                 </button>
@@ -96,29 +96,29 @@ export default function SignIn() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-zinc-300 bg-white px-4 py-3 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="w-full border border-line bg-cream px-4 py-3 text-sm text-ink placeholder-ink-mute/60 transition-colors focus:border-ink focus:outline-none"
                 aria-label="Password"
               />
             </div>
             {error && (
-              <p className="text-sm text-red-600">
+              <p className="text-sm text-oxblood">
                 {error}
               </p>
             )}
             <button
               type="submit"
               disabled={submitting}
-              className="mt-2 w-full bg-[rgb(30,36,44)] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:cursor-not-allowed disabled:opacity-70"
+              className="mt-2 w-full bg-ink px-4 py-3 text-sm font-medium text-paper transition-colors hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-70"
             >
               {submitting ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-            <p className="mt-8 text-center text-sm text-zinc-500">
+            <p className="mt-8 text-center text-sm text-ink-mute">
               Don’t have an account?{" "}
               <Link
                 href="/signup"
-                className="font-medium text-[rgb(30,36,44)] underline decoration-zinc-400 underline-offset-2 hover:text-[rgb(40,48,58)]"
+                className="font-medium text-ink underline decoration-bronze underline-offset-2 hover:text-ink-soft"
               >
                 Sign up
               </Link>

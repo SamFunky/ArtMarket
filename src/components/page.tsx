@@ -44,9 +44,9 @@ export default function Home() {
     <main className="flex flex-col">
       <HeroSection />
       <HowItWorks />
-        <section className="relative w-full border-y border-zinc-200/80 bg-[#faf5f2] px-4 py-12 sm:px-6 sm:py-16 xl:py-24">
+        <section className="relative w-full border-y border-stone-200/80 bg-paper px-4 py-12 sm:px-6 sm:py-16 xl:py-24">
         <div className="mx-auto w-full max-w-[120rem] px-4">
-          <h2 className="mb-10 w-full text-center font-display text-2xl font-bold tracking-tight text-[rgb(30,36,44)] sm:mb-16 sm:text-3xl">
+          <h2 className="mb-10 w-full text-center font-display text-2xl font-bold tracking-tight text-ink sm:mb-16 sm:text-3xl">
             Featured Auctions
           </h2>
           <div className="grid grid-cols-1 gap-8 sm:gap-10 md:grid-cols-3">
@@ -83,30 +83,30 @@ export default function Home() {
                 )}
               </div>
               <div className="flex w-full flex-col gap-5">
-                <h3 className="font-display text-lg font-semibold text-[rgb(30,36,44)] line-clamp-2">
+                <h3 className="font-display text-lg font-semibold text-ink line-clamp-2">
                   {auction.title}
                 </h3>
-                <div className="flex items-baseline justify-between gap-4 border-t border-zinc-300/80 pt-4">
+                <div className="flex items-baseline justify-between gap-4 border-t border-stone-300/80 pt-4">
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-zinc-500">
+                    <p className="text-xs uppercase tracking-wider text-stone-500">
                       Current bid
                     </p>
-                    <p className="text-2xl font-bold text-[rgb(30,36,44)]">
+                    <p className="text-2xl font-bold text-ink">
                       {auction.currentBid}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs uppercase tracking-wider text-zinc-500">
+                    <p className="text-xs uppercase tracking-wider text-stone-500">
                       Time left
                     </p>
-                    <p className="text-lg font-medium text-[rgb(30,36,44)]">
+                    <p className="text-lg font-medium text-ink">
                       {auction.timeLeft}
                     </p>
                   </div>
                 </div>
                 <Link
                   href={`/item/${auction.id}`}
-                  className="inline-flex w-full items-center justify-center bg-[rgb(30,36,44)] px-6 py-3 font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+                  className="inline-flex w-full items-center justify-center bg-ink px-6 py-3 font-medium text-white transition-colors hover:bg-ink-soft"
                 >
                   Place Bid
                 </Link>

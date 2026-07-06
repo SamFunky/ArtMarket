@@ -84,21 +84,21 @@ export default function MessageThread({
 
   if (loading) {
     return (
-      <div className="border-t border-zinc-200 bg-zinc-50/50 px-4 py-6 text-center">
-        <p className="text-sm text-zinc-500">Loading messages…</p>
+      <div className="border-t border-line bg-paper-deep/50 px-4 py-6 text-center">
+        <p className="text-sm text-ink-mute">Loading messages…</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-zinc-50/50">
+    <div className="bg-paper-deep/50">
       <div className="flex max-h-64 flex-col">
         <div
           ref={scrollContainerRef}
           className="flex-1 overflow-y-auto px-4 py-3"
         >
           {messages.length === 0 ? (
-            <p className="py-4 text-center text-sm text-zinc-500">
+            <p className="py-4 text-center text-sm text-ink-mute">
               No messages yet. Start the conversation below.
             </p>
           ) : (
@@ -111,16 +111,16 @@ export default function MessageThread({
                     className={`flex ${isMe ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
+                      className={`max-w-[85%] rounded-none px-3 py-2 text-sm ${
                         isMe
-                          ? "bg-[rgb(30,36,44)] text-white"
-                          : "bg-white text-zinc-800 ring-1 ring-zinc-200"
+                          ? "bg-ink text-paper"
+                          : "bg-cream text-ink ring-1 ring-line"
                       }`}
                     >
                       <p className="whitespace-pre-wrap break-words">{m.text}</p>
                       <p
                         className={`mt-1 text-[10px] ${
-                          isMe ? "text-white/70" : "text-zinc-400"
+                          isMe ? "text-paper/70" : "text-ink-mute/70"
                         }`}
                       >
                         {(m.createdAt?.toDate?.() ?? new Date()).toLocaleString()}
@@ -133,23 +133,23 @@ export default function MessageThread({
           )}
         </div>
         {error && (
-          <p className="border-t border-zinc-200 bg-red-50 px-4 py-2 text-sm text-red-600">
+          <p className="border-t border-line bg-oxblood/10 px-4 py-2 text-sm text-oxblood">
             {error}
           </p>
         )}
-        <form onSubmit={handleSend} className="flex gap-2 border-t border-zinc-200 p-3">
+        <form onSubmit={handleSend} className="flex gap-2 border-t border-line p-3">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type a message…"
-            className="flex-1 rounded border border-zinc-300 px-3 py-2 text-sm placeholder-zinc-400 focus:border-[rgb(30,36,44)] focus:outline-none focus:ring-1 focus:ring-[rgb(30,36,44)]"
+            className="flex-1 rounded border border-line px-3 py-2 text-sm placeholder-ink-mute/60 focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink"
             disabled={sending}
           />
           <button
             type="submit"
             disabled={sending || !input.trim()}
-            className="shrink-0 rounded bg-[rgb(30,36,44)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:cursor-not-allowed disabled:opacity-60"
+            className="shrink-0 rounded bg-ink px-4 py-2 text-sm font-medium text-paper transition-colors hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-60"
           >
             {sending ? "Sending…" : "Send"}
           </button>

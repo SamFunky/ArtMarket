@@ -55,17 +55,17 @@ export default function CreateListingPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
+      <main className="min-h-screen bg-paper pt-32 pb-20">
         <div className="mx-auto flex w-full max-w-[120rem] flex-col items-center px-4 sm:px-6 xl:px-12 text-center">
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
+          <h1 className="font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
             Create Listing
           </h1>
-          <p className="mt-4 text-sm text-zinc-600">
+          <p className="mt-4 text-sm text-ink-mute">
             You need to be signed in to create a listing.
           </p>
           <Link
             href="/signin"
-            className="mt-6 bg-[rgb(30,36,44)] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+            className="mt-6 bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:bg-ink-soft"
           >
             Sign in
           </Link>
@@ -96,24 +96,24 @@ export default function CreateListingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
+    <main className="min-h-screen bg-paper pt-32 pb-20">
       <div className="mx-auto w-full max-w-2xl px-4">
-        <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
+        <h1 className="font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
           Create Listing
         </h1>
-        <p className="mt-2 text-sm text-zinc-600">
+        <p className="mt-2 text-sm text-ink-mute">
           Add a new item to the marketplace.
         </p>
 
         <form
           onSubmit={handleSubmit}
-          className="mt-8 rounded border border-zinc-200 bg-white/80 p-6 shadow-sm"
+          className="mt-8 rounded border border-line bg-cream/80 p-6 shadow-sm"
         >
           <div className="space-y-6">
             <div>
               <label
                 htmlFor="title"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Title *
               </label>
@@ -123,7 +123,7 @@ export default function CreateListingPage() {
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                 placeholder="e.g. Renaissance portrait"
-                className="mt-1 w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full rounded border border-line bg-cream px-3 py-2 text-sm text-ink placeholder-ink-mute/60 transition-colors focus:border-ink focus:outline-none focus:ring-0"
                 required
               />
             </div>
@@ -131,7 +131,7 @@ export default function CreateListingPage() {
             <div>
               <label
                 htmlFor="image"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Image URL
               </label>
@@ -143,14 +143,14 @@ export default function CreateListingPage() {
                   setForm((f) => ({ ...f, image: e.target.value }))
                 }
                 placeholder="https://..."
-                className="mt-1 w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full rounded border border-line bg-cream px-3 py-2 text-sm text-ink placeholder-ink-mute/60 transition-colors focus:border-ink focus:outline-none focus:ring-0"
               />
             </div>
 
             <div>
               <label
                 htmlFor="description"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Description
               </label>
@@ -162,14 +162,14 @@ export default function CreateListingPage() {
                 }
                 placeholder="Brief description of the piece"
                 rows={3}
-                className="mt-1 w-full resize-none rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full resize-none rounded border border-line bg-cream px-3 py-2 text-sm text-ink placeholder-ink-mute/60 transition-colors focus:border-ink focus:outline-none focus:ring-0"
               />
             </div>
 
             <div>
               <label
                 htmlFor="currentBid"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Starting bid (USD) *
               </label>
@@ -186,14 +186,14 @@ export default function CreateListingPage() {
                   }))
                 }
                 placeholder="0"
-                className="mt-1 w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full rounded border border-line bg-cream px-3 py-2 text-sm text-ink placeholder-ink-mute/60 transition-colors focus:border-ink focus:outline-none focus:ring-0"
               />
             </div>
 
             <div>
               <label
                 htmlFor="category"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Category *
               </label>
@@ -206,7 +206,7 @@ export default function CreateListingPage() {
                     category: e.target.value as CreateListingInput["category"],
                   }))
                 }
-                className="mt-1 w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full rounded border border-line bg-cream px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none focus:ring-0"
               >
                 {CATEGORIES.map((c) => (
                   <option key={c.value} value={c.value}>
@@ -219,7 +219,7 @@ export default function CreateListingPage() {
             <div>
               <label
                 htmlFor="era"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Era *
               </label>
@@ -229,7 +229,7 @@ export default function CreateListingPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, era: e.target.value as ArtEra }))
                 }
-                className="mt-1 w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full rounded border border-line bg-cream px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none focus:ring-0"
               >
                 {ERAS.map((e) => (
                   <option key={e.value} value={e.value}>
@@ -242,7 +242,7 @@ export default function CreateListingPage() {
             <div>
               <label
                 htmlFor="artType"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Art type *
               </label>
@@ -252,7 +252,7 @@ export default function CreateListingPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, artType: e.target.value as ArtType }))
                 }
-                className="mt-1 w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full rounded border border-line bg-cream px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none focus:ring-0"
               >
                 {ART_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -265,7 +265,7 @@ export default function CreateListingPage() {
             <div>
               <label
                 htmlFor="durationDays"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Auction length *
               </label>
@@ -278,7 +278,7 @@ export default function CreateListingPage() {
                     durationDays: Number(e.target.value) as ListingDurationDays,
                   }))
                 }
-                className="mt-1 w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full rounded border border-line bg-cream px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none focus:ring-0"
               >
                 {LISTING_DURATION_DAYS.map((d) => (
                   <option key={d} value={d}>
@@ -291,7 +291,7 @@ export default function CreateListingPage() {
             <div>
               <label
                 htmlFor="dateRange"
-                className="block text-sm font-medium text-[rgb(30,36,44)]"
+                className="block text-sm font-medium text-ink"
               >
                 Date / age range
               </label>
@@ -303,26 +303,26 @@ export default function CreateListingPage() {
                   setForm((f) => ({ ...f, dateRange: e.target.value }))
                 }
                 placeholder="e.g. 200 BCE – 100 BCE"
-                className="mt-1 w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-[rgb(30,36,44)] placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50"
+                className="mt-1 w-full rounded border border-line bg-cream px-3 py-2 text-sm text-ink placeholder-ink-mute/60 transition-colors focus:border-ink focus:outline-none focus:ring-0"
               />
             </div>
           </div>
 
           {error && (
-            <p className="mt-6 text-sm text-red-600">{error}</p>
+            <p className="mt-6 text-sm text-oxblood">{error}</p>
           )}
 
           <div className="mt-8 flex gap-3">
             <button
               type="submit"
               disabled={submitting}
-              className="rounded bg-[rgb(30,36,44)] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:opacity-70"
+              className="rounded bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-ink-soft disabled:opacity-70"
             >
               {submitting ? "Creating…" : "Create listing"}
             </button>
             <Link
               href="/explore"
-              className="rounded border border-zinc-400 px-5 py-2.5 text-sm font-medium text-[rgb(30,36,44)] transition-colors hover:bg-zinc-50"
+              className="rounded border border-ink/25 px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-paper-deep"
             >
               Cancel
             </Link>
