@@ -44,8 +44,8 @@ function ItemMedia({ item }: { item: Item }) {
     if (isExternal) {
       if (externalImageError) {
         return (
-          <div className="flex aspect-[4/3] w-full items-center justify-center bg-zinc-200/80">
-            <span className="text-sm text-zinc-500">{item.artType}</span>
+          <div className="flex aspect-[4/3] w-full items-center justify-center bg-paper-deep">
+            <span className="text-sm text-ink-mute">{item.artType}</span>
           </div>
         );
       }
@@ -79,8 +79,8 @@ function ItemMedia({ item }: { item: Item }) {
     );
   }
   return (
-    <div className="flex aspect-[4/3] w-full items-center justify-center bg-zinc-200/80">
-      <span className="text-sm text-zinc-500">{item.artType}</span>
+    <div className="flex aspect-[4/3] w-full items-center justify-center bg-paper-deep">
+      <span className="text-sm text-ink-mute">{item.artType}</span>
     </div>
   );
 }
@@ -156,10 +156,10 @@ export default function ItemPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
-        <div className="mx-auto w-full max-w-[120rem] px-4 sm:px-6 xl:px-12">
-          <div className="rounded-lg bg-white/50 py-20 text-center">
-            <p className="text-sm text-zinc-500">Loading…</p>
+      <main className="min-h-screen bg-paper pt-32 pb-20">
+        <div className="mx-auto w-full max-w-[110rem] px-5 sm:px-10 lg:px-14">
+          <div className="border border-dashed border-line py-24 text-center">
+            <p className="label-caps text-ink-mute">Retrieving the lot…</p>
           </div>
         </div>
       </main>
@@ -168,19 +168,20 @@ export default function ItemPage() {
 
   if (!item) {
     return (
-      <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
-        <div className="mx-auto flex w-full max-w-[120rem] flex-col items-center px-4 sm:px-6 xl:px-12 text-center">
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)] sm:text-3xl">
-            Item not found
+      <main className="min-h-screen bg-paper pt-32 pb-20">
+        <div className="mx-auto flex w-full max-w-[110rem] flex-col items-center px-5 text-center sm:px-10 lg:px-14">
+          <p className="label-caps text-bronze">Withdrawn from sale</p>
+          <h1 className="mt-4 font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
+            Lot not found
           </h1>
-          <p className="mt-4 text-sm text-zinc-600">
+          <p className="mt-4 text-sm text-ink-mute">
             This listing may have ended or been removed.
           </p>
           <Link
             href="/explore"
-            className="mt-6 bg-[rgb(30,36,44)] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)]"
+            className="label-caps mt-8 bg-ink px-8 py-4 text-paper transition-colors hover:bg-bronze"
           >
-            Explore
+            Back to the catalogue
           </Link>
         </div>
       </main>
@@ -189,50 +190,57 @@ export default function ItemPage() {
 
   return (
     <>
-    <main className="min-h-screen bg-[#faf5f2] pt-32 pb-20">
-      <div className="mx-auto w-full max-w-[120rem] px-4 sm:px-6 xl:px-12">
+    <main className="min-h-screen bg-paper pt-32 pb-20">
+      <div className="mx-auto w-full max-w-[110rem] px-5 sm:px-10 lg:px-14">
+        <div className="mb-8 flex items-center gap-3">
+          <Link href="/explore" className="link-underline label-caps text-ink-mute hover:text-ink">
+            Catalogue
+          </Link>
+          <span className="text-ink-mute" aria-hidden>/</span>
+          <span className="label-caps text-bronze">
+            Lot {/^\d+$/.test(item.id) ? item.id.padStart(3, "0") : item.id.slice(0, 4).toUpperCase()}
+          </span>
+        </div>
         <div className="flex flex-col gap-10 lg:flex-row lg:gap-16">
           <div className="min-w-0 flex-1">
-            <div className="relative w-full overflow-hidden rounded border border-zinc-200/80 bg-white/80">
+            <div className="frame-mat relative w-full overflow-hidden">
               <ItemMedia item={item} />
-              <div className="absolute right-3 top-3 z-10 rounded-full bg-black/30 p-1">
+              <div className="absolute right-4 top-4 z-10 rounded-full bg-black/30 p-1">
                 <LikeButton itemId={item.id} />
               </div>
             </div>
           </div>
 
-          <aside className="flex shrink-0 flex-col gap-6 lg:w-[32rem] 2xl:w-[38rem]">
-            <div className="sticky top-24 rounded border border-zinc-200 bg-white/80 p-6">
-              <h1 className="font-display text-2xl font-semibold tracking-tight text-[rgb(30,36,44)]">
-                {item.title}
-              </h1>
-              <p className="mt-1 text-sm uppercase tracking-wider text-zinc-500">
+          <aside className="flex shrink-0 flex-col gap-6 lg:w-[30rem] 2xl:w-[36rem]">
+            <div className="sticky top-28 border border-line bg-cream p-7 sm:p-9">
+              <p className="label-caps text-bronze">
                 {item.artType} · {item.era}
               </p>
+              <h1 className="mt-3 font-display text-3xl font-medium leading-tight tracking-tight text-ink sm:text-4xl">
+                {item.title}
+              </h1>
 
-              <p className="mt-4 text-sm text-zinc-600">
-                <span className="font-medium text-[rgb(30,36,44)]">Date:</span>{" "}
-                {item.dateRange ?? "—"}
-              </p>
+              <dl className="mt-6 border-t border-line pt-5">
+                <div className="flex justify-between gap-4 text-sm">
+                  <dt className="label-caps text-ink-mute">Dated</dt>
+                  <dd className="text-ink">{item.dateRange ?? "—"}</dd>
+                </div>
+              </dl>
 
-              <p className="mt-4 text-sm leading-relaxed text-zinc-600">
+              <p className="mt-5 text-sm leading-relaxed text-ink-mute">
                 {item.description ?? "No description provided."}
               </p>
 
-              <div className="mt-6 flex items-baseline justify-between gap-4 border-t border-zinc-200 pt-6">
+              <div className="mt-8 flex items-end justify-between gap-4 border-t border-line pt-6">
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-zinc-500">
-                    Current bid
-                  </p>
-                  <p className="text-2xl font-bold text-[rgb(30,36,44)]">
+                  <p className="label-caps text-ink-mute">Current bid</p>
+                  <p className="mt-1 font-display text-4xl tabular-nums text-ink">
                     {formatBid(item.currentBid)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs uppercase tracking-wider text-zinc-500">
-                    Time left
-                  </p>
-                  <p className="text-lg font-medium text-[rgb(30,36,44)]">
+                  <p className="label-caps text-ink-mute">Closes in</p>
+                  <p className="mt-1 text-base font-medium tabular-nums text-ink">
                     <TimeLeft item={item} />
                   </p>
                 </div>
@@ -242,10 +250,10 @@ export default function ItemPage() {
                 type="button"
                 disabled={!canBid}
                 onClick={() => canBid && setShowBidModal(true)}
-                className={`mt-6 w-full px-6 py-4 text-base font-medium transition-colors ${
+                className={`label-caps mt-8 w-full px-6 py-5 transition-colors duration-300 ${
                   canBid
-                    ? "bg-[rgb(30,36,44)] text-white hover:bg-[rgb(40,48,58)]"
-                    : "cursor-not-allowed bg-zinc-300 text-zinc-500"
+                    ? "cursor-pointer bg-ink text-paper hover:bg-bronze"
+                    : "cursor-not-allowed bg-paper-deep text-ink-mute"
                 }`}
               >
                 {auctionEnded
@@ -272,7 +280,7 @@ export default function ItemPage() {
                   type="button"
                   onClick={openDeleteConfirm}
                   disabled={deleting}
-                  className="mt-3 w-full border border-red-300 bg-white px-6 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-70"
+                  className="label-caps mt-3 w-full cursor-pointer border border-oxblood/40 bg-transparent px-6 py-3.5 text-oxblood transition-colors hover:bg-oxblood hover:text-paper disabled:opacity-70"
                 >
                   {deleting ? "Deleting…" : "Delete listing"}
                 </button>
@@ -293,22 +301,22 @@ export default function ItemPage() {
         onClick={closeDeleteConfirm}
       >
         <div
-          className="w-full max-w-md rounded border border-zinc-200 bg-white p-6 shadow-lg"
+          className="w-full max-w-md border border-line bg-cream p-8 shadow-[0_24px_60px_-20px_rgba(29,26,21,0.5)]"
           role="dialog"
           onClick={(e) => e.stopPropagation()}
         >
-          <h2 id="delete-confirm-title" className="font-display text-lg font-semibold text-[rgb(30,36,44)]">
-            Delete listing?
+          <h2 id="delete-confirm-title" className="font-display text-2xl font-medium text-ink">
+            Withdraw this lot?
           </h2>
-          <p className="mt-2 text-sm text-zinc-600">
+          <p className="mt-3 text-sm leading-relaxed text-ink-mute">
             Are you sure you want to delete this listing? This cannot be undone.
           </p>
-          <div className="mt-6 flex gap-3">
+          <div className="mt-8 flex gap-3">
             <button
               type="button"
               onClick={confirmDelete}
               disabled={deleting}
-              className="flex-1 rounded bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-70"
+              className="label-caps flex-1 cursor-pointer bg-oxblood px-4 py-3.5 text-paper transition-colors hover:bg-ink disabled:opacity-70"
             >
               {deleting ? "Deleting…" : "Delete"}
             </button>
@@ -316,7 +324,7 @@ export default function ItemPage() {
               type="button"
               onClick={closeDeleteConfirm}
               disabled={deleting}
-              className="flex-1 rounded border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-70"
+              className="label-caps flex-1 cursor-pointer border border-ink/25 bg-transparent px-4 py-3.5 text-ink transition-colors hover:bg-paper-deep disabled:opacity-70"
             >
               Cancel
             </button>

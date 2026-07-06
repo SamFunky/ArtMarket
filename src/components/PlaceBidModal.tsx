@@ -90,14 +90,14 @@ export default function PlaceBidModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded border border-zinc-200 bg-white p-6 shadow-lg"
+        className="w-full max-w-md border border-line bg-cream p-8 shadow-[0_24px_60px_-20px_rgba(29,26,21,0.5)]"
         role="dialog"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="place-bid-title" className="font-display text-lg font-semibold text-[rgb(30,36,44)]">
+        <h2 id="place-bid-title" className="font-display text-2xl font-medium text-ink">
           Place bid
         </h2>
-        <p className="mt-1 text-sm text-zinc-600">
+        <p className="mt-1 text-sm text-ink-mute">
           Current bid: {formatBid(item.currentBid)} · Minimum: {formatBid(minBid)}
         </p>
 
@@ -107,7 +107,7 @@ export default function PlaceBidModal({
               key={inc}
               type="button"
               onClick={() => applyIncrement(inc)}
-              className="rounded border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-[rgb(30,36,44)] transition-colors hover:bg-zinc-50"
+              className="label-caps cursor-pointer border border-ink/25 bg-transparent px-4 py-2.5 text-ink transition-colors hover:bg-ink hover:text-paper"
             >
               +{inc}
             </button>
@@ -115,11 +115,11 @@ export default function PlaceBidModal({
         </div>
 
         <div className="mt-4">
-          <label htmlFor="custom-bid" className="text-sm font-medium text-zinc-700">
+          <label htmlFor="custom-bid" className="text-sm font-medium text-ink-soft">
             Custom amount
           </label>
           <div className="mt-1 flex gap-2">
-            <span className="flex items-center border border-zinc-300 bg-zinc-50 px-3 text-sm text-zinc-600">
+            <span className="flex items-center border border-line bg-paper-deep px-3 text-sm text-ink-mute">
               $
             </span>
             <input
@@ -128,13 +128,13 @@ export default function PlaceBidModal({
               min={minBid}
               value={customInput}
               onChange={(e) => handleCustomChange(e.target.value)}
-              className="flex-1 border border-zinc-300 px-3 py-2 text-sm focus:border-[rgb(30,36,44)] focus:outline-none focus:ring-1 focus:ring-[rgb(30,36,44)]"
+              className="flex-1 border border-line bg-cream px-3 py-2 text-sm text-ink focus:border-ink focus:outline-none"
             />
           </div>
         </div>
 
         {error && (
-          <p className="mt-3 text-sm text-red-600">{error}</p>
+          <p className="mt-3 text-sm text-oxblood">{error}</p>
         )}
 
         <div className="mt-6 flex gap-3">
@@ -142,14 +142,14 @@ export default function PlaceBidModal({
             type="button"
             onClick={submit}
             disabled={submitting || getEffectiveAmount() < minBid}
-            className="flex-1 bg-[rgb(30,36,44)] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[rgb(40,48,58)] disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex-1 cursor-pointer bg-ink px-4 py-3 text-sm font-medium text-paper transition-colors hover:bg-bronze disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? (
               "Placing bid…"
             ) : (
               <>
                 Bid {formatBid(getEffectiveAmount())}{" "}
-                <span className="text-green-400">
+                <span className="text-gilt">
                   +{formatBid(getEffectiveAmount() - item.currentBid)}
                 </span>
               </>
@@ -159,7 +159,7 @@ export default function PlaceBidModal({
             type="button"
             onClick={onClose}
             disabled={submitting}
-            className="flex-1 rounded border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-70"
+            className="label-caps flex-1 cursor-pointer border border-ink/25 bg-transparent px-4 py-3 text-ink transition-colors hover:bg-paper-deep disabled:opacity-70"
           >
             Cancel
           </button>

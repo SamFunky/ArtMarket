@@ -10,9 +10,10 @@ type ListingImageProps = {
   className?: string;
   fill?: boolean;
   sizes?: string;
+  onError?: () => void;
 };
 
-export function ListingImage({ item, className, fill, sizes }: ListingImageProps) {
+export function ListingImage({ item, className, fill, sizes, onError }: ListingImageProps) {
   const [externalError, setExternalError] = useState(false);
 
   if (!item.image) return null;
@@ -27,8 +28,8 @@ export function ListingImage({ item, className, fill, sizes }: ListingImageProps
           style={fill ? { position: "absolute", inset: 0 } : undefined}
           aria-hidden
         >
-          <div className="flex h-full w-full items-center justify-center bg-zinc-200/80">
-            <span className="text-xs text-zinc-500">{item.artType}</span>
+          <div className="flex h-full w-full items-center justify-center bg-paper-deep">
+            <span className="text-xs text-ink-mute">{item.artType}</span>
           </div>
         </div>
       );
@@ -40,7 +41,7 @@ export function ListingImage({ item, className, fill, sizes }: ListingImageProps
         className={className}
         style={fill ? { position: "absolute", inset: 0, height: "100%", width: "100%" } : undefined}
         referrerPolicy="no-referrer"
-        onError={() => setExternalError(true)}
+        onError={() => { setExternalError(true); onError?.(); }}
       />
     );
   }

@@ -24,7 +24,7 @@ export default function LikeButton({ itemId, className = "" }: LikeButtonProps) 
     >
       {liked ? (
         <svg
-          className="h-5 w-5 text-red-500 transition-opacity hover:opacity-50"
+          className="h-5 w-5 text-oxblood drop-shadow-sm transition-opacity hover:opacity-60"
           fill="currentColor"
           viewBox="0 0 24 24"
           aria-hidden
@@ -33,7 +33,7 @@ export default function LikeButton({ itemId, className = "" }: LikeButtonProps) 
         </svg>
       ) : (
         <svg
-          className="h-5 w-5 text-white drop-shadow-md transition-colors group-hover/like:text-red-500"
+          className="h-5 w-5 text-white drop-shadow-md transition-colors group-hover/like:text-oxblood"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
